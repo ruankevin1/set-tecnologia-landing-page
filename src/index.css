@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-family: 'Inter', sans-serif;
+  
+  --bg-color: #07070F; 
+  --surface-color: #101018; 
+  --surface-border: #20202F;
+  
+  --primary-color: #FF5500; /* Vibrant Orange */
+  --primary-hover: #FF7733;
+  --secondary-color: #FF8800; /* Light Orange */
+  
+  --text-main: #FFFFFF;
+  --text-muted: #9F9FA8;
+  
+  --shadow-primary: 0 8px 32px rgba(255, 85, 0, 0.4);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.6);
+  
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Background Subtle Shapes */
+body::before, body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+}
+body::before {
+  top: 10%; left: -10%;
+  width: 50vw; height: 50vw;
+  max-width: 600px; max-height: 600px;
+  background: rgba(255, 85, 0, 0.15); /* Orange glow */
+}
+body::after {
+  top: 40%; right: -10%;
+  width: 50vw; height: 50vw;
+  max-width: 600px; max-height: 600px;
+  background: rgba(255, 136, 0, 0.1); /* Lighter Orange glow */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--font-family); cursor: pointer; border: none; outline: none; }
+
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+.text-gradient {
+  background: linear-gradient(135deg, #FFF 0%, var(--secondary-color) 40%, var(--primary-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: #fff;
+  padding: 16px 32px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  box-shadow: var(--shadow-primary);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 40px rgba(255,85,0,0.5);
+  background: linear-gradient(135deg, var(--primary-hover), #FFAA33);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--surface-border);
+  padding: 14px 28px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: var(--surface-color);
+  border-color: var(--secondary-color);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  opacity: 0;
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
+/* FIXED WHATSAPP BUTTON */
+.fixed-whatsapp {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background-color: #25D366;
+  color: white;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+  z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.fixed-whatsapp:hover {
+  transform: scale(1.15) translateY(-5px);
+  box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6);
+}
+
+/* =================== RESPONSIVE =================== */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Ensure hero stacks form below text */
+  #hero {
+    flex-direction: column !important;
+    padding: 80px 16px 48px !important;
+    gap: 32px !important;
+  }
+
+  #hero > div:first-child {
+    flex: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #hero > div:last-child {
+    flex: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .btn-primary, .btn-outline {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .fixed-whatsapp {
+    bottom: 20px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  #hero {
+    padding: 70px 16px 40px !important;
+  }
+
+  .lead-form-container {
+    padding: 24px 16px !important;
+  }
+
+  .fixed-whatsapp {
+    bottom: 16px;
+    right: 12px;
+    width: 52px;
+    height: 52px;
+  }
+}
