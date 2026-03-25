@@ -58,7 +58,7 @@ export default function InteractiveSolutions() {
           ))}
         </div>
         
-        <div style={{ width: '100%', backgroundColor: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-lg)', padding: '60px 40px', minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ width: '100%', backgroundColor: 'var(--surface-color)', border: '1px solid var(--surface-border)', borderRadius: 'var(--radius-lg)', padding: 'clamp(30px, 8vw, 60px) clamp(16px, 5vw, 40px)', minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(255,85,0,0.08), transparent)', filter: 'blur(50px)' }}></div>
           <div key={active} style={{ animation: 'fadeIn 0.4s ease', position: 'relative', zIndex: 1, width: '100%', maxWidth: '700px' }}>
             <h3 style={{ fontSize: '2rem', color: '#fff', marginBottom: '32px', textAlign: 'center' }}>{solutions[active].id}</h3>
