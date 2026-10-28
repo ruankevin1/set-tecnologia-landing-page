@@ -1,0 +1,644 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Tela from '../components/Tela.astro';
+import Icone from '../components/Icone.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Formulario from '../components/Formulario.astro';
+import Clientes from '../components/Clientes.astro';
+import Video from '../components/Video.astro';
+import TopoProduto from '../components/TopoProduto.astro';
+import Composicao from '../components/Composicao.astro';
+import Vantagens from '../components/Vantagens.astro';
+import Estrelas from '../components/Estrelas.astro';
+import CardapioAoVivo from '../components/CardapioAoVivo.astro';
+import IconeModulo from '../components/IconeModulo.astro';
+import TelasCelular from '../components/TelasCelular.astro';
+import Impressos from '../components/Impressos.astro';
+import { empresa } from '../data/empresa';
+import { adquirentes } from '../data/maquininhas';
+
+import balcao from '../assets/telas2/balcao.png';
+import mesaPedido from '../assets/telas2/mesa-pedido.png';
+import tablet from '../assets/telas2/tablet-cardapio.png';
+import salao from '../assets/telas2/salao.png';
+import contaPartes from '../assets/telas2/fechar-mesa-partes.png';
+import contaTudo from '../assets/telas2/fechar-mesa-tudo.png';
+import contaComanda from '../assets/telas2/fechar-mesa-comanda.png';
+import contaDividir from '../assets/telas2/fechar-mesa-dividir.png';
+import dividirItem from '../assets/telas2/zoom-dividir-item.png';
+import delivery from '../assets/telas2/delivery-quadro.png';
+import relatorios from '../assets/telas2/relatorios.png';
+import cardapioPoster from '../assets/telas/catalogo-celular.png';
+import tabletProduto from '../assets/telas2/tablet-produto.png';
+import gMesas from '../assets/garcom/mesas.png';
+import gAvisos from '../assets/garcom/avisos.png';
+import gOpcoes from '../assets/garcom/mesa-opcoes.png';
+const telasDoGarcom = [
+  { src: gMesas, alt: 'App do garçom no celular com as mesas do salão, valores e a mesa 1 chamando', legenda: 'Mesas ocupadas, valor e quem chamou' },
+  { src: gAvisos, alt: 'Aviso da mesa 1 chamando o garçom, com o botão Assumir', legenda: 'Mesa chamou: o garçom assume o atendimento' },
+  { src: gOpcoes, alt: 'Opções da mesa 1: aviso da mesa, transferir consumo e liberar mesa', legenda: 'Transferir consumo e liberar a mesa' },
+];
+
+
+// Abas do sistema: um print grande por vez, trocando sozinho enquanto a seção está na tela.
+const modulos = [
+  { id: 'balcao', nome: 'Balcão', icone: 'caixa', titulo: 'Venda de balcão em três toques', texto: 'Produto por foto, busca ou código. O que sai do prato vai junto no pedido. Sangria, suprimento e fechamento por operador.', img: balcao, alt: 'Tela Balcão do Set Tecnologia com chopp, bolinho de bacalhau sem salsinha e caipirinha somando R$ 98,00' },
+  { id: 'salao', nome: 'Salão', icone: 'salao', titulo: 'O salão inteiro numa tela', texto: 'Valor em aberto, comandas e há quanto tempo cada mesa está aberta.', img: salao, alt: 'Mapa do salão com as mesas 1, 4 e 7 ocupadas e R$ 265,00 em aberto' },
+  { id: 'garcom', nome: 'Garçom', icone: 'garcom', titulo: 'O salão no celular do garçom', texto: 'Mesas, chamados das mesas, pedido, transferência e atendimento avulso pelo celular, sem voltar ao caixa.', celulares: true },
+  { id: 'mesa', nome: 'Pedido na mesa', icone: 'comanda', titulo: 'Cada pessoa com a sua comanda', texto: 'O que foi retirado e a observação saem impressos no setor certo da cozinha, sem redigitar.', img: mesaPedido, alt: 'Pedido da mesa 1 lançado na comanda 7, com carpaccio sem alcaparras e observação para a cozinha' },
+  { id: 'tablet', nome: 'Tablet de mesa', icone: 'tablet', titulo: 'O cliente pede pela mesa', texto: 'Cardápio com fotos, ponto da carne e chamada do garçom. O pedido entra direto na conta da mesa.', img: tablet, alt: 'Tablet de mesa do Set Tecnologia com o cardápio de pratos com fotos, na mesa 4', tipo: 'tablet' },
+  { id: 'conta', nome: 'Conta dividida', icone: 'dividir', titulo: 'Cada um paga o que consumiu', texto: 'Até um terço da calabresa. A conta fecha no centavo, e com Smart TEF o valor vai direto para a maquininha.', img: contaPartes, alt: 'Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber' },
+  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online e 99Food: aceito, preparo, pronto, saiu e entregue.', img: delivery, alt: 'Quadro do Delivery com pedidos nas colunas Aceito, Preparo e Pronto' },
+  { id: 'relatorios', nome: 'Relatórios', icone: 'relatorios', titulo: 'O dia fechado em números', texto: 'Faturamento, vendas por produto e por operador, acerto dos motoboys, repasses do 99Food e o XML do contador.', img: relatorios, alt: 'Tela de Relatórios com o resumo de hoje, relatórios comerciais, de delivery e repasses do 99Food' },
+] as const;
+
+const recursos = [
+  { icone: 'garcom', t: 'Garçom no celular', d: 'Lança o pedido na mesa e ele sai impresso na cozinha e no bar.' },
+  { icone: 'tablet', t: 'Tablet de mesa', d: 'O cliente pede, marca o ponto e chama o garçom pela tela.' },
+  { icone: 'impressora', t: 'Impressão por setor', d: 'Cozinha, bar e pizzaria recebem só o que é deles.' },
+  { icone: 'comanda', t: 'Comandas e cartões', d: 'Uma comanda por pessoa, com cartão numerado.' },
+  { icone: 'estoque', t: 'Estoque', d: 'Baixa pela venda e aviso de estoque baixo no caixa.' },
+  { icone: 'motoboy', t: 'Motoboys', d: 'Entrega por motoboy e o acerto de cada um no fechamento do dia.' },
+  { icone: 'nfce', t: 'NFC-e', d: 'Nota no fechamento, contingência e XML pronto para o contador.' },
+  { icone: 'rede', t: 'Funciona sem internet', d: 'Caixa, tablets e celulares conversam pela rede da própria loja.' },
+] as const;
+
+const integracoes = [
+  { sigla: '99', cor: '#ffd200', tinta: '#111', nome: '99Food', d: 'Pedidos do aplicativo no quadro do delivery, com cardápio, produtos e adicionais enviados pelo Set.' },
+  { sigla: 'TEF', cor: '#f36812', tinta: '#fff', nome: 'Smart TEF', d: 'O valor vai do caixa para a maquininha smart e a venda fecha sozinha quando o pagamento é aprovado.' },
+  { sigla: 'NF', cor: '#2f7d4f', tinta: '#fff', nome: 'SEFAZ', d: 'NFC-e autorizada direto com a SEFAZ, com contingência quando a internet cai.' },
+  { sigla: 'WEB', cor: '#3b6fd8', tinta: '#fff', nome: 'Cardápio online', d: 'Loja própria no celular do cliente, com o pedido entrando no caixa.' },
+  { sigla: 'IMP', cor: '#5b5650', tinta: '#fff', nome: 'Impressoras térmicas', d: 'Em rede ou USB, uma por setor, aproveitando as que a loja já tem.' },
+  { sigla: 'ADQ', cor: '#8a5cf6', tinta: '#fff', nome: 'Adquirentes', d: 'Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, Sicredi e praticamente todas as outras pelo Smart TEF.' },
+] as const;
+
+const formasDeConta = [
+  { id: 'partes', nome: 'Item em partes', texto: 'Uma porção dividida em quantas partes precisar. Cada parte é paga por quem consumiu, e a soma fecha no centavo.', img: dividirItem, alt: 'Janela Dividir item com a calabresa acebolada sendo dividida em 3 partes' },
+  { id: 'marcar', nome: 'Por item ou comanda', texto: 'Marca a comanda inteira ou só os itens de cada pessoa. O restante continua aberto na mesa.', img: contaComanda, alt: 'Pagamento da mesa 1 com a comanda 3 inteira marcada, R$ 89,00 a receber' },
+  { id: 'igual', nome: 'Igual entre pessoas', texto: 'Escolhe quantas pessoas e o sistema divide o total. R$ 179,00 entre três dá R$ 59,67 para cada.', img: contaDividir, alt: 'Pagamento da mesa 1 dividido entre 3 pessoas, R$ 59,67 a receber' },
+  { id: 'tudo', nome: 'A conta inteira', texto: 'Todas as comandas da mesa juntas, com dinheiro, cartão, Pix ou as formas misturadas.', img: contaTudo, alt: 'Pagamento da mesa 1 com as comandas 3 e 7 e R$ 179,00 a receber' },
+];
+
+const antes = ['Comanda de papel e pedido gritado na cozinha', 'Conta da mesa somada na calculadora', 'Valor digitado de novo na maquininha', 'Delivery pelo WhatsApp, anotado à mão', 'Comissão em cada pedido do aplicativo', 'Fechamento de caixa no caderno'];
+const depois = ['Pedido do celular do garçom sai impresso no setor certo', 'Conta dividida por pessoa, item ou partes iguais', 'Smart TEF manda o valor direto para a maquininha', 'Pedidos do site e do 99Food no mesmo quadro', 'Cardápio online próprio, sem comissão', 'Relatório de caixa, vendas e notas no fim do dia'];
+
+const produtos = [
+  { n: '01', nome: 'Set Tecnologia', href: '/sistema-para-restaurante', texto: 'Sistema próprio para restaurante, bar e lanchonete: caixa, salão, garçom no celular, tablet de mesa, cozinha, estoque e NFC-e.', para: 'Restaurantes com salão e cozinha' },
+  { n: '02', nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery', texto: 'Cardápio online com endereço próprio da loja, pedido direto no caixa e integração com o 99Food. Sem comissão por pedido.', para: 'Quem entrega ou faz retirada' },
+  { n: '03', nome: 'Smart TEF', href: '/smart-tef', texto: 'Pagamento na maquininha smart integrado ao caixa, com as principais adquirentes do mercado.', para: 'Caixa com fila' },
+  { n: '04', nome: 'PDV+', href: empresa.pdvPlus, texto: 'PDV em planos mensais que roda no celular, no tablet e no PC, com NFC-e. Sem fidelidade.', para: 'MEI e comércio de balcão' },
+];
+
+const etapas = [
+  { t: 'Diagnóstico', d: 'Visita ou chamada para entender salão, cozinha, delivery, caixas e situação fiscal.' },
+  { t: 'Cadastro', d: 'Cardápio com fotos, grupos, complementos e tributação de cada produto, certificado digital e CSC da NFC-e.' },
+  { t: 'Instalação', d: 'Caixa, servidor da loja, impressoras da cozinha e do bar, tablets de mesa e celulares dos garçons.' },
+  { t: 'Treinamento', d: 'Caixa, garçons e cozinha, no horário de menor movimento, com a operação real.' },
+  { t: 'Suporte', d: 'WhatsApp e acesso remoto direto com quem fez a implantação. Visita quando o problema pede.' },
+];
+
+
+const perguntas = [
+  { p: 'Quanto custa?', r: 'O valor depende do número de caixas, dos dispositivos e dos módulos (delivery próprio, Smart TEF, 99Food). O orçamento sai na primeira conversa, já com a configuração indicada para a operação.' },
+  { p: 'Preciso trocar computador e impressoras?', r: 'Na maioria dos casos, não. O caixa roda em computador com Windows, os tablets de mesa são Android e as impressoras térmicas em rede ou USB são aproveitadas. A avaliação dos equipamentos faz parte do diagnóstico.' },
+  { p: 'O sistema para quando a internet cai?', r: 'Não. Caixa, tablets e celulares dos garçons conversam pela rede da própria loja. As vendas continuam e as notas emitidas em contingência são transmitidas quando a conexão volta.' },
+  { p: 'Funciona com a minha maquininha?', r: 'Pelo Smart TEF, o Set funciona com as maquininhas smart de Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, SafraPay, Vero, Sipag, Sicredi, Caixa, BIN, PicPay e outras. A lista de modelos está na página do Smart TEF.' },
+  { p: 'Recebe pedidos do 99Food?', r: 'Sim. Os pedidos do 99Food entram no quadro de delivery do caixa junto com os do cardápio online, com aceite, preparo e entrega acompanhados no sistema.' },
+  { p: 'Emite nota fiscal?', r: 'Sim. A NFC-e é emitida no fechamento da venda, com a configuração fiscal feita na implantação. Os relatórios mostram notas autorizadas, canceladas e pendentes, e o XML sai pronto para o contador.' },
+  { p: 'Atendem fora do Rio Grande do Sul?', r: 'Sim. A Set atende todo o Rio Grande do Sul. Fora do estado, a implantação e o treinamento são feitos a distância, com o mesmo suporte por WhatsApp e acesso remoto.' },
+];
+
+const faqDados = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo="Sistema para restaurante no Rio Grande do Sul | Set Tecnologia"
+  descricao="Sistema para restaurante intuitivo e prático: caixa, garçom no celular, delivery sem comissão, Smart TEF e NFC-e. Implantação e suporte em todo o RS."
+  dados={[faqDados]}
+>
+  <!-- Topo -->
+  <TopoProduto
+    rotulo="Sistema para restaurante · Todo o Rio Grande do Sul"
+    titulo="Sistema para restaurante completo, <em>do salão ao delivery.</em>"
+    texto="Intuitivo e prático: caixa, garçom no celular, tablet de mesa, cozinha, delivery, 99Food, Smart TEF e NFC-e no mesmo sistema. Desenvolvido, implantado e mantido pela Set Tecnologia."
+    selos={[
+      { icone: 'garcom', t: 'Garçom no celular' },
+      { icone: 'dinheiro', t: 'Delivery sem comissão' },
+      { icone: 'tef', t: 'Smart TEF na maquininha' },
+      { icone: 'rede', t: 'Funciona sem internet' },
+    ]}
+  >
+    <div class="vitrine-topo"><Composicao vitrine prioridade principal={balcao} altPrincipal="Tela Balcão do Set Tecnologia com grade de produtos e venda em andamento" tablet={tabletProduto} altTablet="Tablet de mesa com o Filé à parmegiana e as etapas Retirar, Ponto da carne e Observação" celular={cardapioPoster} altCelular="Cardápio online do delivery no celular do cliente" garcom={gMesas} altGarcom="App do garçom no celular com as mesas do salão" /></div>
+  </TopoProduto>
+
+  <Clientes />
+
+  <Vantagens
+    titulo="Intuitivo e prático, <em>do primeiro dia.</em>"
+    texto="Feito para a correria do restaurante: quem está no caixa, no salão ou na cozinha entende a tela sem manual."
+    itens={[
+      { icone: 'check', t: 'Intuitivo', d: 'Produtos com foto, botões grandes e textos claros. O garçom aprende no treinamento da implantação.' },
+      { icone: 'raio', t: 'Prático', d: 'Poucos toques do pedido ao fechamento: lança, imprime na cozinha, divide a conta e cobra.' },
+      { icone: 'caixa', t: 'Tudo num lugar', d: 'Caixa, salão, delivery, 99Food, maquininha e nota fiscal no mesmo sistema, sem trocar de tela.' },
+    ]}
+  />
+
+  <!-- O sistema por dentro -->
+  <section class="sistema" id="sistema" aria-labelledby="sistema-titulo">
+    <div class="envelope">
+      <div class="cabeca centro" data-revelar>
+        <p class="rotulo">O sistema por dentro</p>
+        <h2 id="sistema-titulo" class="titulo-secao">Telas reais, do caixa ao relatório.</h2>
+      </div>
+      <div class="modulos" data-modulos data-revelar>
+        <div class="trilha-abas" role="tablist" aria-label="Módulos do sistema">
+          {modulos.map((m, i) => (
+            <button type="button" role="tab" data-luz id={`mod-${m.id}`} aria-controls={`painel-mod-${m.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+              <span class="aba-ico"><IconeModulo nome={m.icone} /></span>
+              <span>{m.nome}</span>
+              <span class="progresso" aria-hidden="true"></span>
+            </button>
+          ))}
+        </div>
+        <div class="palco">
+          <div class="aura" aria-hidden="true"></div>
+          {modulos.map((m, i) => (
+            <div class="painel" role="tabpanel" id={`painel-mod-${m.id}`} aria-labelledby={`mod-${m.id}`} hidden={i !== 0}>
+              <div class="painel-texto"><h3>{m.titulo}</h3><p>{m.texto}</p></div>
+              {'celulares' in m ? (
+                <div class="painel-tela"><TelasCelular telas={telasDoGarcom} /></div>
+              ) : (
+                <div class:list={['painel-tela', { estreita: 'tipo' in m }]}>
+                  <Tela src={m.img} alt={m.alt} tipo={'tipo' in m ? m.tipo : 'janela'} rolar prioridade={i === 0} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formas de fechar a conta -->
+  <section class="conta envelope" aria-labelledby="conta-titulo">
+    <div class="cabeca centro" data-revelar>
+      <p class="rotulo">Fechamento da mesa</p>
+      <h2 id="conta-titulo" class="titulo-secao">Fechar a conta do jeito que a mesa quer.</h2>
+      <p class="lead">Quatro formas no mesmo caixa, que podem ser misturadas na mesma conta.</p>
+    </div>
+    <div class="conta-grade" data-abas data-revelar>
+      <div class="abas" role="tablist" aria-label="Formas de fechar a conta">
+        {formasDeConta.map((f, i) => (
+          <button type="button" role="tab" data-luz id={`aba-${f.id}`} aria-controls={`painel-${f.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            <span class="aba-nome">{f.nome}</span>
+            <span class="aba-texto">{f.texto}</span>
+          </button>
+        ))}
+      </div>
+      <div class="paineis">
+        {formasDeConta.map((f, i) => (
+          <div role="tabpanel" id={`painel-${f.id}`} aria-labelledby={`aba-${f.id}`} hidden={i !== 0}>
+            <Tela src={f.img} alt={f.alt} rolar larguras={[960, 1440]} sizes="(max-width: 1000px) 100vw, 800px" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="impressos-secao envelope" aria-labelledby="impressos-titulo-inicio">
+    <div class="cab-impressos" data-revelar>
+      <p class="rotulo">Impressos</p>
+      <h2 id="impressos-titulo-inicio" class="titulo-secao">Cada papel <em>no lugar certo.</em></h2>
+      <p class="lead">Pedido na cozinha, chamado da mesa, conta, fechamento de caixa, acerto do motoboy e nota fiscal: tudo sai impresso pelo próprio Set, legível e sem redigitar.</p>
+    </div>
+    <Impressos />
+  </section>
+
+  <!-- Cardápio online -->
+  <section class="cardapio" aria-labelledby="cardapio-titulo">
+    <div class="envelope cardapio-grade">
+      <div data-revelar>
+        <p class="rotulo">Cardápio online</p>
+        <h2 id="cardapio-titulo" class="titulo-secao">O delivery da loja, <span class="gradiente">sem comissão.</span></h2>
+        <p class="lead">Um cardápio que funciona como o feed do Instagram: fotos grandes, categorias em bolinhas como os stories e destaques deslizando. O pedido entra direto no caixa e sai impresso na cozinha. Role o cardápio ao lado: é o sistema funcionando.</p>
+        <ul class="selos-cardapio">
+          <li>0% de comissão</li><li>Pedido direto no caixa</li><li>99Food no mesmo quadro</li><li>Sem aplicativo para baixar</li>
+        </ul>
+        <div class="acoes">
+          <a class="botao botao-principal" href="#contato">Falar com especialista <Icone nome="seta" /></a>
+          <a class="botao botao-linha" href="/cardapio-digital-e-delivery">Ver como funciona</a>
+        </div>
+      </div>
+      <div class="cardapio-palco" data-revelar style="--atraso:.1s">
+        <div class="aura" aria-hidden="true"></div>
+        <CardapioAoVivo poster={cardapioPoster} alt="Cardápio online do Reis Restaurante no celular, com destaque e grupos do cardápio" />
+        <div class="flutua f1" aria-hidden="true"><span class="f-ico"><IconeModulo nome="caixa" /></span><span><b>Pedido #128</b>entrou no caixa</span></div>
+        <div class="flutua f2" aria-hidden="true"><span class="f-ico"><IconeModulo nome="impressora" /></span><span><b>Cozinha</b>pedido impresso</span></div>
+        <div class="flutua f3" aria-hidden="true"><span class="f-ico"><IconeModulo nome="motoboy" /></span><span><b>Saiu para entrega</b>com o motoboy</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recursos -->
+  <section class="recursos envelope" aria-labelledby="recursos-titulo">
+    <div class="cabeca centro" data-revelar>
+      <p class="rotulo">Recursos</p>
+      <h2 id="recursos-titulo" class="titulo-secao">Tudo o que a operação precisa, num lugar só.</h2>
+    </div>
+    <ul class="grade-recursos">
+      {recursos.map((r, i) => (
+        <li class="recurso" data-luz data-revelar style={`--atraso:${(i % 4) * 0.06}s`}>
+          <span class="r-ico"><IconeModulo nome={r.icone} /></span>
+          <h3>{r.t}</h3>
+          <p>{r.d}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Integrações -->
+  <section class="integracoes envelope" aria-labelledby="integ-titulo">
+    <div class="cabeca centro" data-revelar>
+      <p class="rotulo">Integrações</p>
+      <h2 id="integ-titulo" class="titulo-secao">Conectado ao que a loja já usa.</h2>
+      <p class="lead">Aplicativo de entrega, maquininha, SEFAZ e impressoras ligados ao mesmo caixa.</p>
+    </div>
+    <ul class="grade-integ">
+      {integracoes.map((g, i) => (
+        <li class="integ" data-luz data-revelar style={`--atraso:${(i % 3) * 0.06}s`}>
+          <span class="sigla" style={`background:${g.cor};color:${g.tinta}`}>{g.sigla}</span>
+          <div><h3>{g.nome}</h3><p>{g.d}</p></div>
+        </li>
+      ))}
+    </ul>
+    <div class="faixa-adq" data-revelar aria-label="Adquirentes compatíveis pelo Smart TEF">
+      <ul class="adq-trilha">
+        {[0, 1, 2, 3].map((v) => adquirentes.map((a) => <li aria-hidden={v > 0 ? 'true' : undefined}>{a}</li>))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Antes e depois -->
+  <section class="comparar envelope" aria-labelledby="comparar-titulo">
+    <div class="cabeca centro" data-revelar>
+      <p class="rotulo">A transformação</p>
+      <h2 id="comparar-titulo" class="titulo-secao">Arraste e veja a diferença.</h2>
+    </div>
+    <div class="regua" data-comparar data-luz data-revelar style="--pos: 50%">
+      <div class="lado depois">
+        <p class="selo-lado">Com o Set</p>
+        <ul>{depois.map((t) => <li><span class="ok" aria-hidden="true">✓</span>{t}</li>)}</ul>
+      </div>
+      <div class="lado antes" aria-hidden="false">
+        <p class="selo-lado">Sem sistema</p>
+        <ul>{antes.map((t) => <li><span class="x" aria-hidden="true">×</span>{t}</li>)}</ul>
+      </div>
+      <div class="puxador" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6-6 6 6 6M15 6l6 6-6 6"/></svg></span></div>
+      <input type="range" min="0" max="100" value="50" aria-label="Comparar sem sistema e com o Set" />
+    </div>
+  </section>
+
+  <!-- Produtos -->
+  <section class="produtos envelope" aria-labelledby="produtos-titulo">
+    <div class="cabeca centro" data-revelar>
+      <p class="rotulo">Soluções</p>
+      <h2 id="produtos-titulo" class="titulo-secao">Quatro formas de trabalhar com a Set.</h2>
+    </div>
+    <ul class="cartoes">
+      {produtos.map((p, i) => (
+        <li data-revelar style={`--atraso:${i * 0.07}s`}>
+          <a class="cartao" data-luz href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>
+            <span class="num">{p.n}</span>
+            <h3>{p.nome}</h3>
+            <p>{p.texto}</p>
+            <span class="para">{p.para}</span>
+            <span class="ir"><Icone nome={p.href.startsWith('http') ? 'seta-fora' : 'seta'} /></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Implantação -->
+  <section class="implantacao envelope" aria-labelledby="impl-titulo">
+    <div class="impl-grade">
+      <div data-revelar>
+        <p class="rotulo">Implantação</p>
+        <h2 id="impl-titulo" class="titulo-secao">Sistema mal implantado vira problema no primeiro sábado cheio.</h2>
+        <p class="lead">A implantação não é terceirizada: quem configura o cardápio, as impressoras e a nota fiscal é a mesma equipe que desenvolve o sistema e atende o suporte.</p>
+      </div>
+      <ol class="etapas">
+        {etapas.map((e, i) => (
+          <li data-luz data-revelar style={`--atraso:${i * 0.08}s`}><span class="n">{i + 1}</span><div><h3>{e.t}</h3><p>{e.d}</p></div></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Vídeo -->
+  <section class="envelope video-secao" aria-labelledby="video-titulo">
+    <div data-revelar>
+      <p class="rotulo">Quem somos</p>
+      <h2 id="video-titulo" class="titulo-secao">Conheça a Set Tecnologia.</h2>
+      <p class="lead">A empresa e a equipe que cuidam da implantação e do suporte de cada cliente, todos os dias.</p>
+      <div class="local-lista">
+        <div><p class="t">Rede da loja</p><p>Caixa, tablets e celulares conversam pelo servidor da própria loja.</p></div>
+        <div><p class="t">Sem internet</p><p>As vendas continuam e a NFC-e sai em contingência.</p></div>
+        <div><p class="t">Backup</p><p>Cópia do banco feita pelo servidor da loja.</p></div>
+      </div>
+    </div>
+    <div data-revelar style="--atraso:.1s"><Video id="qPC9m45iPx0" titulo="Conheça a Set Tecnologia" vertical /></div>
+  </section>
+
+  <Perguntas itens={perguntas} />
+
+  <!-- Chamada final -->
+  <section class="chamada envelope" data-revelar>
+    <div class="chamada-caixa">
+      <Estrelas />
+      <h2>Pronto para organizar o salão, a cozinha e o delivery?</h2>
+      <p>Uma conversa de 15 minutos e a configuração indicada para a sua operação, sem compromisso.</p>
+      <div class="acoes centro">
+        <a class="botao botao-principal" href="#contato">Falar com especialista <Icone nome="seta" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Abas com teclado (setas) e clique. As do sistema trocam sozinhas enquanto estão na tela.
+  const montarAbas = (g: HTMLElement, sozinho: boolean) => {
+    const abas = [...g.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    let atual = 0, timer = 0;
+    const DURACAO = 6000;
+    const reiniciar = () => {
+      clearTimeout(timer);
+      g.classList.remove('correndo'); void g.offsetWidth;
+      if (!g.dataset.parado && g.dataset.visivel) { g.classList.add('correndo'); timer = window.setTimeout(() => ativar((atual + 1) % abas.length), DURACAO); }
+    };
+    const ativar = (i: number, foco = false) => {
+      atual = i;
+      abas.forEach((x, k) => {
+        const sim = k === i;
+        x.setAttribute('aria-selected', String(sim)); x.tabIndex = sim ? 0 : -1;
+        const painel = g.querySelector<HTMLElement>('#' + x.getAttribute('aria-controls'))!;
+        painel.hidden = !sim;
+        if (sim) { painel.classList.remove('troca'); void painel.offsetWidth; painel.classList.add('troca'); }
+      });
+      if (foco) abas[i].focus();
+      if (sozinho) reiniciar();
+    };
+    abas.forEach((a, i) => {
+      a.addEventListener('click', () => { g.dataset.parado = '1'; ativar(i); });
+      a.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return; e.preventDefault(); g.dataset.parado = '1';
+        ativar((i + d + abas.length) % abas.length, true);
+      });
+    });
+    if (sozinho && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      g.style.setProperty('--duracao', `${DURACAO}ms`);
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) g.dataset.visivel = '1'; else delete g.dataset.visivel;
+        reiniciar();
+      }, { threshold: .35 }).observe(g);
+    }
+  };
+  document.querySelectorAll<HTMLElement>('[data-modulos]').forEach((g) => montarAbas(g, true));
+  document.querySelectorAll<HTMLElement>('[data-abas]').forEach((g) => montarAbas(g, false));
+
+  // Antes e depois: o controle deslizante move a divisória.
+  document.querySelectorAll<HTMLElement>('[data-comparar]').forEach((caixa) => {
+    const r = caixa.querySelector('input')!;
+    const mover = () => caixa.style.setProperty('--pos', `${r.value}%`);
+    r.addEventListener('input', mover);
+    // Um aceno quando entra na tela, para mostrar que dá para arrastar.
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      io.disconnect();
+      const t0 = performance.now();
+      const f = (t: number) => {
+        const k = Math.min(1, (t - t0) / 1600);
+        r.value = String(50 + Math.sin(k * Math.PI * 2) * 18 * (1 - k)); mover();
+        if (k < 1) requestAnimationFrame(f);
+      };
+      requestAnimationFrame(f);
+    }, { threshold: .6 });
+    io.observe(caixa);
+  });
+</script>
+
+<style>
+  .cabeca .titulo-secao { margin-top: 16px; }
+  .cabeca .lead { margin-top: 18px; }
+  .cabeca.centro { text-align: center; }
+  .cabeca.centro .titulo-secao, .cabeca.centro .lead { margin-inline: auto; }
+  .acoes { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .acoes.centro { justify-content: center; }
+  .gradiente {
+    background: linear-gradient(90deg, #ff8a3d, #f36812, #ffb547, #ff5a2b, #ff8a3d); background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: correr-cor 8s linear infinite;
+  }
+  @keyframes correr-cor { to { background-position: 300% 0; } }
+  .aura { position: absolute; z-index: -1; inset: 10% 8%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .32), transparent); filter: blur(40px); pointer-events: none; }
+
+  /* Topo */
+  .vitrine-topo { max-width: 1060px; margin-inline: auto; }
+
+  /* Sistema */
+  .sistema { padding-block: clamp(80px, 11vw, 140px) clamp(40px, 6vw, 80px); }
+  .modulos { margin-top: 40px; }
+  .trilha-abas { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .trilha-abas button {
+    all: unset; cursor: pointer; position: relative; overflow: hidden;
+    display: grid; justify-items: center; gap: 8px; min-width: 104px; padding: 14px 12px 16px; border-radius: 12px;
+    font-size: 14px; font-weight: 500; color: var(--tinta-3); border: 1px solid transparent; transition: color .2s, background-color .2s, border-color .2s;
+  }
+  .aba-ico { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; border: 1px solid var(--linha-forte); background: #191816; transition: all .25s; }
+  .aba-ico :global(.ico) { width: 22px; height: 22px; }
+  .trilha-abas button:hover { color: var(--tinta); }
+  .trilha-abas button[aria-selected='true'] { color: var(--tinta); background: rgb(255 255 255 / .03); border-color: var(--linha); }
+  .trilha-abas button[aria-selected='true'] .aba-ico { background: var(--laranja); border-color: var(--laranja); color: #fff; box-shadow: 0 8px 26px -6px rgb(243 104 18 / .8); }
+  .trilha-abas button:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .progresso { position: absolute; left: 12px; right: 12px; bottom: 6px; height: 2px; border-radius: 2px; background: var(--laranja); transform: scaleX(0); transform-origin: left; opacity: 0; }
+  .correndo [aria-selected='true'] .progresso { opacity: 1; animation: encher var(--duracao, 6s) linear forwards; }
+  @keyframes encher { to { transform: scaleX(1); } }
+  .palco { position: relative; isolation: isolate; margin-top: 28px; }
+  .painel-texto { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px 32px; align-items: baseline; margin-bottom: 22px; }
+  .painel-texto h3 { font-size: clamp(22px, 2.4vw, 30px); }
+  .painel-texto p { color: var(--tinta-2); }
+  .painel-tela.estreita { max-width: 980px; margin-inline: auto; }
+  .painel.troca .painel-texto, .painel.troca .painel-tela { animation: trocar .6s cubic-bezier(.2,.7,.2,1) both; }
+  .painel.troca .painel-tela { animation-delay: .06s; }
+  @keyframes trocar { from { opacity: 0; transform: translateY(16px) scale(.99); } }
+
+  /* Fechar a conta */
+  .conta { padding-block: clamp(72px, 10vw, 120px) clamp(24px, 4vw, 48px); }
+  .conta-grade { margin-top: 44px; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 32px; align-items: start; }
+  .paineis { min-width: 0; }
+  .paineis > .troca { animation: trocar .5s cubic-bezier(.2,.7,.2,1) both; }
+  .abas { display: grid; gap: 8px; }
+  .abas button { all: unset; cursor: pointer; display: grid; gap: 6px; padding: 18px 20px; border-radius: 12px; border: 1px solid var(--linha); background: #161514; transition: border-color .2s, background-color .2s; }
+  .abas button:hover { border-color: var(--linha-forte); }
+  .abas button[aria-selected='true'] { border-color: rgb(243 104 18 / .7); background: linear-gradient(120deg, rgb(243 104 18 / .14), rgb(243 104 18 / .03)); }
+  .abas button:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .aba-nome { font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+  .aba-texto { font-size: 15px; color: var(--tinta-2); }
+  .abas button:not([aria-selected='true']) .aba-texto { display: none; }
+
+  .impressos-secao { padding-block: clamp(72px, 10vw, 128px) clamp(40px, 6vw, 72px); }
+  .cab-impressos { text-align: center; margin-bottom: clamp(36px, 5vw, 56px); }
+  .cab-impressos .titulo-secao { margin: 14px auto 0; max-width: 22ch; }
+  .cab-impressos .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab-impressos .lead { margin: 16px auto 0; }
+
+  /* Cardápio */
+  .cardapio { position: relative; padding-block: clamp(80px, 11vw, 140px); }
+  .cardapio-grade { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .cardapio .titulo-secao { margin-top: 16px; }
+  .cardapio .lead { margin-top: 18px; }
+  .selos-cardapio { list-style: none; margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .selos-cardapio li { padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 500; background: rgb(243 104 18 / .12); border: 1px solid rgb(243 104 18 / .35); color: #ffc39a; }
+  .cardapio-palco { position: relative; isolation: isolate; }
+  .cardapio-palco .aura { inset: 5% 0; }
+  .flutua {
+    position: absolute; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; border-radius: 12px;
+    background: rgb(28 27 24 / .92); border: 1px solid rgb(255 255 255 / .12); backdrop-filter: blur(10px);
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / .9); font-size: 13px; color: var(--tinta-2); line-height: 1.25;
+    animation: boiar-cartao 6s ease-in-out infinite; pointer-events: none;
+  }
+  .flutua b { display: block; color: var(--tinta); font-weight: 600; font-size: 14px; }
+  .f-ico { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: rgb(243 104 18 / .16); color: var(--laranja-claro); flex: none; }
+  .f-ico :global(.ico) { width: 18px; height: 18px; }
+  .f1 { top: 14%; left: -12%; }
+  .f2 { top: 46%; right: -14%; animation-delay: -2s; }
+  .f3 { bottom: 14%; left: -8%; animation-delay: -4s; }
+  @keyframes boiar-cartao { 50% { transform: translateY(-12px); } }
+
+  /* Recursos */
+  .recursos { padding-block: clamp(72px, 10vw, 120px); }
+  .grade-recursos { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .recurso { padding: 24px; border-radius: 14px; border: 1px solid var(--linha); background: #151413; }
+  .r-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: var(--laranja-claro); background: linear-gradient(145deg, rgb(243 104 18 / .22), rgb(243 104 18 / .05)); border: 1px solid rgb(243 104 18 / .3); }
+  .r-ico :global(.ico) { width: 22px; height: 22px; }
+  .recurso h3 { margin-top: 18px; font-size: 19px; }
+  .recurso p { margin-top: 8px; color: var(--tinta-2); font-size: 15px; }
+
+  /* Integrações */
+  .integracoes { padding-block: clamp(48px, 7vw, 96px); }
+  .grade-integ { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .integ { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; padding: 22px; border-radius: 14px; border: 1px solid var(--linha); background: #151413; }
+  .sigla { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font: 700 15px/1 var(--fonte); letter-spacing: -0.02em; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .8); }
+  .integ h3 { font-size: 18px; }
+  .integ p { margin-top: 6px; color: var(--tinta-2); font-size: 14.5px; }
+  .faixa-adq { margin-top: 28px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); }
+  .adq-trilha { list-style: none; display: flex; gap: 10px; width: max-content; animation: deslizar 64s linear infinite; }
+  .adq-trilha li { padding: 9px 18px; border-radius: 999px; border: 1px solid var(--linha-forte); color: var(--tinta-2); font-size: 14.5px; font-weight: 500; background: rgb(255 255 255 / .03); }
+  @keyframes deslizar { to { transform: translateX(calc(-50% - 5px)); } }
+
+  /* Antes e depois */
+  .comparar { padding-block: clamp(72px, 10vw, 120px); }
+  .regua { position: relative; margin-top: 48px; overflow: hidden; min-height: 520px; user-select: none; border-radius: 16px; border: 1px solid var(--linha); }
+  .lado { position: absolute; inset: 0; padding: clamp(28px, 4vw, 52px); display: flex; flex-direction: column; }
+  .depois { background: radial-gradient(70% 90% at 100% 0%, rgb(243 104 18 / .18), transparent 70%), #17130f; align-items: flex-end; text-align: right; }
+  .antes { background: #121212; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+  .selo-lado { font-family: var(--mono); font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); }
+  .depois .selo-lado { color: var(--laranja-claro); }
+  .lado ul { list-style: none; margin-top: 26px; display: grid; gap: 16px; max-width: 420px; }
+  .lado li { font-size: clamp(16px, 1.6vw, 19px); display: flex; gap: 12px; align-items: baseline; }
+  .depois li { flex-direction: row-reverse; }
+  .antes li { color: var(--tinta-3); }
+  .ok, .x { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; }
+  .ok { background: rgb(243 104 18 / .18); color: var(--laranja-claro); }
+  .x { background: rgb(255 255 255 / .06); color: #8a857c; }
+  .puxador { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; background: var(--laranja); transform: translateX(-1px); pointer-events: none; box-shadow: 0 0 16px var(--laranja); }
+  .puxador span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; border-radius: 50%; background: var(--laranja); display: grid; place-items: center; color: #fff; box-shadow: 0 8px 24px rgb(0 0 0 / .5); }
+  .puxador svg { width: 22px; height: 22px; }
+  .regua input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+
+  /* Produtos */
+  .produtos { padding-block: clamp(72px, 10vw, 120px); }
+  .cartoes { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .cartao { display: flex; flex-direction: column; gap: 12px; height: 100%; padding: 26px 24px; text-decoration: none; border-radius: 14px; border: 1px solid var(--linha); background: #151413; }
+  .cartao:hover { transform: translateY(-4px); }
+  .num { font-family: var(--mono); font-size: 13px; color: var(--laranja-claro); }
+  .cartao h3 { font-size: 23px; }
+  .cartao p { color: var(--tinta-2); font-size: 15.5px; }
+  .para { margin-top: auto; padding-top: 10px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--tinta-3); }
+  .ir { position: absolute; top: 22px; right: 22px; color: var(--tinta-3); transition: color .2s, transform .2s; }
+  .ir :global(svg) { width: 20px; height: 20px; }
+  .cartao:hover .ir { color: var(--laranja-claro); transform: translateX(3px); }
+
+  /* Implantação */
+  .implantacao { padding-block: clamp(72px, 10vw, 120px); }
+  .impl-grade { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(40px, 6vw, 88px); align-items: start; }
+  .implantacao .titulo-secao { margin-top: 14px; }
+  .implantacao .lead { margin-top: 18px; }
+  .impl-foto { margin: 32px 0 0; border-radius: 14px; overflow: hidden; max-width: 420px; aspect-ratio: 4 / 5; border: 1px solid var(--linha); }
+  .impl-foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .etapas { list-style: none; position: relative; display: grid; gap: 14px; }
+  .etapas::before { content: ''; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; background: linear-gradient(var(--laranja), rgb(243 104 18 / .1)); }
+  .etapas li { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; padding: 16px 20px 16px 0; border: 1px solid transparent; border-radius: 14px; overflow: visible !important; }
+  .etapas .n { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; color: #fff; background: #1d1a17; border: 2px solid var(--laranja); box-shadow: 0 0 0 6px var(--papel), 0 0 22px rgb(243 104 18 / .5); }
+  .etapas h3 { font-size: 21px; padding-top: 9px; }
+  .etapas p { margin-top: 6px; color: var(--tinta-2); }
+
+  /* Vídeo */
+  .video-secao { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 4fr); gap: clamp(32px, 6vw, 88px); align-items: center; padding-block: clamp(72px, 10vw, 120px); }
+  .video-secao .titulo-secao { margin-top: 16px; }
+  .video-secao .lead { margin-top: 18px; }
+  .local-lista { margin-top: 36px; display: grid; border-top: 1px solid var(--linha); }
+  .local-lista div { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--linha); }
+  .local-lista .t { font-weight: 500; }
+  .local-lista p:not(.t) { color: var(--tinta-2); }
+
+  /* Chamada final */
+  .chamada { padding-block: clamp(40px, 6vw, 80px) clamp(72px, 9vw, 110px); }
+  .chamada-caixa { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: clamp(44px, 7vw, 88px) clamp(20px, 5vw, 64px); border-radius: 24px; border: 1px solid rgb(243 104 18 / .35);
+    background: radial-gradient(80% 120% at 50% 0%, rgb(243 104 18 / .30), transparent 60%), #15110d; }
+  .chamada-caixa > :not(canvas) { position: relative; z-index: 1; }
+  .chamada h2 { font-size: clamp(30px, 4vw, 50px); max-width: 22ch; margin-inline: auto; }
+  .chamada p { margin: 16px auto 0; color: var(--tinta-2); max-width: 52ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gradiente, .flutua, .adq-trilha, .pulso { animation: none; }
+  }
+  @media (max-width: 1000px) {
+    .cardapio-grade, .impl-grade, .conta-grade, .video-secao { grid-template-columns: 1fr; }
+    .grade-recursos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grade-integ { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cartoes { grid-template-columns: repeat(2, 1fr); }
+    .abas { grid-template-columns: repeat(2, 1fr); }
+    .abas button:not([aria-selected='true']) .aba-texto { display: block; }
+    .painel-texto { grid-template-columns: 1fr; }
+    .f1 { left: 0; } .f2 { right: 0; } .f3 { left: 2%; }
+  }
+  @media (max-width: 900px) {
+  }
+  @media (max-width: 700px) {
+    .trilha-abas { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scrollbar-width: none; }
+    .trilha-abas::-webkit-scrollbar { display: none; }
+    .trilha-abas button { min-width: 88px; flex: none; }
+    .regua { min-height: 0; display: grid; }
+    .lado { position: static; clip-path: none !important; align-items: flex-start; text-align: left; }
+    .depois li { flex-direction: row; }
+    .lado ul { max-width: none; }
+    .antes { order: -1; }
+    .puxador, .regua input { display: none; }
+    .flutua { display: none; }
+  }
+  @media (max-width: 600px) {
+    .grade-integ, .cartoes { grid-template-columns: 1fr; }
+    .grade-recursos { gap: 10px; }
+    .recurso { padding: 16px; }
+    .recurso h3 { margin-top: 12px; font-size: 16px; }
+    .recurso p { font-size: 13.5px; }
+    .local-lista div { grid-template-columns: 1fr; gap: 4px; }
+    .lado li { font-size: 15px; }
+  }
+</style>

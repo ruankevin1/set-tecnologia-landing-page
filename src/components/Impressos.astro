@@ -1,0 +1,87 @@
+---
+// Os papéis que o Set imprime, gerados pelos templates reais do sistema com dados de demonstração
+// (src/data/impressos.json). Abas à esquerda; à direita o papel sai da impressora a cada troca.
+import Papel, { type Impresso } from './Papel.astro';
+import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
+import dados from '../data/impressos.json';
+
+const sobre: Record<string, { nome: string; icone: NomeModulo; texto: string }> = {
+  cozinha: { nome: 'Pedido na cozinha', icone: 'cozinha', texto: 'Mesa, comanda, o que retirar e a observação, em letra grande, no setor certo.' },
+  chamado: { nome: 'Chamado do tablet', icone: 'tablet', texto: 'O cliente chamou o garçom pela mesa e o aviso sai impresso, além de aparecer no celular dele.' },
+  conferencia: { nome: 'Conta da mesa', icone: 'comanda', texto: 'A conferência para o cliente ver antes de pagar, com a taxa de serviço calculada.' },
+  'fechamento-caixa': { nome: 'Fechamento às cegas', icone: 'caixa', texto: 'O operador informa o que contou sem ver o esperado. O papel mostra a diferença de cada forma de pagamento.' },
+  motoboy: { nome: 'Acerto do motoboy', icone: 'motoboy', texto: 'As entregas do turno, a taxa de cada uma e o que o motoboy tem a receber.' },
+  entregador: { nome: 'Via do entregador', icone: 'delivery', texto: 'Endereço, itens, forma de pagamento e o troco que o motoboy precisa levar.' },
+  pagamento: { nome: 'Comprovante de pagamento', icone: 'dinheiro', texto: 'Pagamento misto na mesma conta, com o troco e o saldo quitado.' },
+  cancelamento: { nome: 'Cancelamento', icone: 'escudo', texto: 'Quem cancelou, quando e o motivo, para a conferência do fim do dia.' },
+  danfe: { nome: 'NFC-e', icone: 'nfce', texto: 'O DANFE da NFC-e desenhado pelo próprio Set, com o QR Code da consulta.' },
+};
+const impressos = (dados as Impresso[]).filter((i) => sobre[i.id]);
+---
+<div class="impressos" data-impressos>
+  <div class="lista" role="tablist" aria-label="Impressos do sistema">
+    {impressos.map((p, i) => (
+      <button type="button" role="tab" data-luz id={`imp-${p.id}`} aria-controls={`painel-imp-${p.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+        <span class="i-ico"><IconeModulo nome={sobre[p.id].icone} /></span>
+        <span class="i-txt"><b>{sobre[p.id].nome}</b><small>{sobre[p.id].texto}</small></span>
+      </button>
+    ))}
+  </div>
+  <div class="mesa">
+    {impressos.map((p, i) => (
+      <div role="tabpanel" id={`painel-imp-${p.id}`} aria-labelledby={`imp-${p.id}`} hidden={i !== 0}>
+        <Papel impresso={p} descricao={`Papel impresso pelo Set: ${sobre[p.id].nome}`} />
+      </div>
+    ))}
+    <p class="nota">Papéis gerados pelo próprio sistema, com dados de demonstração.</p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-impressos]').forEach((g) => {
+    const abas = [...g.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const ativar = (i: number, foco = false) => {
+      abas.forEach((a, k) => {
+        const sim = k === i;
+        a.setAttribute('aria-selected', String(sim)); a.tabIndex = sim ? 0 : -1;
+        const painel = g.querySelector<HTMLElement>('#' + a.getAttribute('aria-controls'))!;
+        painel.hidden = !sim;
+        if (sim) {
+          // Imprime de novo a cada troca.
+          const papel = painel.querySelector('[data-papel]')!;
+          papel.classList.remove('saindo'); void (papel as HTMLElement).offsetWidth; papel.classList.add('saindo');
+        }
+      });
+      if (foco) abas[i].focus();
+    };
+    abas.forEach((a, i) => {
+      a.addEventListener('click', () => ativar(i));
+      a.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return; e.preventDefault(); ativar((i + d + abas.length) % abas.length, true);
+      });
+    });
+  });
+</script>
+
+<style>
+  .impressos { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .lista { display: grid; gap: 8px; }
+  .lista button { all: unset; cursor: pointer; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--linha); background: #151413; transition: border-color .2s, background-color .2s; }
+  .lista button[aria-selected='true'] { border-color: rgb(243 104 18 / .7); background: linear-gradient(120deg, rgb(243 104 18 / .14), rgb(243 104 18 / .03)); }
+  .lista button:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .i-ico { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; color: var(--laranja-claro); background: rgb(243 104 18 / .14); border: 1px solid rgb(243 104 18 / .3); }
+  .i-ico :global(.ico) { width: 20px; height: 20px; }
+  .i-txt b { display: block; font-weight: 600; font-size: 16.5px; padding-top: 2px; }
+  .i-txt small { display: none; margin-top: 4px; font-size: 14px; color: var(--tinta-2); line-height: 1.45; }
+  [aria-selected='true'] .i-txt small { display: block; }
+  .mesa { position: sticky; top: 100px; padding-top: 6px; }
+  .mesa::before { content: ''; position: absolute; z-index: -1; inset: 0 10% 20%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .22), transparent); filter: blur(50px); }
+  .nota { margin-top: 18px; text-align: center; font-size: 13px; color: var(--tinta-3); }
+  @media (max-width: 900px) {
+    .impressos { grid-template-columns: 1fr; }
+    .lista { grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) 6px; scrollbar-width: none; }
+    .lista::-webkit-scrollbar { display: none; }
+    .mesa { position: static; }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+// Várias telas de celular lado a lado, com legenda; sobem uma a uma ao entrar na tela.
+// No celular viram uma faixa que se arrasta para o lado.
+import type { ImageMetadata } from 'astro';
+import Tela from './Tela.astro';
+interface Props { telas: { src: ImageMetadata; alt: string; legenda: string }[] }
+const { telas } = Astro.props;
+---
+<ul class="telas-celular">
+  {telas.map((t, i) => (
+    <li data-revelar style={`--atraso:${i * 0.12}s; --i:${i}`}>
+      <Tela src={t.src} alt={t.alt} tipo="celular" sizes="(max-width: 760px) 72vw, 360px" larguras={[400, 600, 738]} />
+      <p>{t.legenda}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .telas-celular { list-style: none; position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 340px)); justify-content: center; gap: clamp(20px, 4vw, 56px); align-items: start; }
+  .telas-celular::before { content: ''; position: absolute; z-index: -1; inset: 10% 5%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .3), transparent); filter: blur(60px); }
+  /* Os do meio um pouco acima: a fileira fica com cara de vitrine, e não de grade. */
+  li:nth-child(even) { margin-top: 48px; }
+  li :global(.tela) { transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+  li:hover :global(.tela) { transform: translateY(-8px); }
+  p { margin-top: 16px; text-align: center; font-size: 15px; color: var(--tinta-2); }
+  @media (max-width: 760px) {
+    .telas-celular { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--gutter) * -1); padding: 8px var(--gutter) 16px; scrollbar-width: none; }
+    .telas-celular::-webkit-scrollbar { display: none; }
+    li { flex: 0 0 72vw; scroll-snap-align: center; }
+    li:nth-child(even) { margin-top: 0; }
+  }
+</style>

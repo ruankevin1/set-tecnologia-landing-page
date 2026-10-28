@@ -1,0 +1,45 @@
+---
+// Fundo de pontos de luz que piscam e sobem devagar. Fica atrás do conteúdo da seção (position: absolute).
+---
+<canvas class="estrelas" aria-hidden="true" data-estrelas></canvas>
+
+<script>
+  document.querySelectorAll<HTMLCanvasElement>('[data-estrelas]').forEach((tela) => {
+    const ctx = tela.getContext('2d');
+    if (!ctx) return;
+    const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    type P = { x: number; y: number; r: number; v: number; f: number; quente: boolean };
+    let pontos: P[] = [], w = 0, h = 0, rodando = false;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const montar = () => {
+      w = tela.clientWidth; h = tela.clientHeight;
+      tela.width = w * dpr; tela.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round((w * h) / 9000);
+      pontos = Array.from({ length: n }, () => ({
+        x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.2 + .3,
+        v: Math.random() * .12 + .03, f: Math.random() * Math.PI * 2, quente: Math.random() < .25,
+      }));
+    };
+    const desenhar = (t: number) => {
+      ctx.clearRect(0, 0, w, h);
+      for (const p of pontos) {
+        if (!calmo) { p.y -= p.v; if (p.y < -2) { p.y = h + 2; p.x = Math.random() * w; } }
+        const a = .35 + .45 * Math.sin(t / 900 + p.f) ** 2;
+        ctx.fillStyle = p.quente ? `rgba(255,150,80,${a})` : `rgba(255,255,255,${a * .8})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      if (rodando && !calmo) requestAnimationFrame(desenhar);
+    };
+    montar();
+    new ResizeObserver(montar).observe(tela);
+    new IntersectionObserver(([e]) => {
+      const antes = rodando; rodando = e.isIntersecting;
+      if (rodando && !antes) requestAnimationFrame(desenhar);
+    }).observe(tela);
+    desenhar(0);
+  });
+</script>
+
+<style>
+  .estrelas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+</style>

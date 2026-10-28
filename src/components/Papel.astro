@@ -1,0 +1,74 @@
+---
+// Um papel impresso pelo Set, linha a linha como o próprio sistema mede (src/data/impressos.json,
+// gerado pelos templates reais com dados de demonstração). Sai da impressora quando aparece.
+export interface LinhaDoPapel { texto: string; letra?: string; alinhamento?: string; separador?: boolean; especial?: string }
+export interface Impresso { id: string; titulo: string; bobina: number; linhas: LinhaDoPapel[] }
+interface Props { impresso: Impresso; descricao?: string }
+const { impresso, descricao } = Astro.props;
+---
+<figure class="papel-termico" style={`--colunas:${impresso.bobina}`} data-papel aria-label={descricao ?? impresso.titulo}>
+  <div class="boca" aria-hidden="true"></div>
+  <div class="tira">
+    <div class="folha">
+      {impresso.linhas.map((l) =>
+        l.especial === 'qr' ? <div class="qr" aria-hidden="true"></div>
+        : l.especial === 'barras' ? <div class="barras" aria-hidden="true"></div>
+        : <p class:list={['ln', `l-${l.letra ?? 'normal'}`, l.alinhamento ?? 'esquerda', { sep: l.separador }]}><span>{l.texto || ' '}</span></p>
+      )}
+    </div>
+  </div>
+</figure>
+
+<script>
+  // Sai da impressora uma vez, quando o papel entra na tela.
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('saindo');
+    io.unobserve(e.target);
+  }), { threshold: .25 });
+  document.querySelectorAll('[data-papel]').forEach((p) => io.observe(p));
+</script>
+
+<style>
+  .papel-termico { margin: 0; position: relative; width: calc(100% - 24px); max-width: 380px; margin-inline: auto; padding-top: 18px; }
+  /* A boca da impressora: o papel nasce daqui. */
+  .boca { position: absolute; top: 0; left: -6%; right: -6%; height: 26px; z-index: 2; border-radius: 10px;
+    background: linear-gradient(180deg, #34302b, #1c1a17); box-shadow: 0 0 0 1px rgb(255 255 255 / .1), 0 14px 26px -12px rgb(0 0 0 / .9); }
+  .boca::after { content: ''; position: absolute; left: 7%; right: 7%; bottom: 7px; height: 3px; border-radius: 9px; background: #0b0a09; }
+  .tira { position: relative; overflow: hidden; }
+  .folha {
+    container-type: inline-size; position: relative;
+    padding: 22px 14px 26px; color: #23201c; background: #fbfaf6;
+    background-image: linear-gradient(180deg, rgb(0 0 0 / .05), transparent 30px), repeating-linear-gradient(0deg, transparent 0 3px, rgb(0 0 0 / .012) 3px 4px);
+    box-shadow: 0 30px 50px -24px rgb(0 0 0 / .9);
+    /* Borda do corte, serrilhada. */
+    -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 8px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 8px repeat-x;
+    mask: linear-gradient(#000 0 0) top / 100% calc(100% - 8px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 8px repeat-x;
+  }
+  /* Uma coluna da impressora = 1/colunas da largura útil; a fonte mono tem 0,6 em de largura. */
+  .ln { margin: 0; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: calc(100cqw / var(--colunas) / .6); line-height: 1.32; white-space: pre; overflow: hidden; }
+  .centro { text-align: center; }
+  .direita { text-align: right; }
+  .l-forte { font-weight: 600; }
+  /* As letras da térmica (lib/domain/impressao/letra.dart): título = largura e altura dobradas;
+     destaque = só a altura dobrada; forte = negrito; miúda = fonte menor. */
+  .l-titulo { font-weight: 600; font-size: calc(100cqw / var(--colunas) / .6 * 2); line-height: 1.3; }
+  .l-destaque { font-weight: 600; line-height: 2.64; }
+  .l-destaque span { display: inline-block; vertical-align: top; line-height: 1.32; transform: scaleY(2); transform-origin: 0 0; }
+  .l-miuda { font-size: calc(100cqw / var(--colunas) / .6 * .82); color: #5a554d; }
+  .sep { color: #8f897f; }
+  .qr { width: 34%; aspect-ratio: 1; margin: 10px auto; background:
+    conic-gradient(#23201c 25%, transparent 0 50%, #23201c 0 75%, transparent 0) 0 0 / 14.28% 14.28%; border: 6px solid #fbfaf6; outline: 2px solid #23201c; }
+  .ln.l-destaque.centro span, .ln.l-destaque.direita span { transform-origin: 50% 0; }
+  .barras { height: 46px; margin: 10px 6%; background: repeating-linear-gradient(90deg, #23201c 0 2px, transparent 2px 4px, #23201c 4px 5px, transparent 5px 8px, #23201c 8px 11px, transparent 11px 12px); }
+
+  /* Saindo da impressora: a folha desce de dentro da boca. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .papel-termico:not(.saindo) .folha { transform: translateY(-100%); }
+    /* Contínuo, rápido no começo e assentando no fim: papel puxado pela impressora. */
+    .papel-termico.saindo .folha { animation: imprimir 1.15s cubic-bezier(.25,.8,.3,1) both; will-change: transform; }
+    .papel-termico.saindo .boca { animation: vibrar .09s linear 11; }
+    @keyframes imprimir { from { transform: translateY(-100%); } to { transform: none; } }
+    @keyframes vibrar { 50% { transform: translateY(1px); } }
+  }
+</style>

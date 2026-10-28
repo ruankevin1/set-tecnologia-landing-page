@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import Pagina from '../components/Pagina.astro';
+---
+<Base semIndice titulo="Página não encontrada | Set Tecnologia" descricao="O endereço acessado não existe no site da Set Tecnologia.">
+  <Pagina rotulo="Erro 404" titulo="Página não encontrada." texto="O endereço acessado não existe ou mudou de lugar.">
+    <p class="volta"><a class="link-seta" href="/">Voltar para o início</a></p>
+  </Pagina>
+</Base>
+<style>.volta { margin-top: 28px; }</style>

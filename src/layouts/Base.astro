@@ -1,0 +1,159 @@
+---
+import '../styles/global.css';
+import Cabecalho from '../components/Cabecalho.astro';
+import Rodape from '../components/Rodape.astro';
+import Icone from '../components/Icone.astro';
+import { empresa, cidades, linkWhatsApp } from '../data/empresa';
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  dados?: Record<string, unknown>[];
+  migalhas?: { nome: string; href: string }[];
+  /** false quando a própria abertura da página (TopoProduto) mostra o caminho. */
+  mostrarMigalhas?: boolean;
+  /** true na página de erro: fica fora do Google. */
+  semIndice?: boolean;
+}
+const { titulo, descricao, dados = [], migalhas, mostrarMigalhas = true, semIndice = false } = Astro.props;
+const caminho = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/$/, '');
+const canonico = `${empresa.site}${caminho}`;
+const imagemSocial = `${empresa.site}/compartilhar.jpg`;
+
+// Empresa de área de atendimento (sem endereço público): o Google lê areaServed em vez de address.
+const organizacao = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${empresa.site}/#empresa`,
+  name: empresa.nome,
+  url: empresa.site,
+  logo: `${empresa.site}/icone-512.png`,
+  image: imagemSocial,
+  telephone: empresa.telefoneE164,
+  description: 'Sistema para restaurantes, bares e comércio com implantação e suporte: caixa, mesas, garçom no celular, cozinha, delivery próprio, Smart TEF e NFC-e.',
+  priceRange: '$$',
+  areaServed: [
+    ...cidades.flatMap((c) => [c.nome, ...c.vizinhas]).map((n) => ({ '@type': 'City', name: `${n}, RS` })),
+    { '@type': 'State', name: 'Rio Grande do Sul' },
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: empresa.telefoneE164,
+    contactType: 'sales',
+    areaServed: 'BR',
+    availableLanguage: 'Portuguese',
+  },
+};
+
+const blocos: Record<string, unknown>[] = [organizacao, ...dados];
+if (migalhas?.length) {
+  blocos.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ nome: 'Início', href: '/' }, ...migalhas].map((m, i) => ({
+      '@type': 'ListItem', position: i + 1, name: m.nome, item: `${empresa.site}${m.href === '/' ? '' : m.href}`,
+    })),
+  });
+}
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonico} />
+    {semIndice && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#0e0d0c" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Set Tecnologia" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonico} />
+    <meta property="og:image" content={imagemSocial} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {blocos.map((b) => <script type="application/ld+json" set:html={JSON.stringify(b)} />)}
+  </head>
+  <body>
+    <a href="#conteudo" class="so-leitor">Ir para o conteúdo</a>
+    <Cabecalho />
+    <main id="conteudo">
+      {mostrarMigalhas && migalhas?.length && (
+        <nav class="migalhas envelope" aria-label="Você está em">
+          <a href="/">Início</a>
+          {migalhas.map((m, i) => (
+            <>
+              <span aria-hidden="true">/</span>
+              {i === migalhas.length - 1 ? <span aria-current="page">{m.nome}</span> : <a href={m.href}>{m.nome}</a>}
+            </>
+          ))}
+        </nav>
+      )}
+      <slot />
+    </main>
+    <Rodape />
+    <a class="flutuante" href={linkWhatsApp()} target="_blank" rel="noopener" aria-label="Falar no WhatsApp"><Icone nome="whatsapp" /></a>
+    <script>
+      // Entrada na rolagem e números que contam até o valor.
+      const revelar = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('visivel');
+        revelar.unobserve(e.target);
+      }), { rootMargin: '0px 0px -12% 0px' });
+      document.querySelectorAll('[data-revelar]').forEach((el) => revelar.observe(el));
+
+      const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const contar = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        contar.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const fim = Number(el.dataset.contar);
+        if (calmo) { el.textContent = String(fim); return; }
+        const t0 = performance.now(), dur = 1400;
+        const passo = (t: number) => {
+          const k = Math.min(1, (t - t0) / dur);
+          el.textContent = String(Math.round(fim * (1 - Math.pow(1 - k, 3))));
+          if (k < 1) requestAnimationFrame(passo);
+        };
+        requestAnimationFrame(passo);
+      }), { threshold: .6 });
+      document.querySelectorAll('[data-contar]').forEach((el) => contar.observe(el));
+      // Luz que acompanha o mouse nos cartões marcados com data-luz.
+      document.addEventListener('pointermove', (e) => {
+        const el = (e.target as HTMLElement).closest?.('[data-luz]') as HTMLElement | null;
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+        el.style.setProperty('--my', `${e.clientY - r.top}px`);
+      }, { passive: true });
+    </script>
+  </body>
+</html>
+
+<style>
+  .migalhas { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 34px; font-family: var(--mono); font-size: 12.5px; color: var(--tinta-3); }
+  .migalhas a { text-decoration: none; }
+  .migalhas a:hover { color: var(--tinta); }
+  .flutuante {
+    position: fixed; right: 18px; bottom: 18px; z-index: 30;
+    width: 54px; height: 54px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: #1f8f4e; color: #fff;
+    box-shadow: 0 10px 24px -8px rgb(0 0 0 / .45);
+    transition: background-color .15s;
+  }
+  .flutuante:hover { background: #18773f; }
+  .flutuante :global(svg) { width: 27px; height: 27px; }
+</style>

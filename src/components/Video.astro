@@ -1,0 +1,39 @@
+---
+// Vídeo do YouTube que só carrega o player no clique (página mais leve e sem cookies antes do clique).
+interface Props { id: string; titulo: string; vertical?: boolean }
+const { id, titulo, vertical = false } = Astro.props;
+---
+<div class:list={['video', { vertical }]} data-video={id}>
+  <button type="button" aria-label={`Assistir: ${titulo}`}>
+    <img src={`https://i.ytimg.com/vi/${id}/${vertical ? 'oardefault' : 'maxresdefault'}.jpg`} onerror={`this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`} alt="" loading="lazy" width="720" height={vertical ? 1280 : 405} />
+    <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+    <span class="legenda">{titulo}</span>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((v) => {
+    v.querySelector('button')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${v.dataset.video}?autoplay=1&rel=0`;
+      f.title = v.querySelector('.legenda')?.textContent ?? 'Vídeo';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      v.replaceChildren(f);
+    }, { once: true });
+  });
+</script>
+
+<style>
+  .video { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--linha-forte); background: #000; box-shadow: 0 40px 80px -30px rgb(0 0 0 / .9); }
+  .video.vertical { aspect-ratio: 9 / 16; max-width: 360px; margin-inline: auto; }
+  button { all: unset; cursor: pointer; position: absolute; inset: 0; display: block; }
+  img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s, opacity .3s; opacity: .85; }
+  button:hover img { transform: scale(1.04); opacity: 1; }
+  .play { position: absolute; top: 50%; left: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%; background: var(--laranja); color: #fff; display: grid; place-items: center;  transition: transform .2s, box-shadow .2s; }
+  .play svg { width: 30px; height: 30px; margin-left: 4px; }
+  button:hover .play { transform: scale(1.06); }
+  button:focus-visible .play { outline: 2px solid #fff; outline-offset: 4px; }
+  .legenda { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 20px 18px; font-weight: 500; background: linear-gradient(transparent, rgb(0 0 0 / .75)); }
+  .video :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+</style>

@@ -1,0 +1,37 @@
+---
+// Três vantagens lado a lado, centralizadas, com ícone em destaque.
+import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
+interface Props { titulo: string; texto?: string; itens: { icone: NomeModulo; t: string; d: string }[] }
+const { titulo, texto, itens } = Astro.props;
+---
+<section class="vantagens envelope">
+  <div class="cab" data-revelar>
+    <h2 class="titulo-secao" set:html={titulo} />
+    {texto && <p class="lead">{texto}</p>}
+  </div>
+  <ul style={`--n:${Math.min(itens.length, 4)}`}>
+    {itens.map((i, k) => (
+      <li data-luz data-revelar style={`--atraso:${k * 0.08}s`}>
+        <span class="ico"><IconeModulo nome={i.icone} /></span>
+        <h3>{i.t}</h3>
+        <p>{i.d}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .vantagens { padding-block: clamp(64px, 9vw, 112px) clamp(32px, 5vw, 56px); text-align: center; }
+  .cab .titulo-secao { margin-inline: auto; }
+  .cab .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab .lead { margin: 16px auto 0; }
+  ul { list-style: none; margin-top: 48px; display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1000px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  li { padding: clamp(24px, 3vw, 34px) 22px; border-radius: 16px; border: 1px solid var(--linha); background: linear-gradient(180deg, #181715, #121110); }
+  .ico { width: 56px; height: 56px; margin-inline: auto; border-radius: 16px; display: grid; place-items: center; color: #fff;
+    background: linear-gradient(145deg, #ff8a3d, #e5520a); box-shadow: 0 14px 30px -10px rgb(243 104 18 / .8), inset 0 1px 0 rgb(255 255 255 / .3); }
+  .ico :global(.ico) { width: 26px; height: 26px; }
+  h3 { margin-top: 20px; font-size: 21px; }
+  p { margin: 10px auto 0; color: var(--tinta-2); max-width: 34ch; }
+  @media (max-width: 760px) { ul { grid-template-columns: 1fr; } }
+</style>

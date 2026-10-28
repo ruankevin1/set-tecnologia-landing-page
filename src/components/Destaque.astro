@@ -1,0 +1,38 @@
+---
+// Bloco de texto ao lado de uma tela (slot), alternando o lado a cada uso. Pontos opcionais em lista.
+import Icone from './Icone.astro';
+interface Props { rotulo?: string; titulo: string; texto: string; pontos?: string[]; invertido?: boolean; acao?: { texto: string; href: string } }
+const { rotulo, titulo, texto, pontos = [], invertido = false, acao } = Astro.props;
+---
+<section class:list={['destaque envelope', { invertido }]}>
+  <div class="texto" data-revelar>
+    {rotulo && <p class="rotulo">{rotulo}</p>}
+    <h2 set:html={titulo} />
+    <p class="lead">{texto}</p>
+    {pontos.length > 0 && <ul>{pontos.map((p) => <li><span aria-hidden="true">✓</span>{p}</li>)}</ul>}
+    {acao && <a class="botao botao-linha" href={acao.href}>{acao.texto} <Icone nome="seta" /></a>}
+  </div>
+  <div class="visual" data-revelar style="--atraso:.08s">
+    <div class="aura" aria-hidden="true"></div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .destaque { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding-block: clamp(48px, 7vw, 88px); }
+  .invertido { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .invertido .texto { order: 2; }
+  h2 { margin-top: 14px; font-size: clamp(28px, 3.4vw, 42px); }
+  h2 :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .lead { margin-top: 16px; }
+  ul { list-style: none; margin-top: 22px; display: grid; gap: 10px; }
+  li { display: flex; gap: 12px; align-items: baseline; color: var(--tinta); }
+  li span { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: rgb(243 104 18 / .18); color: var(--laranja-claro); }
+  .botao { margin-top: 28px; }
+  .visual { position: relative; isolation: isolate; min-width: 0; }
+  .aura { position: absolute; z-index: -1; inset: 8% 6%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .28), transparent); filter: blur(40px); pointer-events: none; }
+  @media (max-width: 1000px) {
+    .destaque, .invertido { grid-template-columns: 1fr; }
+    .invertido .texto { order: 0; }
+  }
+</style>

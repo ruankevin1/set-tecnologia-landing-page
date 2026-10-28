@@ -1,0 +1,198 @@
+---
+import Base from '../layouts/Base.astro';
+import TopoProduto from '../components/TopoProduto.astro';
+import Vantagens from '../components/Vantagens.astro';
+import GradeCartoes from '../components/GradeCartoes.astro';
+import Tela from '../components/Tela.astro';
+import IconeModulo from '../components/IconeModulo.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Chamada from '../components/Chamada.astro';
+import { empresa } from '../data/empresa';
+import pagamento from '../assets/telas2/pagamento-balcao.png';
+import { maquininhas } from '../data/maquininhas';
+
+const migalhas = [{ nome: 'Smart TEF', href: '/smart-tef' }];
+
+const fluxo = [
+  { icone: 'caixa', t: 'O caixa envia', d: 'O total da conta sai do Set Tecnologia para a maquininha.' },
+  { icone: 'tef', t: 'O cliente paga', d: 'Cartão ou Pix na própria maquininha smart, sem pinpad no cabo.' },
+  { icone: 'check', t: 'A venda fecha', d: 'Pagamento aprovado volta ao caixa e a venda fecha com a forma certa.' },
+] as const;
+
+const itens = [
+  { icone: 'dinheiro', t: 'Sem digitar valor', d: 'O total vai do sistema para a maquininha, sem erro de centavo.' },
+  { icone: 'tef', t: 'Maquininha smart', d: 'Pagamento na própria maquininha com tela, sem pinpad preso ao computador.' },
+  { icone: 'check', t: 'Conta fechada sozinha', d: 'Pagamento aprovado volta para o caixa com a forma de pagamento certa.' },
+  { icone: 'relatorios', t: 'Relatório que bate', d: 'Totais por forma de pagamento conferem com o extrato da maquininha.' },
+] as const;
+
+const listaModelos = maquininhas.map((m) => `${m.adquirente}: ${m.modelos.join(', ')}`).join('; ');
+
+const perguntas = [
+  { p: 'Funciona com qualquer maquininha?', r: 'Praticamente com todas. O Smart TEF integrado ao Set funciona com as maquininhas smart de Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, SafraPay, Vero, Sipag, Sicredi, Caixa, BIN, PicPay, Phoebus e Claro Pay. O modelo da maquininha é conferido no diagnóstico.' },
+  { p: 'Quais modelos de maquininha funcionam?', r: `${listaModelos}.` },
+  { p: 'Preciso do sistema Set Tecnologia?', r: 'Sim. O Smart TEF é a ligação entre o caixa do Set Tecnologia e a maquininha.' },
+];
+
+const servico = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Smart TEF integrado ao caixa',
+  serviceType: 'Pagamento integrado na maquininha smart (TEF)',
+  provider: { '@id': `${empresa.site}/#empresa` },
+  areaServed: { '@type': 'Country', name: 'Brasil' },
+  description: 'O valor vai do caixa do Set Tecnologia para a maquininha smart, com Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago e outras adquirentes.',
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo="Smart TEF: maquininha integrada ao caixa | Set Tecnologia"
+  descricao="Smart TEF no caixa do Set: o valor vai direto para a maquininha smart. Funciona com Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, Sicredi e outras."
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+  dados={[servico, faq]}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo="Smart TEF · pagamento integrado"
+    titulo="O valor vai do caixa <em>para a maquininha.</em>"
+    texto="Com o Smart TEF, o caixa do Set Tecnologia manda o valor para a maquininha smart. O operador não digita nada, e a venda fecha sozinha quando o pagamento é aprovado."
+    selos={[
+      { icone: 'raio', t: 'Menos fila no caixa' },
+      { icone: 'escudo', t: 'Sem erro de digitação' },
+      { icone: 'tef', t: 'Maquininha smart' },
+      { icone: 'check', t: 'Praticamente todas as adquirentes' },
+    ]}
+  >
+    <div class="vitrine">
+      <div class="aura" aria-hidden="true"></div>
+      <Tela src={pagamento} alt="Tela de pagamento do balcão com R$ 98,00 a receber e as opções Dinheiro, Cartão e Pix" sizes="(max-width: 1100px) 100vw, 1040px" larguras={[640, 960, 1440, 1520]} />
+    </div>
+  </TopoProduto>
+
+  <section class="fluxo envelope" aria-labelledby="fluxo-titulo">
+    <div class="cab" data-revelar>
+      <p class="rotulo">Como funciona</p>
+      <h2 id="fluxo-titulo" class="titulo-secao">Do caixa à maquininha <em>em um toque.</em></h2>
+    </div>
+    <ol class="etapas" data-revelar>
+      {fluxo.map((f, i) => (
+        <li style={`--i:${i}`}>
+          <span class="no"><IconeModulo nome={f.icone} /></span>
+          <h3>{f.t}</h3>
+          <p>{f.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="adq envelope" id="maquininhas" aria-labelledby="adq-titulo">
+    <div class="cab" data-revelar>
+      <h2 id="adq-titulo" class="titulo-secao">Veja as maquininhas <em>compatíveis.</em></h2>
+      <p class="lead">Pelo Smart TEF, o Set funciona com as maquininhas smart das principais adquirentes. O modelo da sua é conferido no diagnóstico.</p>
+    </div>
+    <ul class="logos-adq">
+      {maquininhas.map((m, i) => (
+        <li data-luz data-revelar style={`--atraso:${(i % 3) * 0.05}s`}>
+          <h3>{m.adquirente}</h3>
+          <ul class="modelos">{m.modelos.map((mod) => <li>{mod}</li>)}</ul>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- A regra do RS: nota e pagamento integrados -->
+  <section class="lei envelope" id="nota-integrada" aria-labelledby="lei-titulo">
+    <div class="lei-texto" data-revelar>
+      <p class="rotulo">Nota Integrada · Receita Estadual do RS</p>
+      <h2 id="lei-titulo" class="titulo-secao">No RS, a nota e o pagamento <em>precisam andar juntos.</em></h2>
+      <p class="lead">
+        Desde 1º de janeiro de 2024 (Decreto 56.670/22), quem emite NFC-e em venda presencial no Rio Grande do Sul
+        precisa emitir a nota integrada aos meios de pagamento eletrônicos: o comprovante da maquininha e a NFC-e saem
+        da mesma venda, no mesmo sistema.
+      </p>
+      <ul class="lei-pontos">
+        <li><b>Vale para</b> cartão de débito e de crédito, cartão de loja, transferência, Pix e os demais pagamentos eletrônicos.</li>
+        <li><b>Vale para todos</b> os estabelecimentos que emitem NFC-e em venda presencial, de qualquer porte.</li>
+        <li><b>Em 2026</b> a Receita Estadual começou a autuar quem tem baixa integração entre as notas e as maquininhas.</li>
+      </ul>
+    </div>
+    <div class="lei-quadro" data-luz data-revelar style="--atraso:.08s">
+      <p class="lei-num">R$ 8.497,92</p>
+      <p class="lei-desc">de multa <b>por maquininha, por mês</b> de uso sem integração, além da apreensão do equipamento irregular.</p>
+      <p class="lei-fonte">Valor de 2026: 300 UPF-RS (Unidade Padrão Fiscal do RS, reajustada todo ano). Fonte: Receita Estadual do RS, com base no Decreto 56.670/22 e na Lei 6.537/73.</p>
+    </div>
+  </section>
+
+  <Vantagens
+    titulo="Por que <em>integrar</em> a maquininha"
+    itens={[
+      { icone: 'escudo', t: 'Sem erro de centavo', d: 'O valor que sai do caixa é o mesmo que a maquininha cobra.' },
+      { icone: 'raio', t: 'Fila andando', d: 'O operador não digita valor e o cliente paga na hora.' },
+      { icone: 'relatorios', t: 'Fechamento que bate', d: 'O relatório do caixa confere com o extrato da adquirente.' },
+    ]}
+  />
+
+  <GradeCartoes rotulo="Na prática" titulo="Menos fila, <em>menos erro.</em>" itens={itens} />
+  <Perguntas itens={perguntas} />
+  <Chamada titulo="Quer saber se funciona com a sua maquininha?" />
+</Base>
+
+<style>
+  .vitrine { position: relative; isolation: isolate; max-width: 1040px; margin-inline: auto; }
+  .aura { position: absolute; z-index: -1; inset: 5%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .3), transparent); filter: blur(40px); }
+  .cab { text-align: center; }
+  .cab .titulo-secao { margin: 14px auto 0; }
+  .cab :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab .lead { margin: 16px auto 0; }
+
+  /* Fluxo: três nós ligados por uma linha com um pulso de luz correndo. */
+  .fluxo { padding-block: clamp(64px, 9vw, 112px) clamp(32px, 5vw, 56px); }
+  .etapas { list-style: none; position: relative; margin-top: 52px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; text-align: center; }
+  .etapas::before { content: ''; position: absolute; top: 36px; left: 16%; right: 16%; height: 2px; background: linear-gradient(90deg, rgb(243 104 18 / .2), rgb(243 104 18 / .6), rgb(243 104 18 / .2)); }
+  .etapas::after { content: ''; position: absolute; top: 31px; left: 16%; width: 12px; height: 12px; border-radius: 50%; background: #ffb547; box-shadow: 0 0 18px 4px rgb(255 140 50 / .8); animation: pulso-fluxo 3.2s cubic-bezier(.6,0,.4,1) infinite; }
+  @keyframes pulso-fluxo { 0% { left: 16%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: calc(84% - 12px); opacity: 0; } }
+  .etapas li { position: relative; z-index: 1; }
+  .no { width: 72px; height: 72px; margin-inline: auto; border-radius: 20px; display: grid; place-items: center; color: #fff;
+    background: linear-gradient(145deg, #ff8a3d, #e5520a); box-shadow: 0 0 0 8px var(--papel), 0 16px 34px -10px rgb(243 104 18 / .85); }
+  .no :global(.ico) { width: 32px; height: 32px; }
+  .etapas h3 { margin-top: 20px; font-size: 21px; }
+  .etapas p { margin: 8px auto 0; color: var(--tinta-2); max-width: 30ch; }
+
+  .adq, .lei { scroll-margin-top: 80px; }
+  .adq { padding-block: clamp(48px, 7vw, 88px); }
+  .logos-adq { list-style: none; margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .logos-adq > li { padding: 20px 22px; border-radius: 14px; border: 1px solid var(--linha); background: linear-gradient(180deg, #191816, #131211); }
+  .logos-adq h3 { font-size: 20px; letter-spacing: -0.02em; }
+  .modelos { list-style: none; margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .modelos li { padding: 5px 10px; border-radius: 999px; font-size: 13px; color: var(--tinta-2); border: 1px solid var(--linha-forte); background: rgb(255 255 255 / .03); }
+
+  /* A regra do RS */
+  .lei { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(28px, 5vw, 64px); align-items: center; padding-block: clamp(56px, 8vw, 104px); }
+  .lei .titulo-secao { margin-top: 14px; }
+  .lei .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .lei .lead { margin-top: 18px; }
+  .lei-pontos { list-style: none; margin-top: 24px; display: grid; gap: 12px; }
+  .lei-pontos li { padding-left: 22px; position: relative; color: var(--tinta-2); }
+  .lei-pontos li::before { content: ''; position: absolute; left: 0; top: .65em; width: 10px; height: 2px; background: var(--laranja); }
+  .lei-pontos b { color: var(--tinta); font-weight: 600; }
+  .lei-quadro { padding: clamp(24px, 3vw, 36px); border-radius: 18px; border: 1px solid rgb(243 104 18 / .4);
+    background: radial-gradient(90% 90% at 100% 0%, rgb(243 104 18 / .22), transparent 70%), #15110d; }
+  .lei-num { font-size: clamp(40px, 5vw, 60px); font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: #ffb06e; }
+  .lei-desc { margin-top: 12px; font-size: 17px; color: var(--tinta-2); }
+  .lei-desc b { color: var(--tinta); }
+  .lei-fonte { margin-top: 18px; font-size: 12.5px; color: var(--tinta-3); }
+
+  @media (prefers-reduced-motion: reduce) { .etapas::after { animation: none; display: none; } }
+  @media (max-width: 900px) { .lei { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .etapas { grid-template-columns: 1fr; gap: 36px; }
+    .etapas::before { top: 36px; bottom: 36px; left: 50%; right: auto; width: 2px; height: auto; }
+    .etapas::after { display: none; }
+    .logos-adq { grid-template-columns: 1fr; }
+  }
+</style>

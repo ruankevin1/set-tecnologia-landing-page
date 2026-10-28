@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import TopoProduto from '../components/TopoProduto.astro';
+import Composicao from '../components/Composicao.astro';
+import Vantagens from '../components/Vantagens.astro';
+import SecaoTela from '../components/SecaoTela.astro';
+import TelasCelular from '../components/TelasCelular.astro';
+import Impressos from '../components/Impressos.astro';
+import GradeCartoes from '../components/GradeCartoes.astro';
+import Clientes from '../components/Clientes.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Chamada from '../components/Chamada.astro';
+import { empresa } from '../data/empresa';
+
+import balcao from '../assets/telas2/balcao.png';
+import salao from '../assets/telas2/salao.png';
+import produtos from '../assets/telas2/vendas-por-produto.png';
+import tablet from '../assets/telas2/tablet-produto.png';
+import catalogo from '../assets/telas/catalogo-celular.png';
+import gMesas from '../assets/garcom/mesas.png';
+import gAvisos from '../assets/garcom/avisos.png';
+import gOpcoes from '../assets/garcom/mesa-opcoes.png';
+const telasDoGarcom = [
+  { src: gMesas, alt: 'App do garçom no celular com as mesas do salão, valores e a mesa 1 chamando', legenda: 'Mesas ocupadas, valor e quem chamou' },
+  { src: gAvisos, alt: 'Aviso da mesa 1 chamando o garçom, com o botão Assumir', legenda: 'Mesa chamou: o garçom assume o atendimento' },
+  { src: gOpcoes, alt: 'Opções da mesa 1: aviso da mesa, transferir consumo e liberar mesa', legenda: 'Transferir consumo e liberar a mesa' },
+];
+import contaPartes from '../assets/telas2/fechar-mesa-partes.png';
+import mesaPedido from '../assets/telas2/mesa-pedido.png';
+import tabletCardapio from '../assets/telas2/tablet-cardapio.png';
+import delivery from '../assets/telas2/delivery-quadro.png';
+
+const migalhas = [{ nome: 'Sistema para restaurante', href: '/sistema-para-restaurante' }];
+
+const gestao = [
+  { icone: 'estoque', t: 'Estoque', d: 'Baixa a cada venda, entrada de mercadoria e aviso de produto abaixo do mínimo.' },
+  { icone: 'relatorios', t: 'Relatórios', d: 'Vendas por produto com margem, evolução por hora e dia da semana, descontos e cancelamentos.' },
+  { icone: 'usuarios', t: 'Quanto cada um vendeu', d: 'Vendas por operador e por garçom, com ticket médio e participação.' },
+  { icone: 'motoboy', t: 'Acerto dos motoboys', d: 'Entregas de cada motoboy, dinheiro a devolver e o que já foi pago.' },
+  { icone: 'nfce', t: 'NFC-e', d: 'Emissão no fechamento, contingência sem internet e notas autorizadas, canceladas e pendentes.' },
+  { icone: 'link', t: 'XML para o contador', d: 'Arquivos do período prontos para enviar ao escritório de contabilidade.' },
+  { icone: 'escudo', t: 'Usuários e permissões', d: 'Administrador, caixa e atendente com acessos separados e registro do que cada um fez.' },
+  { icone: 'pino', t: 'Clientes', d: 'Cadastro com CPF ou CNPJ e endereço, usado no delivery e na nota.' },
+] as const;
+
+const perguntas = [
+  { p: 'Em que equipamentos o Set Tecnologia roda?', r: 'O caixa roda em computador com Windows. Os tablets de mesa e os celulares dos garçons se conectam ao servidor da loja pela rede local. Impressoras térmicas em rede ou USB.' },
+  { p: 'Preciso de internet para vender?', r: 'Não. A operação acontece na rede da loja. A internet é usada para transmitir as notas, receber pedidos do cardápio online e para o suporte remoto.' },
+  { p: 'Serve para lanchonete e pizzaria, além de restaurante?', r: 'Sim. Balcão, delivery, complementos, meio a meio e impressão por setor atendem lanchonetes, pizzarias, hamburguerias, bares e cafés.' },
+  { p: 'Quem faz o cadastro do cardápio?', r: 'A implantação inclui o cadastro dos produtos, grupos, complementos e da tributação, junto com a configuração do certificado digital e da NFC-e.' },
+];
+
+const app = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Set Tecnologia',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'Sistema para restaurante (PDV)',
+  operatingSystem: 'Windows, Android',
+  inLanguage: 'pt-BR',
+  provider: { '@id': `${empresa.site}/#empresa` },
+  description: 'Sistema para restaurante com caixa, salão, celular do garçom, tablet de mesa, cozinha, delivery, estoque e NFC-e.',
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo="Sistema para restaurante, bar e lanchonete | Set Tecnologia"
+  descricao="Sistema para restaurante com caixa, comandas, garçom no celular, tablet de mesa, impressão na cozinha, delivery, estoque e NFC-e. Implantação e suporte."
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+  dados={[app, faq]}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo="Set Tecnologia · sistema próprio"
+    titulo="Sistema para restaurante, <em>do salão à cozinha.</em>"
+    texto="Intuitivo e prático: caixa, mesas, garçom no celular, tablet de mesa, impressão por setor, delivery, estoque e nota fiscal. Desenvolvido pela Set Tecnologia para a rotina de restaurante, bar e lanchonete."
+    selos={[
+      { icone: 'garcom', t: 'Garçom no celular' },
+      { icone: 'dividir', t: 'Conta dividida no centavo' },
+      { icone: 'rede', t: 'Funciona sem internet' },
+      { icone: 'nfce', t: 'NFC-e no fechamento' },
+    ]}
+  >
+    <div class="vitrine"><Composicao principal={balcao} altPrincipal="Tela Balcão do Set Tecnologia com grade de produtos e venda em andamento" tablet={tablet} altTablet="Tablet de mesa com o Filé à parmegiana e as etapas Retirar, Ponto da carne e Observação" celular={catalogo} altCelular="Cardápio online do delivery no celular do cliente" garcom={gMesas} altGarcom="App do garçom no celular com as mesas do salão" /></div>
+  </TopoProduto>
+
+  <Clientes />
+
+  <Vantagens
+    titulo="Por que restaurantes trocam para o <em>Set</em>"
+    itens={[
+      { icone: 'check', t: 'Intuitivo e prático', d: 'Telas com foto, botões grandes e poucos toques. A equipe aprende no treinamento da implantação.' },
+      { icone: 'raio', t: 'Rápido no horário de pico', d: 'Pedido lançado na mesa sai na cozinha na hora, sem fila no caixa e sem redigitar.' },
+      { icone: 'dividir', t: 'Conta que fecha no centavo', d: 'Por pessoa, por item ou em partes iguais, misturando as formas na mesma conta.' },
+      { icone: 'suporte', t: 'Suporte de quem implantou', d: 'A mesma equipe que desenvolve o sistema configura a loja e atende o suporte.' },
+    ]}
+  />
+
+  <SecaoTela id="salao" rotulo="Salão" titulo="Valor em aberto, comandas e <em>tempo de cada mesa.</em>" texto="O mapa do salão mostra quanto cada mesa já consumiu, quantas comandas estão abertas e há quanto tempo, para o garçom saber onde passar primeiro." src={salao} alt="Mapa do salão do Set Tecnologia com as mesas 1, 4 e 7 ocupadas e R$ 265,00 em aberto" selos={['Mesas livres e ocupadas de relance', 'Total em aberto do salão', 'Comandas numeradas, inclusive de papel']} />
+
+  <section class="garcom envelope" id="garcom" aria-labelledby="garcom-titulo">
+    <div class="cab-garcom" data-revelar>
+      <p class="rotulo">Garçom no celular</p>
+      <h2 id="garcom-titulo" class="titulo-secao">O salão inteiro <em>no bolso do garçom.</em></h2>
+      <p class="lead">O garçom vê as mesas, recebe o chamado da mesa, lança o pedido e transfere o consumo pelo próprio celular, sem voltar ao caixa e sem instalar aplicativo de loja.</p>
+    </div>
+    <TelasCelular telas={telasDoGarcom} />
+  </section>
+
+  <SecaoTela id="comandas" rotulo="Pedido na mesa" titulo="Cada pessoa com <em>a sua comanda.</em>" texto="O garçom lança pelo celular, na mesa. O que foi retirado e a observação saem impressos no setor certo da cozinha, sem redigitar." src={mesaPedido} alt="Pedido da mesa 1 lançado na comanda 7, com carpaccio sem alcaparras e observação para a cozinha" selos={['Retirar ingrediente com um toque', 'Observação para a cozinha', 'Impressão por setor: cozinha, bar e copa']} />
+
+  <SecaoTela id="tablet" tipo="tablet" rotulo="Tablet de mesa" titulo="O cliente pede <em>pela mesa.</em>" texto="Cardápio com fotos, ponto da carne e chamada do garçom. O pedido entra direto na conta da mesa e sai na cozinha." src={tabletCardapio} alt="Tablet de mesa do Set Tecnologia com o cardápio de pratos com fotos, na mesa 4" selos={['Cardápio com fotos', 'Ponto da carne e observações', 'Chamar o garçom pela tela']} />
+
+  <SecaoTela id="conta" rotulo="Fechamento" titulo="Divida até <em>um terço da calabresa.</em>" texto="Cada um paga o que consumiu. Um item pode ser dividido em partes e a conta fecha no centavo, sem calculadora." src={contaPartes} alt="Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber" selos={['Por pessoa, por item ou em partes iguais', 'Pagamento misto na mesma conta', 'Valor direto para a maquininha com Smart TEF']} />
+
+  <SecaoTela id="delivery" rotulo="Delivery" titulo="Todos os pedidos <em>no mesmo quadro.</em>" texto="Telefone, balcão, cardápio online e 99Food entram juntos: novo, aceito, preparo, pronto, saiu e entregue." src={delivery} alt="Quadro do Delivery com pedidos nas colunas Aceito, Preparo e Pronto" selos={['Cardápio online sem comissão', 'Pedidos do 99Food', 'Motoboy vinculado a cada entrega']} />
+
+  <SecaoTela id="relatorios" rotulo="Relatórios" titulo="O mês inteiro <em>em números.</em>" texto="Vendas por produto, por hora e por operador, com participação e margem, para decidir o cardápio e a escala." src={produtos} alt="Relatório de vendas por produto com quantidade, valor e participação" selos={['Resumo do dia no fechamento', 'Repasses do 99Food e acerto dos motoboys', 'XML das notas para o contador']} />
+
+  <section class="impressos-secao envelope" id="impressos" aria-labelledby="impressos-titulo">
+    <div class="cab-impressos" data-revelar>
+      <p class="rotulo">Impressos</p>
+      <h2 id="impressos-titulo" class="titulo-secao">Cada papel <em>no lugar certo.</em></h2>
+      <p class="lead">Pedido na cozinha, chamado da mesa, conta, fechamento de caixa, acerto do motoboy e nota fiscal: tudo sai impresso pelo próprio Set, legível e sem redigitar.</p>
+    </div>
+    <Impressos />
+  </section>
+
+  <GradeCartoes id="gestao" rotulo="Gestão" titulo="E tudo o que precisa <em>fechar no fim do dia.</em>" itens={gestao} />
+  <Perguntas itens={perguntas} />
+  <Chamada />
+</Base>
+
+<style>
+  .vitrine { max-width: 1040px; margin-inline: auto; }
+  .impressos-secao { padding-block: clamp(72px, 10vw, 128px) clamp(40px, 6vw, 72px); }
+  .cab-impressos { text-align: center; margin-bottom: clamp(36px, 5vw, 56px); }
+  .cab-impressos .titulo-secao { margin: 14px auto 0; max-width: 22ch; }
+  .cab-impressos .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab-impressos .lead { margin: 16px auto 0; }
+  .garcom, .impressos-secao { scroll-margin-top: 80px; }
+  .garcom { padding-block: clamp(72px, 10vw, 128px) clamp(24px, 4vw, 48px); }
+  .cab-garcom { text-align: center; margin-bottom: clamp(36px, 5vw, 56px); }
+  .cab-garcom .titulo-secao { margin: 14px auto 0; max-width: 22ch; }
+  .cab-garcom .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab-garcom .lead { margin: 16px auto 0; }
+</style>

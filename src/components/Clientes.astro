@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import theBest from '../assets/clientes/the-best-acai.png';
+import bundchen from '../assets/clientes/bundchen-pizzeria.png';
+import fileNaBrasa from '../assets/clientes/file-na-brasa.png';
+import tresMestres from '../assets/clientes/tres-mestres.png';
+import general from '../assets/clientes/general.png';
+import casaNostra from '../assets/clientes/casa-nostra.png';
+import goole from '../assets/clientes/goole.png';
+import sushi from '../assets/clientes/sushi-floripa.png';
+import mozatto from '../assets/clientes/mozatto.png';
+
+// Logos dos clientes (os mesmos da landing do PDV+). "contido" = logo horizontal centralizado no quadro.
+const clientes = [
+  { nome: 'The Best Açaí', logo: theBest, contido: true },
+  { nome: 'Bündchen Pizzeria', logo: bundchen },
+  { nome: 'Filé na Brasa', logo: fileNaBrasa },
+  { nome: 'Três Mestres Gastronomia', logo: tresMestres },
+  { nome: 'General Restaurante', logo: general },
+  { nome: 'Casa Nostra', logo: casaNostra, contido: true, claro: true },
+  { nome: 'Goole Conveniência', logo: goole },
+  { nome: 'Sushi Floripa', logo: sushi },
+  { nome: 'Mozatto Confeitaria', logo: mozatto, claro: true },
+];
+---
+<section class="clientes" aria-labelledby="clientes-titulo">
+  <p id="clientes-titulo" class="titulo envelope">Restaurantes, pizzarias e lojas que usam a Set</p>
+  <div class="faixa">
+    <ul class="trilha">
+      {[0, 1, 2, 3].map((volta) => clientes.map((c) => (
+        <li class:list={['logo', { contido: c.contido, claro: c.claro }]} aria-hidden={volta > 0 ? 'true' : undefined} title={c.nome}>
+          <Image src={c.logo} alt={volta > 0 ? '' : c.nome} width={c.contido ? 240 : 160} format="webp" quality={90} loading="lazy" />
+        </li>
+      )))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .clientes { padding-top: clamp(56px, 8vw, 96px); }
+  .titulo { text-align: center; font-family: var(--mono); font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); }
+  /* Sombra larga nas pontas: os logos surgem perto do meio da tela e somem antes da borda. */
+  .faixa { margin-top: 28px; overflow: hidden; padding-block: 8px; -webkit-mask: linear-gradient(90deg, transparent 0%, transparent 6%, #000 30%, #000 70%, transparent 94%, transparent 100%); mask: linear-gradient(90deg, transparent 0%, transparent 6%, #000 30%, #000 70%, transparent 94%, transparent 100%); }
+  .trilha { list-style: none; display: flex; gap: 18px; width: max-content; animation: correr 80s linear infinite; }
+  @keyframes correr { to { transform: translateX(calc(-50% - 9px)); } }
+  @media (prefers-reduced-motion: reduce) { .trilha { animation: none; flex-wrap: wrap; justify-content: center; width: auto; } .trilha li[aria-hidden] { display: none; } }
+  .logo { width: 84px; height: 84px; border-radius: 18px; overflow: hidden; flex: none; background: #1d1c1a; border: 1px solid var(--linha); filter: grayscale(.25); opacity: .9; transition: filter .25s, opacity .25s, transform .25s; }
+  .logo:hover { filter: none; opacity: 1; transform: translateY(-3px); }
+  .logo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .logo.contido { width: 168px; padding: 14px 18px; }
+  .logo.contido :global(img) { object-fit: contain; }
+  .logo.claro { background: #fff; }
+</style>

@@ -1,0 +1,1237 @@
+[
+  {
+    "id": "cozinha",
+    "titulo": "Pedido na cozinha",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "+--------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| PEDIDO |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+--------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "MESA 7 - COMANDA 7",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "1x  CARPACCIO",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "    RETIRAR: Alcaparras",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1x  BOLINHO DE BACALHAU",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "2x  CHOPP",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "    OBS: Bem gelado",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Lançado por Kevin",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 20:14",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "chamado",
+    "titulo": "Chamado do garçom",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "+-------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| CHAMANDO O GARÇOM |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+-------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "MESA 4",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 20:31",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "conferencia",
+    "titulo": "Conferência da mesa",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "CONFERÊNCIA - MESA 1",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "4x Chopp                                R$ 56,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1x Bolinho de bacalhau                  R$ 34,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1x Caipirinha                           R$ 22,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Subtotal                               R$ 112,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Taxa de servico 10%                     R$ 11,20",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  opcional",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "A PAGAR                                R$ 123,20",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 21:32",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "fechamento-caixa",
+    "titulo": "Fechamento de caixa",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "FECHAMENTO DE CAIXA",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Reis Restaurante",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Aberto em                       28/10/2026 17:30",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  por                                      Kevin",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Fechado em                      28/10/2026 23:40",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  por                                      Kevin",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Duracao                                     6h10",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Suprimento de abertura                 R$ 200,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Vendas                               R$ 1.842,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Sangrias                              -R$ 150,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "CONFERENCIA",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Dinheiro                               R$ 462,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  contado R$ 460,00                     -R$ 2,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Pix                                    R$ 780,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  contado R$ 780,00                           ok",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Cartão de crédito                      R$ 410,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  contado R$ 410,00                           ok",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Cartão de débito                       R$ 240,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  contado R$ 240,00                           ok",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "FALTA                                    R$ 2,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Assinatura: ____________________",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 23:40",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "motoboy",
+    "titulo": "Acerto do motoboy",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "ACERTO DO MOTOBOY",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "LUCAS",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "PAGAS AGORA (4)",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "#1038 28/10 19:12 Centro                 R$ 7,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "#1040 28/10 19:48 Bela Vista             R$ 7,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "#1042 28/10 20:35 Centro                 R$ 7,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "#1045 28/10 21:20 Cristo Rei             R$ 7,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "PAGO AGORA                              R$ 28,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "EM ROTA (fora deste acerto)",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "#1047 Atlântico                a cobrar R$ 68,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Assinatura: ____________________",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 22:15",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "entregador",
+    "titulo": "Via do entregador",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "DELIVERY 1042 - ENTREGA",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "COBRAR NA ENTREGA                       R$ 95,00",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Dinheiro",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Troco para                             R$ 100,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "LEVAR DE TROCO                           R$ 5,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Ana",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Rua Exemplo, 123",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Centro - Erechim",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Motoboy                                    Lucas",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "1 Calabresa acebolada                   R$ 32,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1 Bolinho de bacalhau                   R$ 34,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1 Caipirinha                            R$ 22,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Subtotal                                R$ 88,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Taxa de entrega                          R$ 7,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "TOTAL                                   R$ 95,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Set Catálogo - pedido às 20:02",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Previsão de entrega: 20:47",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Sem nota fiscal",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 20:02",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "pagamento",
+    "titulo": "Comprovante de pagamento",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "+--------------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| COMPROVANTE DE PAGAMENTO |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+--------------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "MESA 1 - VENDA 108",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "PAGO                                   R$ 123,20",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Pix                                     R$ 60,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Dinheiro                                R$ 63,20",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Troco                                    R$ 6,80",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Conta quitada",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "SEM VALOR FISCAL",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 21:41",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "cancelamento",
+    "titulo": "Comprovante de cancelamento",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "+--------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| CANCELAMENTO |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+--------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "VENDA 112",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Venda 112                       28/10/2026 21:05",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Cancelada em                    28/10/2026 21:12",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "1x Calabresa acebolada                  R$ 32,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1x Caipirinha                           R$ 22,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "VALOR CANCELADO                         R$ 54,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Motivo: Venda lançada na mesa errada",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Operador: Kevin",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "SEM VALOR FISCAL",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "28/10/2026 21:12",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      }
+    ]
+  },
+  {
+    "id": "danfe",
+    "titulo": "DANFE da NFC-e",
+    "bobina": 48,
+    "linhas": [
+      {
+        "texto": "REIS RESTAURANTE",
+        "letra": "titulo",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Reis Restaurante Ltda",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "CNPJ 11.222.333/0001-81",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Rua Exemplo, 100 - Centro",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Erechim - RS",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "DOCUMENTO AUXILIAR DA NOTA FISCAL DE CONSUMIDOR",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "ELETRÔNICA",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Chopp                                      56,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  #001 - Cód. 101 - 4 UN x 14,00",
+        "letra": "miuda",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Bolinho de bacalhau                        34,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  #002 - Cód. 205 - 1 UN x 34,00",
+        "letra": "miuda",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Caipirinha                                 22,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  #003 - Cód. 110 - 1 UN x 22,00",
+        "letra": "miuda",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Taxa de servico                            11,20",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  #004 - Cód. 4 - 1 UN x 11,20",
+        "letra": "miuda",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Qtde. total de itens                           4",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "VALOR TOTAL R$                            123,20",
+        "letra": "destaque",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "FORMA DE PAGAMENTO                 VALOR PAGO R$",
+        "letra": "miuda",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Pix                                        60,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Dinheiro                                   70,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Troco R$                                    6,80",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Consulte pela Chave de Acesso em",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "www.sefaz.rs.gov.br/nfce/consulta",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "4326 1011 2223 3300 0181 6507",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "7000 0012 3412 0261 0283",
+        "letra": "normal",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "CONSUMIDOR NÃO IDENTIFICADO",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "NFC-e nº 1234 - Série 77",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Emissão 28/10/2026 21:41:00",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Protocolo de autorização: 243260000000001",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "Data de autorização: 28/10/2026 21:41:00",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "",
+        "letra": "forte",
+        "alinhamento": "centro",
+        "separador": false,
+        "especial": "qr",
+        "conteudo": "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx?p=43261011222333000181650770000012341202610283|2|2|1|0000000000000000000000000000000000000000"
+      },
+      {
+        "texto": "+------------------------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "|          SEM VALOR FISCAL          |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+------------------------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "------------------------------------------------",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "Documento de exemplo, sem valor fiscal",
+        "letra": "miuda",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "================================================",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": true
+      }
+    ]
+  }
+]

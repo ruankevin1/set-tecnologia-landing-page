@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { empresa } from '../data/empresa';
+// Cardápio de verdade dentro do celular: o print aparece primeiro e o catálogo só carrega
+// quando o quadro chega perto da tela. O catálogo libera a moldura apenas para este site.
+interface Props { poster: ImageMetadata; alt: string }
+const { poster, alt } = Astro.props;
+const endereco = import.meta.env.PUBLIC_CATALOGO_DEMO || empresa.catalogoDemo;
+---
+<figure class="ao-vivo" data-cardapio={endereco}>
+  <div class="quadro">
+    <Image src={poster} alt={alt} widths={[390, 780, 1000].filter((w) => w <= poster.width)} sizes="390px" format="webp" quality={90} loading="eager" fetchpriority="high" />
+  </div>
+  <figcaption>Cardápio de demonstração funcionando. Role a tela e abra os produtos.</figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cardapio]').forEach((caixa) => {
+    const abrir = () => {
+      const f = document.createElement('iframe');
+      f.src = caixa.dataset.cardapio!;
+      f.title = 'Cardápio online de demonstração';
+      f.loading = 'lazy';
+      f.addEventListener('load', () => caixa.classList.add('pronto'), { once: true });
+      caixa.querySelector('.quadro')!.append(f);
+    };
+    if (!('IntersectionObserver' in window)) return abrir();
+    const o = new IntersectionObserver((e) => {
+      if (e.some((x) => x.isIntersecting)) { o.disconnect(); abrir(); }
+    }, { rootMargin: '300px' });
+    o.observe(caixa);
+  });
+</script>
+
+<style>
+  .ao-vivo { margin: 0; width: min(408px, 92vw); margin-inline: auto; }
+  .quadro {
+    position: relative;
+    aspect-ratio: 408 / 780;
+    border: 9px solid #26241f;
+    border-radius: 34px;
+    overflow: hidden;
+    background: #141412;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -30px rgb(0 0 0 / .9);
+  }
+  .quadro :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 25px; }
+  .quadro :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 25px; background: #141412; opacity: 0; transition: opacity .4s; }
+  .pronto .quadro :global(iframe) { opacity: 1; }
+  figcaption { margin-top: 14px; text-align: center; font-family: var(--mono); font-size: 12.5px; color: var(--tinta-3); }
+</style>

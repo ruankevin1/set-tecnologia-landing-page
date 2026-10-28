@@ -1,0 +1,44 @@
+---
+// Grade de recursos em cartões com ícone e luz que acompanha o mouse (data-luz).
+import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
+interface Props { rotulo?: string; titulo: string; texto?: string; itens: { icone: NomeModulo; t: string; d: string }[]; colunas?: 3 | 4; id?: string }
+const { rotulo, titulo, texto, itens, colunas = 4, id } = Astro.props;
+---
+<section class="grade-cartoes envelope" id={id}>
+  <div class="cab" data-revelar>
+    {rotulo && <p class="rotulo">{rotulo}</p>}
+    <h2 class="titulo-secao" set:html={titulo} />
+    {texto && <p class="lead">{texto}</p>}
+  </div>
+  <ul style={`--colunas:${colunas}`}>
+    {itens.map((i, k) => (
+      <li class="cartao-rec" data-luz data-revelar style={`--atraso:${(k % colunas) * 0.06}s`}>
+        <span class="r-ico"><IconeModulo nome={i.icone} /></span>
+        <h3>{i.t}</h3>
+        <p>{i.d}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .grade-cartoes { padding-block: clamp(64px, 9vw, 112px); }
+  .cab { text-align: center; }
+  .cab .titulo-secao { margin: 14px auto 0; }
+  .cab .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab .lead { margin: 16px auto 0; }
+  ul { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(var(--colunas), minmax(0, 1fr)); gap: 14px; }
+  .cartao-rec { padding: 24px; border-radius: 14px; border: 1px solid var(--linha); background: linear-gradient(180deg, #181715, #131211); }
+  .r-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: var(--laranja-claro); background: linear-gradient(145deg, rgb(243 104 18 / .22), rgb(243 104 18 / .05)); border: 1px solid rgb(243 104 18 / .3); }
+  .r-ico :global(.ico) { width: 22px; height: 22px; }
+  h3 { margin-top: 18px; font-size: 19px; }
+  p { margin-top: 8px; color: var(--tinta-2); font-size: 15px; }
+  @media (max-width: 1000px) { ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) {
+    ul { gap: 10px; }
+    .cartao-rec { padding: 16px; }
+    h3 { margin-top: 12px; font-size: 16px; }
+    p { font-size: 13.5px; }
+  }
+  @media (max-width: 380px) { ul { grid-template-columns: 1fr; } }
+</style>

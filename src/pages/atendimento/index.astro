@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import TopoProduto from '../../components/TopoProduto.astro';
+import Vantagens from '../../components/Vantagens.astro';
+import Chamada from '../../components/Chamada.astro';
+
+const migalhas = [{ nome: 'Atendimento', href: '/atendimento' }];
+---
+<Base
+  titulo="Atendimento em todo o Rio Grande do Sul | Set Tecnologia"
+  descricao="A Set Tecnologia implanta e dá suporte ao sistema para restaurante em todo o Rio Grande do Sul. Fora do estado, implantação e treinamento a distância."
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo="Atendimento"
+    titulo="Em todo o Rio Grande do Sul, <em>com suporte de quem implantou.</em>"
+    texto="A Set Tecnologia atende restaurantes, bares e comércio em todo o Rio Grande do Sul. Fora do estado, a implantação e o treinamento são feitos a distância."
+    selos={[
+      { icone: 'pino', t: 'Todo o Rio Grande do Sul' },
+      { icone: 'caixa', t: 'Implantação na loja' },
+      { icone: 'suporte', t: 'Suporte por WhatsApp' },
+      { icone: 'rede', t: 'Outros estados a distância' },
+    ]}
+  />
+
+  <Vantagens
+    titulo="Como funciona <em>o atendimento</em>"
+    itens={[
+      { icone: 'caixa', t: 'Implantação', d: 'Cadastro do cardápio, impressoras, tablets, celulares dos garçons e configuração fiscal da NFC-e.' },
+      { icone: 'garcom', t: 'Treinamento', d: 'Caixa, garçons e cozinha, no horário de menor movimento, com a operação real.' },
+      { icone: 'suporte', t: 'Suporte', d: 'WhatsApp e acesso remoto direto com quem fez a implantação.' },
+    ]}
+  />
+
+  <Chamada />
+</Base>

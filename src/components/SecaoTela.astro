@@ -1,0 +1,59 @@
+---
+// Uma tela do sistema por seção: título e frase centralizados e a tela grande, na largura toda,
+// que chega inclinada e se endireita conforme a rolagem. Selos opcionais embaixo.
+import type { ImageMetadata } from 'astro';
+import Tela from './Tela.astro';
+interface Props { rotulo: string; titulo: string; texto: string; src: ImageMetadata; alt: string; tipo?: 'janela' | 'tablet'; selos?: string[]; id?: string }
+const { rotulo, titulo, texto, src, alt, tipo = 'janela', selos = [], id } = Astro.props;
+---
+<section class:list={['secao-tela', tipo]} id={id}>
+  <div class="envelope">
+    <div class="cab" data-revelar>
+      <p class="rotulo">{rotulo}</p>
+      <h2 class="titulo-secao" set:html={titulo} />
+      <p class="lead">{texto}</p>
+    </div>
+    <div class="palco" data-inclinar>
+      <div class="aura" aria-hidden="true"></div>
+      <Tela src={src} alt={alt} tipo={tipo} rolar sizes="(max-width: 1240px) 100vw, 1200px" larguras={[640, 960, 1440, 1920]} />
+    </div>
+    {selos.length > 0 && (
+      <ul class="selos">{selos.map((s, i) => <li data-revelar style={`--atraso:${i * 0.06}s`}><span aria-hidden="true">✓</span>{s}</li>)}</ul>
+    )}
+  </div>
+</section>
+
+<script>
+  // Sem "animation-timeline" (Safari, Firefox): a tela se endireita de uma vez quando entra na tela.
+  if (!CSS.supports('animation-timeline: view()')) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('reta'); io.unobserve(e.target); }
+    }), { threshold: .2 });
+    document.querySelectorAll('[data-inclinar]').forEach((el) => io.observe(el));
+  }
+</script>
+
+<style>
+  .secao-tela { scroll-margin-top: 80px; padding-block: clamp(72px, 10vw, 128px) clamp(24px, 4vw, 48px); overflow: clip; }
+  .cab { text-align: center; }
+  .cab .titulo-secao { margin: 14px auto 0; max-width: 22ch; }
+  .cab .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .cab .lead { margin: 16px auto 0; }
+  .palco { position: relative; isolation: isolate; margin-top: clamp(36px, 5vw, 56px); perspective: 1800px; }
+  .tablet .palco { max-width: 980px; margin-inline: auto; }
+  .aura { position: absolute; z-index: -1; inset: 6% 4% -4%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .34), transparent); filter: blur(60px); }
+  /* A animação da própria Tela fica de fora: aqui a seção inteira se endireita, mais forte. */
+  .palco :global(.quadro) { animation: none !important; }
+  @media (prefers-reduced-motion: no-preference) and (min-width: 761px) {
+    .palco > :global(.tela) { transform-origin: 50% 0; transition: transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s; }
+    :global(.js) .palco:not(.reta) > :global(.tela) { transform: rotateX(22deg) scale(.86) translateY(40px); opacity: .55; }
+    @supports (animation-timeline: view()) {
+      :global(.js) .palco:not(.reta) > :global(.tela) { transform: none; opacity: 1; transition: none;
+        animation: endireitar-secao linear both; animation-timeline: view(); animation-range: entry 5% cover 45%; }
+      @keyframes endireitar-secao { from { transform: rotateX(22deg) scale(.86) translateY(40px); opacity: .55; } to { transform: none; opacity: 1; } }
+    }
+  }
+  .selos { list-style: none; margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .selos li { display: inline-flex; align-items: center; gap: 9px; padding: 9px 15px 9px 9px; border-radius: 999px; font-size: 14.5px; font-weight: 500; background: rgb(255 255 255 / .04); border: 1px solid var(--linha-forte); }
+  .selos span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: rgb(243 104 18 / .18); color: var(--laranja-claro); }
+</style>

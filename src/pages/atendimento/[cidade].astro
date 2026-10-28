@@ -1,0 +1,122 @@
+---
+import Base from '../../layouts/Base.astro';
+import TopoProduto from '../../components/TopoProduto.astro';
+import Composicao from '../../components/Composicao.astro';
+import Chamada from '../../components/Chamada.astro';
+import Perguntas from '../../components/Perguntas.astro';
+import Icone from '../../components/Icone.astro';
+import { cidades, empresa, type Cidade } from '../../data/empresa';
+import balcao from '../../assets/telas2/balcao.png';
+import tablet from '../../assets/telas2/tablet-produto.png';
+import catalogo from '../../assets/telas/catalogo-celular.png';
+import gMesas from '../../assets/garcom/mesas.png';
+
+export function getStaticPaths() {
+  return cidades.map((c) => ({ params: { cidade: c.slug }, props: { c } }));
+}
+const { c } = Astro.props as { c: Cidade };
+const outras = cidades.filter((o) => o.slug !== c.slug);
+const migalhas = [{ nome: 'Atendimento', href: '/atendimento' }, { nome: c.nome, href: `/atendimento/${c.slug}` }];
+
+const recursos = [
+  'Caixa com balcão, mesas e comandas',
+  'Celular do garçom e tablet de mesa',
+  'Impressão por setor: cozinha, bar e copa',
+  'Delivery próprio sem comissão',
+  'Smart TEF na maquininha smart',
+  'NFC-e com contingência e XML para o contador',
+];
+
+const perguntas = [
+  ...c.perguntas,
+  { p: `Quanto custa o sistema em ${c.nome}?`, r: 'O valor depende do número de caixas, dos dispositivos e dos módulos. O orçamento sai na primeira conversa pelo WhatsApp.' },
+];
+
+const servico = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `Sistema para restaurante em ${c.nome}`,
+  serviceType: 'Implantação e suporte de sistema para restaurante',
+  provider: { '@id': `${empresa.site}/#empresa` },
+  areaServed: [c.nome, ...c.vizinhas].map((n) => ({ '@type': 'City', name: `${n}, RS` })),
+  description: c.descricao,
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo={`${c.titulo} | Set Tecnologia`}
+  descricao={c.descricao}
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+  dados={[servico, faq]}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo={`${c.nome}/RS · ${c.regiao}`}
+    titulo={`Sistema para restaurante <em>em ${c.nome}.</em>`}
+    texto={c.abertura}
+    cidade={c.nome}
+    selos={[
+      { icone: 'pino', t: `Implantação em ${c.nome}` },
+      { icone: 'suporte', t: 'Suporte de quem implantou' },
+      { icone: 'garcom', t: 'Garçom no celular' },
+      { icone: 'nfce', t: 'NFC-e no fechamento' },
+    ]}
+  >
+    <div class="vitrine"><Composicao principal={balcao} altPrincipal={`Tela Balcão do Set Tecnologia, sistema para restaurante usado em ${c.nome}`} tablet={tablet} altTablet="Tablet de mesa com o Filé à parmegiana e as etapas Retirar, Ponto da carne e Observação" celular={catalogo} altCelular="Cardápio online do delivery no celular do cliente" garcom={gMesas} altGarcom="App do garçom no celular com as mesas do salão" /></div>
+  </TopoProduto>
+
+  <section class="envelope corpo">
+    <div class="texto">
+      <h2>Como o sistema entra na rotina</h2>
+      <p>{c.cena}</p>
+      <h2>Atendimento em {c.nome}</h2>
+      <p>{c.atendimento}</p>
+      <ul class="recursos">
+        {recursos.map((r) => <li>{r}</li>)}
+      </ul>
+      <a class="link-seta" href="/sistema-para-restaurante">Ver todos os recursos do sistema</a>
+    </div>
+    <aside class="vizinhas" data-luz>
+      <p class="rotulo">Também atendemos</p>
+      <ul>{c.vizinhas.map((v) => <li>{v}</li>)}</ul>
+    </aside>
+  </section>
+
+  <Perguntas itens={perguntas} titulo={`Dúvidas de quem está em ${c.nome}`} />
+
+  <section class="envelope outras">
+    <p class="rotulo">Outras cidades</p>
+    <ul>
+      {outras.map((o) => (
+        <li><a href={`/atendimento/${o.slug}`}>{o.nome} <Icone nome="seta" /></a></li>
+      ))}
+    </ul>
+  </section>
+
+  <Chamada titulo={`Quer o Set no seu restaurante em ${c.nome}?`} />
+</Base>
+
+<style>
+  .corpo { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(40px, 6vw, 88px); padding-block: clamp(56px, 8vw, 96px); }
+  .texto h2 { font-size: clamp(24px, 2.6vw, 30px); }
+  .texto h2 + p { margin-top: 12px; color: var(--tinta-2); max-width: 62ch; }
+  .texto p + h2 { margin-top: 40px; }
+  .recursos { list-style: none; margin: 32px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; border-top: 1px solid var(--linha-forte); }
+  .recursos li { padding: 13px 0 13px 22px; border-bottom: 1px dashed var(--linha-forte); position: relative; }
+  .recursos li::before { content: ''; position: absolute; left: 2px; top: 22px; width: 8px; height: 1.5px; background: var(--laranja); }
+  .vitrine { max-width: 1040px; margin-inline: auto; }
+  .vizinhas { background: linear-gradient(180deg, #191816, #131211); border: 1px solid var(--linha); border-radius: 14px; padding: 24px; align-self: start; }
+  .vizinhas ul { list-style: none; margin-top: 14px; columns: 2; column-gap: 20px; }
+  .vizinhas li { padding: 5px 0; break-inside: avoid; font-size: 15.5px; }
+  .outras { padding-bottom: clamp(56px, 8vw, 96px); }
+  .outras ul { list-style: none; margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .outras a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border: 1px solid var(--linha-forte); border-radius: 999px; padding: 10px 16px; font-weight: 500; transition: border-color .15s; }
+  .outras a:hover { border-color: var(--laranja); }
+  .outras :global(svg) { width: 16px; height: 16px; }
+  @media (max-width: 860px) { .corpo { grid-template-columns: 1fr; } .recursos { grid-template-columns: 1fr; } }
+</style>

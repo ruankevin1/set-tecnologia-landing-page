@@ -1,0 +1,241 @@
+---
+// Formulário de contato: envia para /api/contato (e-mail pelo Resend). Pode aparecer mais de uma vez na página.
+// As listas de tipo e faturamento são as mesmas de api/contato.js.
+import Icone from './Icone.astro';
+interface Props { titulo?: string; texto?: string; cidade?: string }
+const { titulo = 'Fale com um especialista', texto = 'Retorno pelo WhatsApp, com a configuração indicada para a sua operação.', cidade = '' } = Astro.props;
+const tipos = ['Restaurante', 'Bar', 'Pizzaria', 'Lanchonete ou hamburgueria', 'Café ou padaria', 'Sorveteria ou açaí', 'Mercado ou conveniência', 'Outro'];
+const faixas = ['Até R$ 30 mil', 'R$ 30 mil a R$ 80 mil', 'R$ 80 mil a R$ 200 mil', 'Acima de R$ 200 mil'];
+const uid = `f${Math.random().toString(36).slice(2, 8)}`;
+const escolhas = [
+  { nome: 'tipo', rotulo: 'Tipo do negócio', opcoes: tipos },
+  { nome: 'faturamento', rotulo: 'Faturamento mensal', opcoes: faixas },
+];
+---
+<div class="cartao-form" data-formulario data-luz>
+  <form novalidate>
+    <div class="cab">
+      <h2>{titulo}</h2>
+      <p>{texto}</p>
+    </div>
+
+    <div class="grade">
+      <label class="campo"><span>Nome</span><input name="nome" autocomplete="name" placeholder="Seu nome" required maxlength="80" /><em></em></label>
+      <label class="campo"><span>Empresa</span><input name="empresa" autocomplete="organization" placeholder="Nome do estabelecimento" required maxlength="100" /><em></em></label>
+      <label class="campo"><span>WhatsApp</span><input name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(54) 99999-9999" required data-telefone /><em></em></label>
+      <label class="campo"><span>Cidade</span><input name="cidade" autocomplete="address-level2" placeholder="Ex.: Erechim" value={cidade} required maxlength="60" /><em></em></label>
+      {escolhas.map((e) => (
+        <div class="campo escolha" data-escolha>
+          <span id={`${uid}-${e.nome}`}>{e.rotulo}</span>
+          <input type="hidden" name={e.nome} value="" />
+          <button type="button" class="gatilho" aria-haspopup="listbox" aria-expanded="false" aria-labelledby={`${uid}-${e.nome} ${uid}-${e.nome}-v`}>
+            <span class="valor vazio" id={`${uid}-${e.nome}-v`}>Escolha</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <ul class="opcoes" role="listbox" aria-labelledby={`${uid}-${e.nome}`} hidden>
+            {e.opcoes.map((o) => <li role="option" tabindex="-1" aria-selected="false" data-valor={o}>{o}</li>)}
+          </ul>
+          <em></em>
+        </div>
+      ))}
+    </div>
+
+    <input class="armadilha" name="site" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+    <button class="botao botao-principal enviar" type="submit">
+      <span class="rot">Falar com especialista</span><Icone nome="seta" />
+    </button>
+    <p class="aviso" role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="pronto" hidden>
+    <span class="selo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+    <h2>Recebido.</h2>
+    <p>Um especialista da Set entra em contato pelo WhatsApp informado, no horário comercial.</p>
+  </div>
+</div>
+
+<script>
+  import { linkWhatsApp } from '../data/empresa';
+
+  const mascara = (v: string) => {
+    const d = v.replace(/\D/g, '').slice(0, 11);
+    if (d.length <= 2) return d.length ? `(${d}` : '';
+    if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-formulario]').forEach((caixa) => {
+    const form = caixa.querySelector('form')!;
+    const pronto = caixa.querySelector<HTMLElement>('.pronto')!;
+    const aviso = caixa.querySelector<HTMLElement>('.aviso')!;
+    const botao = caixa.querySelector<HTMLButtonElement>('.enviar')!;
+    const rot = botao.querySelector('.rot')!;
+    const rotulo = rot.textContent;
+
+    form.querySelector<HTMLInputElement>('[data-telefone]')?.addEventListener('input', (e) => {
+      const i = e.target as HTMLInputElement; i.value = mascara(i.value);
+    });
+    const limpar = (e: Event) => (e.target as HTMLElement).closest('.campo')?.classList.remove('com-erro');
+    form.addEventListener('input', limpar);
+    form.addEventListener('change', limpar);
+
+    // Seletores próprios (tipo e faturamento): a lista nativa do sistema sai clara e fora do visual do site.
+    caixa.querySelectorAll<HTMLElement>('[data-escolha]').forEach((campo) => {
+      const gatilho = campo.querySelector<HTMLButtonElement>('.gatilho')!;
+      const lista = campo.querySelector<HTMLUListElement>('.opcoes')!;
+      const valor = campo.querySelector<HTMLElement>('.valor')!;
+      const oculto = campo.querySelector<HTMLInputElement>('input[type=hidden]')!;
+      const opcoes = [...lista.querySelectorAll<HTMLLIElement>('[role=option]')];
+      const fechar = (foco = false) => {
+        lista.hidden = true; campo.classList.remove('aberto'); gatilho.setAttribute('aria-expanded', 'false');
+        if (foco) gatilho.focus();
+      };
+      const abrir = () => {
+        lista.hidden = false; campo.classList.add('aberto'); gatilho.setAttribute('aria-expanded', 'true');
+        (opcoes.find((o) => o.getAttribute('aria-selected') === 'true') ?? opcoes[0]).focus();
+      };
+      const escolher = (o: HTMLLIElement) => {
+        opcoes.forEach((x) => x.setAttribute('aria-selected', String(x === o)));
+        oculto.value = o.dataset.valor!; valor.textContent = o.dataset.valor!; valor.classList.remove('vazio');
+        campo.classList.remove('com-erro');
+        fechar(true);
+      };
+      gatilho.addEventListener('click', () => (lista.hidden ? abrir() : fechar()));
+      gatilho.addEventListener('keydown', (e) => {
+        if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) { e.preventDefault(); abrir(); }
+      });
+      opcoes.forEach((o, i) => {
+        o.addEventListener('click', () => escolher(o));
+        o.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown') { e.preventDefault(); opcoes[Math.min(i + 1, opcoes.length - 1)].focus(); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); opcoes[Math.max(i - 1, 0)].focus(); }
+          else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); escolher(o); }
+          else if (e.key === 'Escape') { e.preventDefault(); fechar(true); }
+          else if (e.key === 'Tab') fechar();
+        });
+      });
+      document.addEventListener('click', (e) => { if (!campo.contains(e.target as Node)) fechar(); });
+    });
+
+    const marcarErros = (erros: Record<string, string>) => {
+      form.querySelectorAll('.com-erro').forEach((el) => el.classList.remove('com-erro'));
+      for (const [campo, msg] of Object.entries(erros)) {
+        const box = form.querySelector(`[name="${campo}"]`)?.closest('.campo');
+        if (!box) continue;
+        box.classList.add('com-erro');
+        const em = box.querySelector('em');
+        if (em) em.textContent = msg;
+      }
+      (form.querySelector('.com-erro input:not([type=hidden]), .com-erro .gatilho') as HTMLElement | null)?.focus();
+    };
+
+    const validarLocal = (d: Record<string, string>) => {
+      const e: Record<string, string> = {};
+      if (d.nome.trim().length < 2) e.nome = 'Informe o nome.';
+      if (d.empresa.trim().length < 2) e.empresa = 'Informe a empresa.';
+      if (d.whatsapp.replace(/\D/g, '').length < 10) e.whatsapp = 'WhatsApp com DDD.';
+      if (d.cidade.trim().length < 2) e.cidade = 'Informe a cidade.';
+      if (!d.tipo) e.tipo = 'Escolha o tipo.';
+      if (!d.faturamento) e.faturamento = 'Escolha a faixa.';
+      return e;
+    };
+
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const d = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      d.tipo ??= ''; d.faturamento ??= '';
+      d.pagina = location.pathname;
+      const erros = validarLocal(d);
+      marcarErros(erros);
+      if (Object.keys(erros).length) return;
+
+      botao.disabled = true; caixa.classList.add('enviando'); rot.textContent = 'Enviando'; aviso.textContent = '';
+      try {
+        const r = await fetch('/api/contato', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j.ok) {
+          form.hidden = true; pronto.hidden = false; caixa.classList.add('enviado');
+          return;
+        }
+        if (j.erros) { marcarErros(j.erros); throw 0; }
+        throw new Error(j.erro);
+      } catch (e) {
+        if (e !== 0) {
+          const msg = `Olá! Sou ${d.nome}, da ${d.empresa} (${d.tipo}) em ${d.cidade}. Quero conhecer o sistema da Set Tecnologia.`;
+          aviso.innerHTML = `Não foi possível enviar agora. <a href="${linkWhatsApp(msg)}" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>`;
+        }
+      } finally {
+        botao.disabled = false; caixa.classList.remove('enviando'); rot.textContent = rotulo;
+      }
+    });
+  });
+</script>
+
+<style>
+  /* overflow visível: a lista dos seletores pode passar da borda do cartão. */
+  .cartao-form {
+    padding: clamp(22px, 2.6vw, 30px); position: relative; overflow: visible !important; z-index: 2;
+    background: rgb(24 23 21 / .82); border: 1px solid var(--linha-forte); border-radius: 16px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / .9);
+  }
+  form { display: grid; gap: 18px; }
+  form[hidden] { display: none; }
+  .cab h2 { font-size: clamp(22px, 2.2vw, 27px); }
+  .cab p { margin-top: 6px; color: var(--tinta-2); font-size: 14.5px; }
+  .grade { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .campo { display: grid; gap: 7px; font-size: 13.5px; font-weight: 500; color: var(--tinta-2); align-content: start; }
+  input:not([type=radio]), .gatilho {
+    font: 400 16px/1.4 var(--fonte); color: var(--tinta);
+    background: rgb(255 255 255 / .04); border: 1px solid var(--linha-forte); border-radius: 8px;
+    padding: 12px 13px; width: 100%; min-width: 0; height: 48px; transition: border-color .15s, background-color .15s;
+  }
+  .escolha { position: relative; }
+  .gatilho { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
+  .gatilho .valor { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gatilho .vazio { color: #6f6a62; }
+  .gatilho svg { width: 16px; height: 16px; flex: none; color: #a8a29a; transition: transform .2s; }
+  .aberto .gatilho { border-color: var(--laranja); background-color: rgb(243 104 18 / .06); }
+  .aberto .gatilho svg { transform: rotate(180deg); }
+  .opcoes {
+    position: absolute; z-index: 30; left: 0; top: calc(100% + 6px); width: max(100%, 270px);
+    list-style: none; margin: 0; padding: 6px; border-radius: 12px;
+    background: #1f1d1a; border: 1px solid rgb(255 255 255 / .14); box-shadow: 0 24px 50px -16px rgb(0 0 0 / .9);
+    animation: abrir-lista .16s ease-out;
+  }
+  .escolha:last-child .opcoes { left: auto; right: 0; }
+  @keyframes abrir-lista { from { opacity: 0; transform: translateY(-4px); } }
+  .opcoes li { position: relative; white-space: nowrap; padding: 10px 12px 10px 32px; border-radius: 8px; font-size: 15px; color: var(--tinta-2); cursor: pointer; outline: none; }
+  .opcoes li:hover, .opcoes li:focus { background: rgb(243 104 18 / .14); color: var(--tinta); }
+  .opcoes li[aria-selected='true'] { color: var(--tinta); }
+  .opcoes li[aria-selected='true']::before { content: '✓'; position: absolute; left: 11px; color: var(--laranja-claro); font-size: 13px; top: 50%; transform: translateY(-50%); }
+  input::placeholder { color: #6f6a62; }
+  input:hover, .gatilho:hover { border-color: rgb(255 255 255 / .28); }
+  input:focus, .gatilho:focus-visible { outline: none; border-color: var(--laranja); background-color: rgb(243 104 18 / .06); }
+  em { font-style: normal; font-size: 13px; color: #ff8f6b; display: none; }
+  .com-erro em { display: block; }
+  .com-erro input, .com-erro .gatilho { border-color: #ff8f6b; }
+
+  .armadilha { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .enviar { width: 100%; height: 54px; }
+  .enviar :global(svg) { transition: transform .2s; }
+  .enviar:hover :global(svg) { transform: translateX(4px); }
+  .enviando .enviar { opacity: .75; cursor: progress; }
+  .enviando .enviar :global(svg) { animation: ir 0.9s ease-in-out infinite; }
+  @keyframes ir { 50% { transform: translateX(6px); } }
+  .aviso { font-size: 14px; color: #ff8f6b; min-height: 1px; }
+  .aviso:empty { display: none; }
+  .aviso :global(a) { color: var(--tinta); }
+
+  .pronto { display: grid; justify-items: start; gap: 14px; padding-block: 18px; }
+  .pronto[hidden] { display: none; }
+  .selo { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: rgb(243 104 18 / .15); color: var(--laranja-claro); animation: surgir .5s cubic-bezier(.2,.8,.2,1.2); }
+  .selo svg { width: 28px; height: 28px; stroke-dasharray: 30; stroke-dashoffset: 30; animation: traco .5s .25s forwards; }
+  @keyframes surgir { from { transform: scale(.4); opacity: 0; } }
+  @keyframes traco { to { stroke-dashoffset: 0; } }
+  .pronto h2 { font-size: 30px; }
+  .pronto p { color: var(--tinta-2); max-width: 40ch; }
+
+  @media (max-width: 420px) { .grade { grid-template-columns: 1fr; } }
+</style>

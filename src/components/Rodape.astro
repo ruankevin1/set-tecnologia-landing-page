@@ -1,0 +1,55 @@
+---
+import Marca from './Marca.astro';
+import Icone from './Icone.astro';
+import { empresa } from '../data/empresa';
+const ano = new Date().getFullYear();
+---
+<footer class="rodape">
+  <div class="envelope grade">
+    <div class="sobre">
+      <Marca claro />
+      <p>Sistema para restaurantes, bares e comércio, com implantação e suporte próprios em todo o Rio Grande do Sul.</p>
+      <a class="botao botao-principal falar" href="#contato">Falar com especialista <Icone nome="seta" /></a>
+    </div>
+    <nav aria-label="Módulos do sistema">
+      <p class="rotulo">Sistema</p>
+      <a href="/sistema-para-restaurante">Caixa e balcão</a>
+      <a href="/sistema-para-restaurante#salao">Salão e comandas</a>
+      <a href="/sistema-para-restaurante#garcom">App do garçom</a>
+      <a href="/sistema-para-restaurante#tablet">Tablet de mesa</a>
+      <a href="/cardapio-digital-e-delivery">Delivery</a>
+      <a href="/sistema-para-restaurante#relatorios">Relatórios</a>
+    </nav>
+    <nav aria-label="Produtos">
+      <p class="rotulo">Produtos</p>
+      <a href="/sistema-para-restaurante">Sistema para restaurante</a>
+      <a href="/cardapio-digital-e-delivery">Cardápio digital e delivery</a>
+      <a href="/smart-tef">Smart TEF</a>
+      <a href={empresa.pdvPlus} target="_blank" rel="noopener">PDV+</a>
+    </nav>
+    <nav aria-label="Atendimento">
+      <p class="rotulo">Atendimento</p>
+      <a href="/atendimento">Todo o Rio Grande do Sul</a>
+      <a href="/atendimento">Outros estados, a distância</a>
+    </nav>
+  </div>
+  <div class="envelope base">
+    <p>© {ano} Set Tecnologia</p>
+    <p>Atendimento em todo o Rio Grande do Sul. Implantação a distância para o resto do Brasil.</p>
+  </div>
+</footer>
+
+<style>
+  .rodape { background: var(--noite); color: #c8c3b9; border-top: 1px solid #34322e; padding-top: 64px; font-size: 15px; }
+  .grade { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 48px; }
+  .sobre p { margin-top: 18px; max-width: 36ch; }
+  .tel a { color: var(--tinta); text-decoration: none; font-family: var(--mono); font-size: 15px; }
+  nav { display: grid; align-content: start; gap: 10px; }
+  .rotulo { color: #8f8a80; margin-bottom: 6px; }
+  nav a { text-decoration: none; color: #c8c3b9; padding-block: 3px; }
+  nav a:hover { color: var(--tinta); }
+  .falar { margin-top: 22px; height: 46px; font-size: 15px; }
+  .base { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-top: 1px solid #34322e; padding-block: 22px 28px; font-size: 13.5px; color: #8f8a80; }
+  @media (max-width: 900px) { .grade { grid-template-columns: 1fr 1fr 1fr; } .sobre { grid-column: 1 / -1; } }
+  @media (max-width: 600px) { .grade { grid-template-columns: 1fr 1fr; } .sobre { grid-column: 1 / -1; } }
+</style>

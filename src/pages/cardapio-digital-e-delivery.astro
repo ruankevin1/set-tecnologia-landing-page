@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import TopoProduto from '../components/TopoProduto.astro';
+import Vantagens from '../components/Vantagens.astro';
+import SecaoTela from '../components/SecaoTela.astro';
+import Destaque from '../components/Destaque.astro';
+import Tela from '../components/Tela.astro';
+import GradeCartoes from '../components/GradeCartoes.astro';
+import CardapioAoVivo from '../components/CardapioAoVivo.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Chamada from '../components/Chamada.astro';
+import { empresa } from '../data/empresa';
+
+import celular from '../assets/telas/catalogo-celular.png';
+import delivery from '../assets/telas2/delivery-quadro.png';
+import relatorios from '../assets/telas2/relatorios.png';
+
+const migalhas = [{ nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery' }];
+
+const itens = [
+  { icone: 'link', t: 'Endereço próprio da loja', d: 'Cada loja tem o seu link, como reisrestaurante.enviarpedido.com.br, para o Instagram, o Google e o WhatsApp.' },
+  { icone: 'cardapio', t: 'Cardápio vindo do sistema', d: 'Produtos, fotos, preços e complementos saem do cadastro do caixa. Produto em falta some do cardápio.' },
+  { icone: 'pino', t: 'Entrega e retirada', d: 'Taxa fixa ou por distância, retirada no balcão e localização do cliente no mapa.' },
+  { icone: 'dinheiro', t: 'Pagamento na entrega', d: 'Dinheiro, Pix, crédito ou débito, com troco informado pelo cliente no pedido.' },
+  { icone: 'relogio', t: 'Horário de funcionamento', d: 'O cardápio abre e fecha sozinho pelo horário da loja, com o tempo de preparo informado.' },
+  { icone: 'nuvem', t: '99Food no mesmo quadro', d: 'Pedidos do 99Food entram junto com os do cardápio online, com aceite, preparo e entrega no caixa.' },
+  { icone: 'motoboy', t: 'Motoboys', d: 'Cada entrega vinculada ao motoboy, com acerto no fim do turno.' },
+  { icone: 'impressora', t: 'Impresso na cozinha', d: 'O pedido aceito sai impresso no setor certo, sem redigitar nada.' },
+] as const;
+
+const perguntas = [
+  { p: 'Precisa ter o sistema Set Tecnologia no caixa?', r: 'Sim. O cardápio online é ligado ao caixa: os produtos vêm do cadastro do sistema e os pedidos entram direto no quadro de delivery.' },
+  { p: 'Tem comissão sobre os pedidos?', r: 'Não. O cardápio online não cobra porcentagem sobre as vendas.' },
+  { p: 'Recebe pedidos do 99Food?', r: 'Sim. Os pedidos do 99Food entram no mesmo quadro de delivery do caixa e saem impressos na cozinha, sem redigitar.' },
+  { p: 'O cliente precisa baixar aplicativo?', r: 'Não. O cardápio abre no navegador do celular pelo link da loja.' },
+];
+
+const servico = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Cardápio digital e delivery próprio',
+  serviceType: 'Cardápio online para restaurante com pedido direto no caixa',
+  provider: { '@id': `${empresa.site}/#empresa` },
+  areaServed: { '@type': 'Country', name: 'Brasil' },
+  description: 'Cardápio online com link próprio da loja, pedidos do 99Food no mesmo quadro, pedido direto no caixa e sem comissão por pedido.',
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo="Cardápio digital e delivery sem comissão | Set Tecnologia"
+  descricao="Cardápio online com link próprio, pedido direto no caixa e 99Food no mesmo quadro. Delivery sem comissão por pedido, integrado ao sistema Set Tecnologia."
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+  dados={[servico, faq]}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo="Cardápio digital · delivery próprio"
+    titulo="Delivery próprio, <em>sem comissão por pedido.</em>"
+    texto="Um cardápio online com o endereço da sua loja, montado como um feed: fotos grandes, categorias em bolinhas e destaques que deslizam. O pedido entra direto no caixa e na impressora da cozinha."
+    selos={[
+      { icone: 'dinheiro', t: '0% de comissão' },
+      { icone: 'caixa', t: 'Pedido direto no caixa' },
+      { icone: 'nuvem', t: '99Food no mesmo quadro' },
+      { icone: 'garcom', t: 'Sem aplicativo para baixar' },
+    ]}
+  >
+    <div class="aparelho">
+      <div class="aura" aria-hidden="true"></div>
+      <CardapioAoVivo poster={celular} alt="Cardápio online do Reis Restaurante no celular, com destaque e grupos do cardápio" />
+    </div>
+  </TopoProduto>
+
+  <Vantagens
+    titulo="A loja no celular do cliente, <em>o pedido no caixa.</em>"
+    itens={[
+      { icone: 'dinheiro', t: 'O pedido é da loja', d: 'Sem porcentagem sobre as vendas do cardápio online. O cliente e o histórico ficam com você.' },
+      { icone: 'raio', t: 'Sem redigitar', d: 'O pedido entra no quadro do delivery e sai impresso na cozinha assim que é aceito.' },
+      { icone: 'link', t: 'Divulgue onde quiser', d: 'Um link próprio para o Instagram, o Google e o WhatsApp da loja.' },
+    ]}
+  />
+
+  <Destaque rotulo="Um conceito diferente" titulo="Um cardápio que funciona <em>como o feed do Instagram.</em>" texto="Nada de lista de nomes e preços. O cliente rola por fotos grandes dos pratos, abre as categorias em bolinhas como os stories e vê os destaques deslizando no topo. Dá fome antes de escolher." pontos={['Fotos grandes de cada produto, em feed', 'Categorias em bolinhas, como os stories', 'Destaques e mais pedidos deslizando no topo', 'Cores e logo da loja']}>
+    <div class="feed"><Tela src={celular} alt="Cardápio online em formato de feed, com destaques em foto grande e categorias em bolinhas" tipo="celular" sizes="340px" larguras={[400, 680, 1000]} /></div>
+  </Destaque>
+
+  <SecaoTela id="99food" rotulo="No caixa" titulo="Site, telefone e 99Food <em>no mesmo quadro.</em>" texto="Os pedidos de todos os canais aparecem juntos no Set Tecnologia: novo, aceito, preparo, pronto, saiu e entregue." src={delivery} alt="Quadro do Delivery do Set Tecnologia com pedidos nas colunas Aceito, Preparo e Pronto" selos={['Aceite manual ou automático', 'Impressão na cozinha ao aceitar', 'Motoboy vinculado a cada entrega']} />
+
+  <SecaoTela id="motoboys" rotulo="No fim do dia" titulo="Repasses e entregas <em>conferidos.</em>" texto="Relatório de pedidos do delivery, acerto de cada motoboy e repasses do 99Food no fechamento." src={relatorios} alt="Tela de Relatórios com seção de delivery e repasses do 99Food" selos={['Pedidos por canal e por período', 'Acerto dos motoboys', 'Repasses do 99Food']} />
+
+  <GradeCartoes rotulo="Como funciona" titulo="Tudo o que o delivery <em>precisa.</em>" itens={itens} />
+  <Perguntas itens={perguntas} />
+  <Chamada titulo="Quer o seu delivery sem comissão?" />
+</Base>
+
+<style>
+  .feed { width: min(340px, 80vw); margin-inline: auto; }
+  .aparelho { position: relative; isolation: isolate; display: flex; justify-content: center; }
+  .aura { position: absolute; z-index: -1; inset: 0 -10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .3), transparent); filter: blur(40px); }
+</style>

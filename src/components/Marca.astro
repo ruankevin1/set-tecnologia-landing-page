@@ -1,0 +1,25 @@
+---
+// Raio do ícone do Set Tecnologia, redesenhado em vetor a partir do app_icon.
+interface Props { tamanho?: number; comNome?: boolean; claro?: boolean }
+const { tamanho = 28, comNome = true, claro = false } = Astro.props;
+const idDoDegrade = `raio-${Math.random().toString(36).slice(2, 8)}`;
+---
+<span class:list={['marca', { claro }]}>
+  <svg width={tamanho * 0.72} height={tamanho} viewBox="0 0 120 172" aria-hidden="true">
+    <defs>
+      <linearGradient id={idDoDegrade} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FA9A43" />
+        <stop offset="1" stop-color="#F26B1D" />
+      </linearGradient>
+    </defs>
+    <path fill={`url(#${idDoDegrade})`} d="M117 1 L76 68 L95 110 Q99 118 93 125 L6 169 Q0 171 2 165 L39 103 L20 63 Q15 53 24 47 Z" />
+    <path fill="#D9570A" opacity=".28" d="M20 63 L76 68 L95 110 L39 103 Z" />
+  </svg>
+  {comNome && <span class="nome">Set Tecnologia</span>}
+</span>
+
+<style>
+  .marca { display: inline-flex; align-items: center; gap: 10px; }
+  .nome { font-weight: 600; font-size: 18px; letter-spacing: -0.02em; color: var(--tinta); }
+  
+</style>

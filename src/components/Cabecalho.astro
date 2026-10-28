@@ -1,0 +1,193 @@
+---
+// Barra flutuante com os menus de soluções e integrações (o painel abre no clique ou pelo teclado).
+// No celular, os mesmos grupos aparecem na gaveta.
+import Marca from './Marca.astro';
+import Icone from './Icone.astro';
+import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
+import { empresa } from '../data/empresa';
+
+type Item = { nome: string; texto: string; href: string; icone: NomeModulo };
+const S = '/sistema-para-restaurante';
+const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item[] }[] }[] = [
+  {
+    id: 'solucoes',
+    rotulo: 'Soluções',
+    grupos: [
+      { titulo: 'Salão e balcão', itens: [
+        { nome: 'Caixa e balcão', texto: 'Venda por foto, busca ou código', href: S, icone: 'caixa' },
+        { nome: 'Salão e comandas', texto: 'Mapa das mesas e comandas', href: `${S}#salao`, icone: 'salao' },
+        { nome: 'App do garçom', texto: 'Pedido na mesa pelo celular', href: `${S}#garcom`, icone: 'garcom' },
+        { nome: 'Tablet de mesa', texto: 'O cliente pede pela mesa', href: `${S}#tablet`, icone: 'tablet' },
+        { nome: 'Conta dividida', texto: 'Por pessoa, item ou partes', href: `${S}#conta`, icone: 'dividir' },
+      ] },
+      { titulo: 'Delivery', itens: [
+        { nome: 'Cardápio online', texto: 'Delivery próprio sem comissão', href: '/cardapio-digital-e-delivery', icone: 'cardapio' },
+        { nome: 'Quadro de pedidos', texto: 'Site, telefone e 99Food juntos', href: '/cardapio-digital-e-delivery#99food', icone: 'delivery' },
+        { nome: 'Motoboys', texto: 'Entregas e acerto do turno', href: '/cardapio-digital-e-delivery#motoboys', icone: 'motoboy' },
+      ] },
+      { titulo: 'Gestão e fiscal', itens: [
+        { nome: 'Cozinha e impressos', texto: 'Cada papel no setor certo', href: `${S}#impressos`, icone: 'impressora' },
+        { nome: 'Relatórios', texto: 'Vendas, operadores e repasses', href: `${S}#relatorios`, icone: 'relatorios' },
+        { nome: 'Estoque', texto: 'Baixa pela venda e alerta', href: `${S}#gestao`, icone: 'estoque' },
+        { nome: 'NFC-e', texto: 'Nota no fechamento e XML', href: `${S}#gestao`, icone: 'nfce' },
+      ] },
+    ],
+  },
+  {
+    id: 'integracoes',
+    rotulo: 'Integrações',
+    grupos: [
+      { titulo: 'Integrações', itens: [
+        { nome: 'Smart TEF', texto: 'Valor direto na maquininha', href: '/smart-tef', icone: 'tef' },
+        { nome: '99Food', texto: 'Pedidos do app no caixa', href: '/cardapio-digital-e-delivery#99food', icone: 'nuvem' },
+        { nome: 'Maquininhas', texto: 'Rede, Cielo, Stone e outras', href: '/smart-tef#maquininhas', icone: 'dinheiro' },
+        { nome: 'SEFAZ', texto: 'NFC-e e a regra da Nota Integrada', href: '/smart-tef#nota-integrada', icone: 'escudo' },
+      ] },
+    ],
+  },
+];
+---
+<header class="cabecalho">
+  <div class="envelope barra">
+    <a href="/" class="inicio" aria-label="Set Tecnologia, página inicial"><Marca /></a>
+
+    <nav aria-label="Principal" class="nav">
+      {menus.map((m) => (
+        <div class="menu" data-menu>
+          <button type="button" class="abre" aria-expanded="false" aria-controls={`painel-${m.id}`}>
+            {m.rotulo}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class:list={['painel', { largo: m.grupos.length > 1 }]} id={`painel-${m.id}`} hidden>
+            {m.grupos.map((g) => (
+              <div class="grupo">
+                <p class="grupo-titulo">{g.titulo}</p>
+                <ul>
+                  {g.itens.map((i) => (
+                    <li><a href={i.href}>
+                      <span class="m-ico"><IconeModulo nome={i.icone} /></span>
+                      <span><b>{i.nome}</b><small>{i.texto}</small></span>
+                    </a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <a href={empresa.pdvPlus} class="externo" target="_blank" rel="noopener">PDV+ <Icone nome="seta-fora" /></a>
+    </nav>
+
+    <a class="botao chamar" href="#contato">
+      <span>Falar com especialista</span> <Icone nome="seta" />
+    </a>
+
+    <details class="menu-celular">
+      <summary aria-label="Abrir menu"><Icone nome="menu" /></summary>
+      <div class="gaveta">
+        {menus.flatMap((m) => m.grupos).map((g) => (
+          <div class="g-grupo">
+            <p class="grupo-titulo">{g.titulo}</p>
+            {g.itens.map((i) => <a href={i.href}><span class="m-ico"><IconeModulo nome={i.icone} /></span>{i.nome}</a>)}
+          </div>
+        ))}
+        <a class="g-pdv" href={empresa.pdvPlus} target="_blank" rel="noopener">PDV+ <Icone nome="seta-fora" /></a>
+        <a class="botao botao-principal" href="#contato">Falar com especialista <Icone nome="seta" /></a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script>
+  const menus = [...document.querySelectorAll<HTMLElement>('[data-menu]')];
+  const fechar = (m: HTMLElement) => {
+    m.querySelector('.abre')!.setAttribute('aria-expanded', 'false');
+    m.querySelector<HTMLElement>('.painel')!.hidden = true;
+    m.classList.remove('aberto');
+  };
+  const abrir = (m: HTMLElement) => {
+    menus.forEach((o) => o !== m && fechar(o));
+    m.querySelector('.abre')!.setAttribute('aria-expanded', 'true');
+    m.querySelector<HTMLElement>('.painel')!.hidden = false;
+    m.classList.add('aberto');
+  };
+  menus.forEach((m) => {
+    const botao = m.querySelector<HTMLButtonElement>('.abre')!;
+    botao.addEventListener('click', () => (m.classList.contains('aberto') ? fechar(m) : abrir(m)));
+    m.addEventListener('keydown', (e) => { if (e.key === 'Escape') { fechar(m); botao.focus(); } });
+    m.addEventListener('focusout', (e) => { if (!m.contains(e.relatedTarget as Node)) fechar(m); });
+    m.querySelectorAll('.painel a').forEach((a) => a.addEventListener('click', () => fechar(m)));
+  });
+  document.addEventListener('click', (e) => menus.forEach((m) => !m.contains(e.target as Node) && fechar(m)));
+  // Página sem o formulário (a de erro): o botão leva ao formulário da inicial.
+  if (!document.getElementById('contato')) document.querySelectorAll<HTMLAnchorElement>('a[href="#contato"]').forEach((a) => (a.href = '/#contato'));
+  // A gaveta do celular fecha ao escolher um destino da mesma página.
+  document.querySelectorAll('.menu-celular a').forEach((a) => a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')));
+</script>
+
+<style>
+  /* Barra flutuante: solta do topo, cantos arredondados e fundo translúcido. */
+  .cabecalho { position: sticky; top: 12px; z-index: 20; padding-inline: var(--gutter); margin-top: 12px; }
+  .barra {
+    display: flex; align-items: center; gap: 24px; height: 64px; max-width: var(--largura); margin-inline: auto;
+    padding-inline: 18px 10px !important; border-radius: 14px;
+    background: rgb(24 23 21 / .78); border: 1px solid rgb(255 255 255 / .09);
+    backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 18px 40px -24px rgb(0 0 0 / .9);
+  }
+  .barra.envelope { width: auto; }
+  .inicio { text-decoration: none; margin-right: auto; }
+  .nav { display: flex; align-items: center; gap: 6px; font-size: 15px; }
+  .nav > a, .abre { text-decoration: none; color: var(--tinta-2); padding: 8px 12px; border-radius: 9px; transition: color .15s, background-color .15s; display: inline-flex; align-items: center; gap: 5px; }
+  .abre { all: unset; cursor: pointer; color: var(--tinta-2); padding: 8px 12px; border-radius: 9px; display: inline-flex; align-items: center; gap: 5px; transition: color .15s, background-color .15s; }
+  .abre svg { width: 15px; height: 15px; transition: transform .2s; }
+  .nav > a:hover, .abre:hover, .aberto .abre { color: var(--tinta); background: rgb(255 255 255 / .05); }
+  .aberto .abre svg { transform: rotate(180deg); }
+  .abre:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+  .nav .externo :global(svg) { width: 14px; height: 14px; }
+
+  .menu { position: relative; }
+  .painel {
+    position: absolute; top: calc(100% + 14px); left: 50%; transform: translateX(-50%); z-index: 30;
+    display: grid; grid-template-columns: 1fr; gap: 6px 22px; padding: 18px; width: 330px;
+    background: #1c1a17; border: 1px solid rgb(255 255 255 / .12); border-radius: 16px;
+    box-shadow: 0 34px 70px -24px rgb(0 0 0 / .95), 0 0 60px -30px rgb(243 104 18 / .5);
+    animation: descer .18s ease-out;
+  }
+  .painel.largo { grid-template-columns: repeat(3, 230px); width: auto; left: 0; transform: translateX(-30%); }
+  .painel[hidden] { display: none; }
+  @keyframes descer { from { opacity: 0; transform: translate(var(--tx, -50%), -6px); } }
+  .painel.largo { --tx: -30%; }
+  .grupo-titulo { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); padding: 4px 10px 8px; }
+  .grupo ul { list-style: none; display: grid; gap: 2px; }
+  .grupo a { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center; padding: 9px 10px; border-radius: 10px; text-decoration: none; transition: background-color .15s; }
+  .grupo a:hover, .grupo a:focus-visible { background: rgb(243 104 18 / .12); outline: none; }
+  .grupo b { display: block; font-weight: 600; font-size: 14.5px; color: var(--tinta); }
+  .grupo small { display: block; font-size: 12.5px; color: var(--tinta-3); margin-top: 1px; }
+  .m-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--laranja-claro); background: rgb(243 104 18 / .13); border: 1px solid rgb(243 104 18 / .28); }
+  .m-ico :global(.ico) { width: 18px; height: 18px; }
+  .grupo a:hover .m-ico { background: var(--laranja); border-color: var(--laranja); color: #fff; }
+
+  .chamar { height: 44px; padding: 0 16px; font-size: 15px; background: var(--laranja); color: #fff; border-radius: 10px; }
+  .chamar:hover { background: var(--laranja-escuro); }
+  .chamar :global(svg) { width: 17px; height: 17px; }
+
+  .menu-celular { display: none; position: relative; }
+  .menu-celular summary { list-style: none; cursor: pointer; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--linha-forte); border-radius: 10px; }
+  .menu-celular summary::-webkit-details-marker { display: none; }
+  .menu-celular summary :global(svg) { width: 22px; height: 22px; }
+  .gaveta {
+    position: absolute; right: 0; top: 56px; width: min(340px, calc(100vw - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto;
+    background: #1a1917; border: 1px solid var(--linha); border-radius: 16px;
+    padding: 10px; display: grid; gap: 6px; box-shadow: 0 24px 50px -20px rgb(0 0 0 / .8);
+  }
+  .g-grupo { display: grid; gap: 2px; padding-bottom: 6px; border-bottom: 1px solid var(--linha); }
+  .g-grupo a { display: flex; align-items: center; gap: 12px; padding: 8px 10px; text-decoration: none; border-radius: 10px; color: var(--tinta); font-size: 15px; }
+  .g-grupo a:hover { background: rgb(255 255 255 / .05); }
+  .g-grupo .m-ico { width: 32px; height: 32px; }
+  .g-pdv { display: flex; align-items: center; gap: 6px; padding: 10px; text-decoration: none; color: var(--tinta-2); }
+  .g-pdv :global(svg) { width: 14px; height: 14px; }
+  .gaveta .botao { margin-top: 4px; }
+
+  @media (max-width: 1080px) { .nav { display: none; } .menu-celular { display: block; } }
+  @media (max-width: 560px) { .chamar { display: none; } }
+</style>
