@@ -35,21 +35,37 @@ const vez = [
 
 <script>
   // A tela da vez: o nome troca embaixo da cena e a tela correspondente sobe e acende.
+  // O mouse manda: a peça embaixo dele vem para a frente e a troca automática espera;
+  // ao sair da cena, a troca volta a partir da peça que o mouse deixou.
   document.querySelectorAll<HTMLElement>('[data-vez]').forEach((caixa) => {
     const lista = JSON.parse(caixa.dataset.vez!) as { nome: string; alvo: string }[];
     const cena = caixa.previousElementSibling as HTMLElement;
     const nome = caixa.querySelector<HTMLElement>('.vez-nome')!;
+    const parado = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let i = 0;
+    let troca: number | undefined;
+    let giro: number | undefined;
     const focar = () => {
       cena.querySelectorAll('.em-foco').forEach((e) => e.classList.remove('em-foco'));
       cena.querySelector(`.${lista[i].alvo}`)?.classList.add('em-foco');
     };
-    cena.classList.add('com-foco'); focar();
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    setInterval(() => {
+    const irPara = (j: number) => {
+      if (j === i) return;
+      i = j; focar();
+      clearTimeout(troca);
       nome.classList.add('saindo');
-      setTimeout(() => { i = (i + 1) % lista.length; nome.textContent = lista[i].nome; nome.classList.remove('saindo'); focar(); }, 320);
-    }, 2600);
+      troca = window.setTimeout(() => { nome.textContent = lista[i].nome; nome.classList.remove('saindo'); }, parado ? 0 : 320);
+    };
+    const girar = () => {
+      clearInterval(giro);
+      if (!parado) giro = window.setInterval(() => irPara((i + 1) % lista.length), 2600);
+    };
+    cena.classList.add('com-foco'); focar(); girar();
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    lista.forEach(({ alvo }, j) => {
+      cena.querySelector<HTMLElement>(`.${alvo}`)?.addEventListener('pointerenter', () => { clearInterval(giro); irPara(j); });
+    });
+    cena.addEventListener('pointerleave', girar);
   });
 </script>
 

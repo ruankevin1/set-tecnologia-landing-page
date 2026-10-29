@@ -18,12 +18,12 @@ import produtos from '../assets/telas2/vendas-por-produto.png';
 import tablet from '../assets/telas2/tablet-produto.png';
 import catalogo from '../assets/telas/catalogo-celular.png';
 import gMesas from '../assets/garcom/mesas.png';
-import gAvisos from '../assets/garcom/avisos.png';
-import gOpcoes from '../assets/garcom/mesa-opcoes.png';
+import gAvisosClaro from '../assets/garcom/avisos-claro.png';
+import gTransferir from '../assets/garcom/transferir.png';
 const telasDoGarcom = [
-  { src: gMesas, alt: 'App do garçom no celular com as mesas do salão, valores e a mesa 1 chamando', legenda: 'Mesas ocupadas, valor e quem chamou' },
-  { src: gAvisos, alt: 'Aviso da mesa 1 chamando o garçom, com o botão Assumir', legenda: 'Mesa chamou: o garçom assume o atendimento' },
-  { src: gOpcoes, alt: 'Opções da mesa 1: aviso da mesa, transferir consumo e liberar mesa', legenda: 'Transferir consumo e liberar a mesa' },
+  { src: gMesas, alt: 'App do garçom no modo escuro com as mesas do salão, o valor e as comandas de cada uma, a mesa 1 chamando e as mesas paradas', legenda: 'Mesas, comandas e quem chamou', modo: 'escuro' },
+  { src: gAvisosClaro, alt: 'App do garçom no modo claro com os avisos do salão: a mesa 1 chamou o garçom, com o botão Assumir, e as mesas sem pedido há mais tempo', legenda: 'Mesa chamou: o garçom assume o atendimento', modo: 'claro' },
+  { src: gTransferir, alt: 'Transferir de Mesa 2, no modo escuro: as duas caipirinhas marcadas, item por item, antes de escolher a mesa', legenda: 'Transferir só uma parte, item por item', modo: 'escuro' },
 ];
 import contaPartes from '../assets/telas2/fechar-mesa-partes.png';
 import mesaPedido from '../assets/telas2/mesa-pedido.png';
@@ -86,7 +86,7 @@ const faq = {
       { icone: 'nfce', t: 'NFC-e no fechamento' },
     ]}
   >
-    <div class="vitrine"><Composicao principal={balcao} altPrincipal="Tela Balcão do Set Tecnologia com grade de produtos e venda em andamento" tablet={tablet} altTablet="Tablet de mesa com o Filé à parmegiana e as etapas Retirar, Ponto da carne e Observação" celular={catalogo} altCelular="Cardápio online do delivery no celular do cliente" garcom={gMesas} altGarcom="App do garçom no celular com as mesas do salão" /></div>
+    <div class="vitrine"><Composicao vitrine principal={balcao} altPrincipal="Tela Balcão do Set Tecnologia com grade de produtos e venda em andamento" tablet={tablet} altTablet="Tablet de mesa com o Filé à parmegiana e as etapas Retirar, Ponto da carne e Observação" celular={catalogo} altCelular="Cardápio online do delivery no celular do cliente" garcom={gMesas} altGarcom="App do garçom no celular com as mesas do salão" /></div>
   </TopoProduto>
 
   <Clientes />
@@ -101,13 +101,13 @@ const faq = {
     ]}
   />
 
-  <SecaoTela id="salao" rotulo="Salão" titulo="Valor em aberto, comandas e <em>tempo de cada mesa.</em>" texto="O mapa do salão mostra quanto cada mesa já consumiu, quantas comandas estão abertas e há quanto tempo, para o garçom saber onde passar primeiro." src={salao} alt="Mapa do salão do Set Tecnologia com as mesas 1, 4 e 7 ocupadas e R$ 265,00 em aberto" selos={['Mesas livres e ocupadas de relance', 'Total em aberto do salão', 'Comandas numeradas, inclusive de papel']} />
+  <SecaoTela id="salao" rotulo="Salão" titulo="Valor em aberto, comandas e <em>tempo de cada mesa.</em>" texto="O mapa do salão mostra quanto cada mesa já consumiu, quantas comandas estão abertas e há quanto tempo, para o garçom saber onde passar primeiro." src={salao} alt="Mapa do salão do Set Tecnologia com 7 de 10 mesas ocupadas, R$ 537,00 em aberto, a mesa 1 chamando e as mesas paradas em destaque" selos={['Mesas livres e ocupadas de relance', 'Total em aberto do salão', 'Comandas numeradas, inclusive de papel']} />
 
   <section class="garcom envelope" id="garcom" aria-labelledby="garcom-titulo">
     <div class="cab-garcom" data-revelar>
       <p class="rotulo">Garçom no celular</p>
       <h2 id="garcom-titulo" class="titulo-secao">O salão inteiro <em>no bolso do garçom.</em></h2>
-      <p class="lead">O garçom vê as mesas, recebe o chamado da mesa, lança o pedido e transfere o consumo pelo próprio celular, sem voltar ao caixa e sem instalar aplicativo de loja.</p>
+      <p class="lead">O garçom vê as mesas, recebe o chamado da mesa, lança o pedido e transfere o consumo pelo próprio celular, sem voltar ao caixa e sem instalar aplicativo de loja. No modo claro ou escuro, como ele preferir.</p>
     </div>
     <TelasCelular telas={telasDoGarcom} />
   </section>
@@ -118,7 +118,7 @@ const faq = {
 
   <SecaoTela id="conta" rotulo="Fechamento" titulo="Divida até <em>um terço da calabresa.</em>" texto="Cada um paga o que consumiu. Um item pode ser dividido em partes e a conta fecha no centavo, sem calculadora." src={contaPartes} alt="Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber" selos={['Por pessoa, por item ou em partes iguais', 'Pagamento misto na mesma conta', 'Valor direto para a maquininha com Smart TEF']} />
 
-  <SecaoTela id="delivery" rotulo="Delivery" titulo="Todos os pedidos <em>no mesmo quadro.</em>" texto="Telefone, balcão, cardápio online e 99Food entram juntos: novo, aceito, preparo, pronto, saiu e entregue." src={delivery} alt="Quadro do Delivery com pedidos nas colunas Aceito, Preparo e Pronto" selos={['Cardápio online sem comissão', 'Pedidos do 99Food', 'Motoboy vinculado a cada entrega']} />
+  <SecaoTela id="delivery" rotulo="Delivery" titulo="Todos os pedidos <em>no mesmo quadro.</em>" texto="Telefone, balcão, cardápio online e 99Food entram juntos: novo, aceito, preparo, pronto, saiu e entregue." src={delivery} alt="Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto" selos={['Cardápio online sem comissão', 'Pedidos do 99Food', 'Motoboy vinculado a cada entrega']} />
 
   <SecaoTela id="relatorios" rotulo="Relatórios" titulo="O mês inteiro <em>em números.</em>" texto="Vendas por produto, por hora e por operador, com participação e margem, para decidir o cardápio e a escala." src={produtos} alt="Relatório de vendas por produto com quantidade, valor e participação" selos={['Resumo do dia no fechamento', 'Repasses do 99Food e acerto dos motoboys', 'XML das notas para o contador']} />
 

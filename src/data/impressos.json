@@ -181,7 +181,25 @@
         "separador": true
       },
       {
-        "texto": "CONFERÊNCIA - MESA 1",
+        "texto": "+-------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| CONFERÊNCIA |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+-------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "MESA 1",
         "letra": "titulo",
         "alinhamento": "centro",
         "separador": false
@@ -223,7 +241,7 @@
         "separador": false
       },
       {
-        "texto": "Taxa de servico 10%                     R$ 11,20",
+        "texto": "Taxa de serviço 10%                     R$ 11,20",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -236,7 +254,7 @@
       },
       {
         "texto": "A PAGAR                                R$ 123,20",
-        "letra": "forte",
+        "letra": "destaque",
         "alinhamento": "esquerda",
         "separador": false
       },
@@ -272,7 +290,25 @@
         "separador": true
       },
       {
-        "texto": "FECHAMENTO DE CAIXA",
+        "texto": "+---------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| FECHAMENTO DE CAIXA |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+---------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "REIS RESTAURANTE",
         "letra": "titulo",
         "alinhamento": "centro",
         "separador": false
@@ -284,7 +320,7 @@
         "separador": true
       },
       {
-        "texto": "Reis Restaurante",
+        "texto": "-- TURNO ---------------------------------------",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -296,7 +332,7 @@
         "separador": false
       },
       {
-        "texto": "  por                                      Kevin",
+        "texto": "Aberto por                                 Kevin",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -308,22 +344,22 @@
         "separador": false
       },
       {
-        "texto": "  por                                      Kevin",
+        "texto": "Fechado por                                Kevin",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "Duracao                                     6h10",
+        "texto": "Duração                                     6h10",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "------------------------------------------------",
+        "texto": "-- MOVIMENTO -----------------------------------",
         "letra": "normal",
         "alinhamento": "esquerda",
-        "separador": true
+        "separador": false
       },
       {
         "texto": "Suprimento de abertura                 R$ 200,00",
@@ -344,61 +380,103 @@
         "separador": false
       },
       {
-        "texto": "------------------------------------------------",
+        "texto": "-- CONFERÊNCIA ---------------------------------",
         "letra": "normal",
         "alinhamento": "esquerda",
-        "separador": true
+        "separador": false
       },
       {
-        "texto": "CONFERENCIA",
+        "texto": "Dinheiro",
         "letra": "forte",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "Dinheiro                               R$ 462,00",
+        "texto": "  Esperado                             R$ 462,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "  contado R$ 460,00                     -R$ 2,00",
+        "texto": "  Contado                              R$ 460,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "Pix                                    R$ 780,00",
+        "texto": "  Diferença                             -R$ 2,00",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Pix",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  Esperado                             R$ 780,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "  contado R$ 780,00                           ok",
+        "texto": "  Contado                              R$ 780,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "Cartão de crédito                      R$ 410,00",
+        "texto": "  Diferença                              confere",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "  contado R$ 410,00                           ok",
+        "texto": "Cartão de crédito",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  Esperado                             R$ 410,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "Cartão de débito                       R$ 240,00",
+        "texto": "  Contado                              R$ 410,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "  contado R$ 240,00                           ok",
+        "texto": "  Diferença                              confere",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "Cartão de débito",
+        "letra": "forte",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  Esperado                             R$ 240,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  Contado                              R$ 240,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "  Diferença                              confere",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -411,7 +489,7 @@
       },
       {
         "texto": "FALTA                                    R$ 2,00",
-        "letra": "forte",
+        "letra": "destaque",
         "alinhamento": "esquerda",
         "separador": false
       },
@@ -459,8 +537,20 @@
         "separador": true
       },
       {
-        "texto": "ACERTO DO MOTOBOY",
-        "letra": "titulo",
+        "texto": "+-------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| ACERTO DO MOTOBOY |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+-------------------+",
+        "letra": "destaque",
         "alinhamento": "centro",
         "separador": false
       },
@@ -477,14 +567,8 @@
         "separador": true
       },
       {
-        "texto": "------------------------------------------------",
+        "texto": "-- PAGAS AGORA (4) -----------------------------",
         "letra": "normal",
-        "alinhamento": "esquerda",
-        "separador": true
-      },
-      {
-        "texto": "PAGAS AGORA (4)",
-        "letra": "forte",
         "alinhamento": "esquerda",
         "separador": false
       },
@@ -520,18 +604,12 @@
       },
       {
         "texto": "PAGO AGORA                              R$ 28,00",
-        "letra": "forte",
+        "letra": "destaque",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "------------------------------------------------",
-        "letra": "normal",
-        "alinhamento": "esquerda",
-        "separador": true
-      },
-      {
-        "texto": "EM ROTA (fora deste acerto)",
+        "texto": "-- EM ROTA (FORA DESTE ACERTO) -----------------",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -586,6 +664,24 @@
         "separador": true
       },
       {
+        "texto": "+-------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "| VIA DO ENTREGADOR |",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
+        "texto": "+-------------------+",
+        "letra": "destaque",
+        "alinhamento": "centro",
+        "separador": false
+      },
+      {
         "texto": "DELIVERY 1042 - ENTREGA",
         "letra": "titulo",
         "alinhamento": "centro",
@@ -622,10 +718,10 @@
         "separador": false
       },
       {
-        "texto": "------------------------------------------------",
+        "texto": "-- ENTREGAR PARA -------------------------------",
         "letra": "normal",
         "alinhamento": "esquerda",
-        "separador": true
+        "separador": false
       },
       {
         "texto": "Ana",
@@ -652,25 +748,25 @@
         "separador": false
       },
       {
-        "texto": "------------------------------------------------",
-        "letra": "normal",
-        "alinhamento": "esquerda",
-        "separador": true
-      },
-      {
-        "texto": "1 Calabresa acebolada                   R$ 32,00",
+        "texto": "-- ITENS ---------------------------------------",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "1 Bolinho de bacalhau                   R$ 34,00",
+        "texto": "1x Calabresa acebolada                  R$ 32,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
       },
       {
-        "texto": "1 Caipirinha                            R$ 22,00",
+        "texto": "1x Bolinho de bacalhau                  R$ 34,00",
+        "letra": "normal",
+        "alinhamento": "esquerda",
+        "separador": false
+      },
+      {
+        "texto": "1x Caipirinha                           R$ 22,00",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -695,7 +791,7 @@
       },
       {
         "texto": "TOTAL                                   R$ 95,00",
-        "letra": "forte",
+        "letra": "destaque",
         "alinhamento": "esquerda",
         "separador": false
       },
@@ -718,9 +814,15 @@
         "separador": false
       },
       {
-        "texto": "Sem nota fiscal",
+        "texto": "================================================",
         "letra": "normal",
         "alinhamento": "esquerda",
+        "separador": true
+      },
+      {
+        "texto": "SEM VALOR FISCAL",
+        "letra": "normal",
+        "alinhamento": "centro",
         "separador": false
       },
       {
@@ -888,7 +990,7 @@
         "separador": true
       },
       {
-        "texto": "Venda 112                       28/10/2026 21:05",
+        "texto": "Vendida em                      28/10/2026 21:05",
         "letra": "normal",
         "alinhamento": "esquerda",
         "separador": false
@@ -925,7 +1027,7 @@
       },
       {
         "texto": "VALOR CANCELADO                         R$ 54,00",
-        "letra": "forte",
+        "letra": "destaque",
         "alinhamento": "esquerda",
         "separador": false
       },

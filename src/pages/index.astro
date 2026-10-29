@@ -33,11 +33,12 @@ import cardapioPoster from '../assets/telas/catalogo-celular.png';
 import tabletProduto from '../assets/telas2/tablet-produto.png';
 import gMesas from '../assets/garcom/mesas.png';
 import gAvisos from '../assets/garcom/avisos.png';
-import gOpcoes from '../assets/garcom/mesa-opcoes.png';
+import gMesasClaro from '../assets/garcom/mesas-claro.png';
+import gTransferirClaro from '../assets/garcom/transferir-claro.png';
 const telasDoGarcom = [
-  { src: gMesas, alt: 'App do garçom no celular com as mesas do salão, valores e a mesa 1 chamando', legenda: 'Mesas ocupadas, valor e quem chamou' },
-  { src: gAvisos, alt: 'Aviso da mesa 1 chamando o garçom, com o botão Assumir', legenda: 'Mesa chamou: o garçom assume o atendimento' },
-  { src: gOpcoes, alt: 'Opções da mesa 1: aviso da mesa, transferir consumo e liberar mesa', legenda: 'Transferir consumo e liberar a mesa' },
+  { src: gMesasClaro, alt: 'App do garçom no modo claro com as mesas do salão, o valor e as comandas de cada uma, a mesa 1 chamando e as mesas paradas', legenda: 'Mesas, comandas e quem chamou', modo: 'claro' },
+  { src: gAvisos, alt: 'App do garçom no modo escuro com os avisos do salão: a mesa 1 chamou o garçom, com o botão Assumir, e as mesas sem pedido há mais tempo', legenda: 'Mesa chamou: o garçom assume o atendimento', modo: 'escuro' },
+  { src: gTransferirClaro, alt: 'Transferir de Mesa 2, no modo claro: as duas caipirinhas marcadas, item por item, antes de escolher a mesa', legenda: 'Transferir só uma parte, item por item', modo: 'claro' },
 ];
 
 
@@ -45,11 +46,11 @@ const telasDoGarcom = [
 const modulos = [
   { id: 'balcao', nome: 'Balcão', icone: 'caixa', titulo: 'Venda de balcão em três toques', texto: 'Produto por foto, busca ou código. O que sai do prato vai junto no pedido. Sangria, suprimento e fechamento por operador.', img: balcao, alt: 'Tela Balcão do Set Tecnologia com chopp, bolinho de bacalhau sem salsinha e caipirinha somando R$ 98,00' },
   { id: 'salao', nome: 'Salão', icone: 'salao', titulo: 'O salão inteiro numa tela', texto: 'Valor em aberto, comandas e há quanto tempo cada mesa está aberta.', img: salao, alt: 'Mapa do salão com as mesas 1, 4 e 7 ocupadas e R$ 265,00 em aberto' },
-  { id: 'garcom', nome: 'Garçom', icone: 'garcom', titulo: 'O salão no celular do garçom', texto: 'Mesas, chamados das mesas, pedido, transferência e atendimento avulso pelo celular, sem voltar ao caixa.', celulares: true },
+  { id: 'garcom', nome: 'Garçom', icone: 'garcom', titulo: 'O salão no celular do garçom', texto: 'Mesas, chamados das mesas, pedido, transferência e atendimento avulso pelo celular, sem voltar ao caixa. Modo claro ou escuro, como o garçom preferir.', celulares: true },
   { id: 'mesa', nome: 'Pedido na mesa', icone: 'comanda', titulo: 'Cada pessoa com a sua comanda', texto: 'O que foi retirado e a observação saem impressos no setor certo da cozinha, sem redigitar.', img: mesaPedido, alt: 'Pedido da mesa 1 lançado na comanda 7, com carpaccio sem alcaparras e observação para a cozinha' },
   { id: 'tablet', nome: 'Tablet de mesa', icone: 'tablet', titulo: 'O cliente pede pela mesa', texto: 'Cardápio com fotos, ponto da carne e chamada do garçom. O pedido entra direto na conta da mesa.', img: tablet, alt: 'Tablet de mesa do Set Tecnologia com o cardápio de pratos com fotos, na mesa 4', tipo: 'tablet' },
   { id: 'conta', nome: 'Conta dividida', icone: 'dividir', titulo: 'Cada um paga o que consumiu', texto: 'Até um terço da calabresa. A conta fecha no centavo, e com Smart TEF o valor vai direto para a maquininha.', img: contaPartes, alt: 'Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber' },
-  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online e 99Food: aceito, preparo, pronto, saiu e entregue.', img: delivery, alt: 'Quadro do Delivery com pedidos nas colunas Aceito, Preparo e Pronto' },
+  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online e 99Food: aceito, preparo, pronto, saiu e entregue.', img: delivery, alt: 'Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto' },
   { id: 'relatorios', nome: 'Relatórios', icone: 'relatorios', titulo: 'O dia fechado em números', texto: 'Faturamento, vendas por produto e por operador, acerto dos motoboys, repasses do 99Food e o XML do contador.', img: relatorios, alt: 'Tela de Relatórios com o resumo de hoje, relatórios comerciais, de delivery e repasses do 99Food' },
 ] as const;
 
