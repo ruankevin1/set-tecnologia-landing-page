@@ -1,0 +1,196 @@
+---
+import Base from '../layouts/Base.astro';
+
+/** A data desta versão do texto. Mudou o texto, muda a data. */
+const VERSAO = '30 de outubro de 2026';
+const EMAIL = 'set.tecnologia7@gmail.com';
+
+const migalhas = [{ nome: 'Política de privacidade', href: '/privacidade' }];
+---
+<Base
+  titulo="Política de privacidade | Set Tecnologia"
+  descricao="Como a Set Tecnologia trata dados pessoais no site e no atendimento automático pelo WhatsApp das lojas que usam o sistema."
+  migalhas={migalhas}
+>
+  <article class="legal envelope">
+    <header>
+      <p class="rotulo">Atualizada em {VERSAO}</p>
+      <h1>Política de privacidade</h1>
+      <p class="abertura">
+        Esta política explica como os dados pessoais são tratados no site da Set Tecnologia e no atendimento
+        automático pelo WhatsApp das lojas que usam o sistema. Ela segue a Lei Geral de Proteção de Dados
+        (Lei 13.709/2018, a LGPD).
+      </p>
+    </header>
+
+    <section>
+      <h2>Responsáveis pelos dados</h2>
+      <ul>
+        <li>
+          <strong>No atendimento pelo WhatsApp</strong>, a loja com quem você conversa é a controladora: é ela quem
+          vende, recebe o pedido e decide como os dados são usados. A Set Tecnologia é a operadora: fornece o sistema
+          e trata os dados só para o atendimento funcionar, seguindo as instruções da loja.
+        </li>
+        <li><strong>Neste site</strong>, a Set Tecnologia é a controladora dos dados enviados no formulário de contato.</li>
+      </ul>
+      <p>
+        Set Tecnologia é o nome comercial de 53.323.285 Kevin Ruan Bagatini Pires de Lima, CNPJ 53.323.285/0001-68.
+      </p>
+    </section>
+
+    <section>
+      <h2>Atendimento automático pelo WhatsApp</h2>
+      <p>
+        Lojas que usam o sistema podem ligar uma inteligência artificial para responder às mensagens, informar preços,
+        calcular a entrega, montar o pedido e enviá-lo para a loja. O pedido só é enviado depois que você confirma o
+        resumo. Preços e taxas saem do sistema da loja, e a inteligência artificial não pode alterá-los.
+      </p>
+      <p>
+        Para falar com uma pessoa, peça na própria conversa. A conversa passa para a equipe da loja, e a inteligência
+        artificial para de responder.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dados usados no WhatsApp</h2>
+      <ul>
+        <li><strong>Número do WhatsApp e nome do perfil</strong>: para identificar a conversa e o pedido.</li>
+        <li>
+          <strong>Mensagens de texto</strong>: as que você envia à loja e as respostas dela, inclusive as enviadas pela
+          equipe no aplicativo. Elas formam o atendimento e indicam quando a inteligência artificial deve parar de
+          responder.
+        </li>
+        <li>
+          <strong>Dados do pedido</strong>: itens, observações, valores, nome, endereço de entrega, forma de pagamento e
+          troco.
+        </li>
+        <li>
+          <strong>CPF ou CNPJ</strong>, quando você informa ou quando a loja exige: só para constar na nota fiscal do
+          pedido.
+        </li>
+        <li>
+          <strong>Pagamento por Pix online</strong>: o pagamento é feito no Mercado Pago, na conta da loja. Dados do seu
+          banco não passam pelo atendimento. Fica guardado apenas se o Pix foi pago.
+        </li>
+        <li>
+          <strong>Dados técnicos</strong>: identificador, data e situação de entrega de cada mensagem.
+        </li>
+      </ul>
+      <p>
+        Áudios, fotos e outros arquivos não são lidos pela inteligência artificial. <strong>Não envie número de cartão,
+        senha ou código de segurança pela conversa.</strong> O atendimento não aceita esses dados.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dados usados neste site</h2>
+      <p>
+        O formulário de contato pede nome, empresa, WhatsApp, cidade, tipo de negócio e faixa de faturamento, e registra
+        a página de origem. Esses dados chegam à equipe da Set Tecnologia por e-mail, para responder ao contato. A
+        hospedagem pode registrar dados técnicos de acesso, como o endereço de internet (IP).
+      </p>
+    </section>
+
+    <section id="cookies">
+      <h2>Cookies</h2>
+      <p>
+        Este site não grava cookies próprios no seu navegador e não usa Google Analytics, Google Ads, pixels de
+        publicidade ou outros serviços de rastreamento. Por isso, o site não exibe aviso para aceitar cookies.
+      </p>
+      <p>
+        As páginas de início e de delivery mostram uma demonstração do cardápio online, carregada de enviarpedido.com.br.
+        Esse cardápio também não usa cookies de propaganda nem de rastreamento. O que você digitar nele, como nome e
+        endereço, e a lista de pedidos ficam guardados no próprio navegador, para agilizar o próximo pedido, e podem ser
+        apagados limpando os dados do site. Ao fazer um pedido, ele pode carregar os serviços do Mercado Pago, para
+        pagamento, e da Cloudflare, para proteção contra robôs.
+      </p>
+      <p>
+        O vídeo da página inicial só carrega depois que você clica para assistir. A partir desse clique, ele vem do
+        YouTube, em modo de privacidade ampliada, e segue a política de privacidade do Google.
+      </p>
+      <p>
+        Se o site passar a usar cookies que não sejam necessários para o funcionamento, esta política será atualizada e a
+        autorização será pedida antes de ativá-los.
+      </p>
+    </section>
+
+    <section>
+      <h2>Por que os dados são usados</h2>
+      <ul>
+        <li>Para atender você e fazer e entregar o pedido (execução de contrato, art. 7º, V).</li>
+        <li>Para cumprir obrigações da loja, como a emissão de nota fiscal (obrigação legal, art. 7º, II).</li>
+        <li>Para proteger o sistema contra fraude e abuso, e para responder a contatos comerciais (legítimo interesse, art. 7º, IX).</li>
+      </ul>
+      <p>Os dados não são usados para propaganda e não são vendidos.</p>
+    </section>
+
+    <section>
+      <h2>Com quem os dados são compartilhados</h2>
+      <ul>
+        <li>Com a loja e a equipe dela, para atender, preparar e entregar o pedido.</li>
+        <li><strong>Meta (WhatsApp)</strong>: entrega as mensagens entre você e a loja.</li>
+        <li><strong>Anthropic (Claude)</strong>: lê a conversa e o cardápio da loja para gerar as respostas da inteligência artificial.</li>
+        <li><strong>Supabase e Vercel</strong>: hospedagem e banco de dados.</li>
+        <li><strong>ViaCEP, AwesomeAPI, OpenStreetMap e OpenFreeMap</strong>: consulta de CEP e de mapa para calcular a entrega.</li>
+        <li><strong>Mercado Pago</strong>: pagamentos online.</li>
+        <li><strong>Resend</strong>: envio dos e-mails do formulário deste site.</li>
+        <li><strong>Google (YouTube)</strong>: exibição de vídeos, só depois que você clica para assistir.</li>
+        <li>Autoridades, quando a lei exigir.</li>
+      </ul>
+      <p>
+        Alguns desses serviços, como Meta e Anthropic, tratam dados fora do Brasil, inclusive nos Estados Unidos. Essa
+        transferência acontece para executar o atendimento que você pediu (art. 33 da LGPD).
+      </p>
+    </section>
+
+    <section>
+      <h2>Por quanto tempo</h2>
+      <ul>
+        <li>As conversas ficam guardadas por até 90 dias depois da última mensagem.</li>
+        <li>Os dados do pedido ficam pelo tempo necessário para a entrega, para resolver problemas e pelo prazo que a lei exige da loja, como os registros fiscais.</li>
+        <li>Os contatos do formulário ficam pelo tempo do atendimento comercial.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Seus direitos</h2>
+      <p>
+        Você pode pedir a qualquer momento: confirmação de que seus dados são tratados, acesso, correção, anonimização ou
+        exclusão do que não for obrigatório guardar, informação sobre com quem são compartilhados e a revisão de decisões
+        tomadas por tratamento automatizado (arts. 18 e 20 da LGPD). Também pode reclamar à Autoridade Nacional de
+        Proteção de Dados (ANPD).
+      </p>
+    </section>
+
+    <section id="exclusao">
+      <h2>Como pedir a exclusão dos dados</h2>
+      <p>
+        Envie um e-mail para <a href={`mailto:${EMAIL}`}>{EMAIL}</a> com o número do WhatsApp e o nome da loja. A resposta
+        sai em até 15 dias. As conversas são apagadas, e ficam guardados apenas os dados que a lei obriga a loja a manter,
+        até o fim do prazo legal. Você também pode fazer o pedido diretamente à loja.
+      </p>
+    </section>
+
+    <section>
+      <h2>Contato</h2>
+      <p>Dúvidas sobre esta política: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+    </section>
+
+    <section>
+      <h2>Mudanças nesta política</h2>
+      <p>Alterações nesta política atualizam a data no topo da página.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .legal { max-width: calc(760px + var(--gutter) * 2); padding-block: clamp(32px, 5vw, 56px) clamp(56px, 8vw, 96px); }
+  h1 { margin-top: 16px; font-size: clamp(34px, 5vw, 54px); letter-spacing: -0.035em; }
+  .abertura { margin-top: 20px; font-size: 18px; }
+  section { margin-top: 40px; scroll-margin-top: 96px; }
+  h2 { font-size: clamp(21px, 2.4vw, 25px); letter-spacing: -0.02em; line-height: 1.2; }
+  p, ul { margin-block: 14px 0; line-height: 1.65; color: #d8d4cc; }
+  ul { padding-left: 20px; display: grid; gap: 10px; }
+  strong { color: var(--tinta); font-weight: 600; }
+  a { color: var(--laranja-claro); }
+</style>

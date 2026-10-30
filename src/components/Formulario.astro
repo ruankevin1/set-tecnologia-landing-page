@@ -45,6 +45,7 @@ const escolhas = [
       <span class="rot">Falar com especialista</span><Icone nome="seta" />
     </button>
     <p class="aviso" role="status" aria-live="polite"></p>
+    <p class="nota">Os dados servem para responder a este contato. <a href="/privacidade">Política de privacidade</a>.</p>
   </form>
 
   <div class="pronto" hidden>
@@ -227,6 +228,8 @@ const escolhas = [
   .aviso { font-size: 14px; color: #ff8f6b; min-height: 1px; }
   .aviso:empty { display: none; }
   .aviso :global(a) { color: var(--tinta); }
+  .nota { margin-top: 12px; font-size: 13.5px; color: #a8a39a; }
+  .nota a { color: inherit; }
 
   .pronto { display: grid; justify-items: start; gap: 14px; padding-block: 18px; }
   .pronto[hidden] { display: none; }
