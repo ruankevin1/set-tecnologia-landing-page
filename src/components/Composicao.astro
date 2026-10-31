@@ -175,7 +175,8 @@ const cabosCelular = [
     .setia-pos { left: 34.45%; top: 0; width: 31.1%; }
     .celular-pos { top: 0; width: 31.1%; }
     .monitor { left: 0; top: 42.4%; width: 100%; }
-    .monitor .nome-tela { top: auto; bottom: 0; transform: translate(-50%, 50%); animation-name: selo-entra; }
+    .monitor .nome-tela { top: auto; bottom: 0; transform: translate(-50%, 50%); }
+    .monitor:not(.em-foco) .nome-tela { animation-name: selo-entra; }
     .tablet-pos { left: 23.6%; top: 77%; width: 52.8%; }
     .maq-pos { left: 82.2%; top: 75.9%; width: 16.1%; }
     .app { top: 79.7%; width: 10%; }
