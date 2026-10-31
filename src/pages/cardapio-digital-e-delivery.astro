@@ -23,7 +23,7 @@ const itens = [
   { icone: 'pino', t: 'Entrega e retirada', d: 'Taxa fixa ou por distância, retirada no balcão e localização do cliente no mapa.' },
   { icone: 'dinheiro', t: 'Pagamento na entrega', d: 'Dinheiro, Pix, crédito ou débito, com troco informado pelo cliente no pedido.' },
   { icone: 'relogio', t: 'Horário de funcionamento', d: 'O cardápio abre e fecha sozinho pelo horário da loja, com o tempo de preparo informado.' },
-  { icone: 'nuvem', t: '99Food e iFood no mesmo quadro', d: 'Pedidos do 99Food e do iFood entram junto com os do cardápio online, com aceite, preparo e entrega no caixa. A Setia, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio.' },
+  { icone: 'nuvem', t: '99Food e iFood no mesmo quadro', d: 'Pedidos do 99Food e do iFood entram junto com os do cardápio online, com aceite, preparo e entrega no caixa. A Eduarda, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio.' },
   { icone: 'motoboy', t: 'Motoboys', d: 'Cada entrega vinculada ao motoboy, com acerto no fim do turno.' },
   { icone: 'impressora', t: 'Impresso na cozinha', d: 'O pedido aceito sai impresso no setor certo, sem redigitar nada.' },
 ] as const;
@@ -88,7 +88,7 @@ const faq = {
     <div class="feed"><Tela src={celular} alt="Cardápio online em formato de feed, com destaques em foto grande e categorias em bolinhas" tipo="celular" sizes="340px" larguras={[400, 680, 1000]} /></div>
   </Destaque>
 
-  <SecaoTela id="99food" rotulo="No caixa" titulo="Site, telefone, Setia, 99Food e iFood <em>no mesmo quadro.</em>" texto="Os pedidos de todos os canais aparecem juntos no Set Tecnologia: novo, aceito, preparo, pronto, saiu e entregue. A Setia, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio." src={delivery} alt="Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto" selos={['Aceite manual ou automático', 'Impressão na cozinha ao aceitar', 'Motoboy vinculado a cada entrega']} />
+  <SecaoTela id="99food" rotulo="No caixa" titulo="Site, telefone, Eduarda, 99Food e iFood <em>no mesmo quadro.</em>" texto="Os pedidos de todos os canais aparecem juntos no Set Tecnologia: novo, aceito, preparo, pronto, saiu e entregue. A Eduarda, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio." src={delivery} alt="Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto" selos={['Aceite manual ou automático', 'Impressão na cozinha ao aceitar', 'Motoboy vinculado a cada entrega']} />
 
   <SecaoTela id="motoboys" rotulo="No fim do dia" titulo="Repasses e entregas <em>conferidos.</em>" texto="Relatório de pedidos do delivery, acerto de cada motoboy e repasses do 99Food no fechamento." src={relatorios} alt="Tela inicial dos Relatórios em blocos: Comercial, Delivery com repasses do 99Food e o resumo de hoje" selos={['Pedidos por canal e por período', 'Acerto dos motoboys', 'Repasses do 99Food']} />
 

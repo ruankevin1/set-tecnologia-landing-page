@@ -1,14 +1,14 @@
 ---
 // Conversa desenhada como o WhatsApp no celular do cliente, com uma pizzaria de demonstração. Não é print:
 // a legenda avisa isso, porque o resto do site mostra telas reais.
-// Só texto, como o atendimento real, em que a Setia se apresenta uma vez e já responde.
+// Só texto, como o atendimento real, em que a Eduarda se apresenta uma vez e já responde.
 import { Image } from 'astro:assets';
 import SeloVerificado from './SeloVerificado.astro';
 import perfil from '../assets/conversa/pizza-perfil.jpg'; // Wikimedia Commons, Pizza-3007395~2.jpg, CC0
 
 const mensagens = [
   { de: 'cliente', hora: '20:14', texto: 'Boa noite. Quanto fica a pizza grande de calabresa com entrega no Centro?' },
-  { de: 'ia', hora: '20:14', texto: 'Boa noite. Sou a Setia, atendente virtual da Set Pizzas.\nPizza grande: R$ 62,00\nEntrega: R$ 7,00\nTotal: R$ 69,00' },
+  { de: 'ia', hora: '20:14', texto: 'Boa noite. Sou a Eduarda, atendente virtual da Set Pizzas.\nPizza grande: R$ 62,00\nEntrega: R$ 7,00\nTotal: R$ 69,00' },
   { de: 'cliente', hora: '20:15', texto: 'Pode fazer. Rua das Flores, 120. Dinheiro na entrega.' },
   { de: 'ia', hora: '20:15', texto: 'Resumo: 1 pizza grande de calabresa, Rua das Flores, 120, dinheiro. Total: R$ 69,00. Confirma?' },
   { de: 'cliente', hora: '20:16', texto: 'Confirmo.' },
@@ -24,7 +24,7 @@ const mensagens = [
       <Image class="foto" src={perfil} alt="" widths={[64, 96]} sizes="32px" format="webp" quality={85} />
       <span class="quem">
         <b>Set Pizzas<SeloVerificado /></b>
-        <small>Setia · atendimento com IA</small>
+        <small>Eduarda · atendimento com IA</small>
       </span>
     </div>
     <div class="fundo">
@@ -32,7 +32,7 @@ const mensagens = [
       <ol>
         {mensagens.map((m) => (
           <li class={m.de}>
-            <span class="so-leitor">{m.de === 'cliente' ? 'Cliente: ' : 'Setia: '}</span>{m.texto}
+            <span class="so-leitor">{m.de === 'cliente' ? 'Cliente: ' : 'Eduarda: '}</span>{m.texto}
             <span class="hora" aria-hidden="true">{m.hora}{m.de === 'cliente' && <svg viewBox="0 0 18 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m1 6 3 3 6-7M8 8l1 1 6-7" /></svg>}</span>
           </li>
         ))}

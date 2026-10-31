@@ -54,7 +54,7 @@ const modulos = [
   { id: 'mesa', nome: 'Pedido na mesa', icone: 'comanda', titulo: 'Cada pessoa com a sua comanda', texto: 'O que foi retirado e a observação saem impressos no setor certo da cozinha, sem redigitar.', img: mesaPedido, alt: 'Pedido da mesa 1 lançado na comanda 7, com carpaccio sem alcaparras e observação para a cozinha' },
   { id: 'tablet', nome: 'Tablet de mesa', icone: 'tablet', titulo: 'O cliente pede pela mesa', texto: 'Cardápio com fotos, ponto da carne e chamada do garçom. O pedido entra direto na conta da mesa.', img: tablet, alt: 'Tablet de mesa do Set Tecnologia com o cardápio de pratos com fotos, na mesa 4', tipo: 'tablet' },
   { id: 'conta', nome: 'Conta dividida', icone: 'dividir', titulo: 'Cada um paga o que consumiu', texto: 'Até um terço da calabresa. A conta fecha no centavo, e com Smart TEF o valor vai direto para a maquininha.', img: contaPartes, alt: 'Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber' },
-  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online, 99Food e iFood: aceito, preparo, pronto, saiu e entregue. A Setia, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio.', img: delivery, alt: 'Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto' },
+  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online, 99Food e iFood: aceito, preparo, pronto, saiu e entregue. A Eduarda, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio.', img: delivery, alt: 'Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto' },
   { id: 'relatorios', nome: 'Relatórios', icone: 'relatorios', titulo: 'O dia fechado em números', texto: 'Faturamento, vendas por produto e por operador, acerto dos motoboys, repasses do 99Food e o XML do contador.', img: relatorios, alt: 'Tela de Relatórios com o resumo de hoje, relatórios comerciais, de delivery e repasses do 99Food' },
 ] as const;
 
@@ -72,7 +72,7 @@ const recursos = [
 const integracoes = [
   { marca: marca99, nome: '99Food', d: 'Pedidos do aplicativo no quadro do delivery, com cardápio, produtos e adicionais enviados pelo Set.' },
   { marca: marcaIfood, nome: 'iFood', d: 'Pedidos do aplicativo no quadro do delivery, com o cardápio enviado pelo Set.' },
-  { icone: 'whatsapp', cor: '#1f8f4e', nome: 'WhatsApp', d: 'Setia, o atendimento com IA da loja: responde cardápio, preços e taxa e manda o pedido direto para o delivery próprio.' },
+  { icone: 'whatsapp', cor: '#1f8f4e', nome: 'WhatsApp', d: 'Eduarda, o atendimento com IA da loja: responde cardápio, preços e taxa e manda o pedido direto para o delivery próprio.' },
   { icone: 'tef', cor: '#f36812', nome: 'Smart TEF', d: 'O valor vai do caixa para a maquininha smart e a venda fecha sozinha quando o pagamento é aprovado.' },
   { icone: 'nfce', cor: '#2f7d4f', nome: 'SEFAZ', d: 'NFC-e autorizada direto com a SEFAZ, com contingência quando a internet cai.' },
   { icone: 'cardapio', cor: '#3b6fd8', nome: 'Cardápio online', d: 'Delivery próprio no celular do cliente, com o pedido entrando no caixa.' },
@@ -92,7 +92,7 @@ const depois = ['Pedido do celular do garçom sai impresso no setor certo', 'Con
 
 const produtos = [
   { n: '01', nome: 'Set Tecnologia', href: '/sistema-para-restaurante', texto: 'Sistema próprio para restaurante, bar e lanchonete: caixa, salão, garçom no celular, tablet de mesa, cozinha, estoque e NFC-e.', para: 'Restaurantes com salão e cozinha' },
-  { n: '02', nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery', texto: 'Cardápio online com endereço próprio da loja, sem comissão por pedido. Integração com 99Food e iFood e Setia, o atendimento com IA no WhatsApp, com pedido direto no delivery próprio.', para: 'Quem entrega ou faz retirada' },
+  { n: '02', nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery', texto: 'Cardápio online com endereço próprio da loja, sem comissão por pedido. Integração com 99Food e iFood e Eduarda, o atendimento com IA no WhatsApp, com pedido direto no delivery próprio.', para: 'Quem entrega ou faz retirada' },
   { n: '03', nome: 'Smart TEF', href: '/smart-tef', texto: 'Pagamento na maquininha smart integrado ao caixa, com as principais adquirentes do mercado.', para: 'Caixa com fila' },
   { n: '04', nome: 'PDV+', href: empresa.pdvPlus, texto: 'PDV em planos mensais que roda no celular, no tablet e no PC, com NFC-e. Sem fidelidade.', para: 'MEI e comércio de balcão' },
 ];
