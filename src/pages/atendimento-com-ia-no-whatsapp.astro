@@ -5,6 +5,7 @@ import Vantagens from '../components/Vantagens.astro';
 import GradeCartoes from '../components/GradeCartoes.astro';
 import Destaque from '../components/Destaque.astro';
 import ConversaExemplo from '../components/ConversaExemplo.astro';
+import MarcaEduarda from '../components/MarcaEduarda.astro';
 import Perguntas from '../components/Perguntas.astro';
 import Chamada from '../components/Chamada.astro';
 import { empresa } from '../data/empresa';
@@ -60,7 +61,9 @@ const faq = {
       { icone: 'delivery', t: 'Pedido direto no delivery' },
       { icone: 'impressora', t: 'Impressão automática' },
     ]}
-  />
+  >
+    <MarcaEduarda slot="marca" tamanho={112} arquivo={192} carregar="eager" alt="Ícone da Eduarda, atendente virtual" />
+  </TopoProduto>
 
   <Vantagens
     titulo="A equipe na cozinha, <em>a Eduarda no WhatsApp.</em>"

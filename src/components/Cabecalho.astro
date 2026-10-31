@@ -6,7 +6,7 @@ import Icone from './Icone.astro';
 import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
 import { empresa } from '../data/empresa';
 
-type Item = { nome: string; texto: string; href: string; icone: NomeModulo };
+type Item = { nome: string; texto: string; href: string; icone: NomeModulo; eduarda?: boolean };
 const S = '/sistema-para-restaurante';
 const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item[] }[] }[] = [
   {
@@ -24,7 +24,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
         { nome: 'Cardápio online', texto: 'Delivery próprio sem comissão', href: '/cardapio-digital-e-delivery', icone: 'cardapio' },
         { nome: 'Quadro de pedidos', texto: 'Site, Eduarda, 99Food e iFood', href: '/cardapio-digital-e-delivery#99food', icone: 'delivery' },
         { nome: 'Motoboys', texto: 'Entregas e acerto do turno', href: '/cardapio-digital-e-delivery#motoboys', icone: 'motoboy' },
-        { nome: 'Atendimento com IA', texto: 'Pedido pelo WhatsApp da loja', href: '/atendimento-com-ia-no-whatsapp', icone: 'conversa' },
+        { nome: 'Atendimento com IA', texto: 'Pedido pelo WhatsApp da loja', href: '/atendimento-com-ia-no-whatsapp', icone: 'conversa', eduarda: true },
       ] },
       { titulo: 'Gestão e fiscal', itens: [
         { nome: 'Cozinha e impressos', texto: 'Cada papel no setor certo', href: `${S}#impressos`, icone: 'impressora' },
@@ -42,7 +42,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
         { nome: 'Smart TEF', texto: 'Valor direto na maquininha', href: '/smart-tef', icone: 'tef' },
         { nome: '99Food', texto: 'Pedidos do app no caixa', href: '/cardapio-digital-e-delivery#99food', icone: 'nuvem' },
         { nome: 'iFood', texto: 'Pedidos do app no caixa', href: '/cardapio-digital-e-delivery#99food', icone: 'nuvem' },
-        { nome: 'WhatsApp', texto: 'Eduarda, atendimento com IA', href: '/atendimento-com-ia-no-whatsapp', icone: 'whatsapp' },
+        { nome: 'WhatsApp', texto: 'Eduarda, atendimento com IA', href: '/atendimento-com-ia-no-whatsapp', icone: 'whatsapp', eduarda: true },
         { nome: 'Maquininhas', texto: 'Rede, Cielo, Stone e outras', href: '/smart-tef#maquininhas', icone: 'dinheiro' },
         { nome: 'SEFAZ', texto: 'NFC-e e a regra da Nota Integrada', href: '/smart-tef#nota-integrada', icone: 'escudo' },
       ] },
@@ -67,7 +67,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
                 <ul>
                   {g.itens.map((i) => (
                     <li><a href={i.href}>
-                      <span class="m-ico"><IconeModulo nome={i.icone} /></span>
+                      <span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <img src="/marcas/eduarda-pequeno.png" width="32" height="32" alt="" loading="lazy" /> : <IconeModulo nome={i.icone} />}</span>
                       <span><b>{i.nome}</b><small>{i.texto}</small></span>
                     </a></li>
                   ))}
@@ -90,7 +90,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
         {menus.flatMap((m) => m.grupos).map((g) => (
           <div class="g-grupo">
             <p class="grupo-titulo">{g.titulo}</p>
-            {g.itens.map((i) => <a href={i.href}><span class="m-ico"><IconeModulo nome={i.icone} /></span>{i.nome}</a>)}
+            {g.itens.map((i) => <a href={i.href}><span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <img src="/marcas/eduarda-pequeno.png" width="32" height="32" alt="" loading="lazy" /> : <IconeModulo nome={i.icone} />}</span>{i.nome}</a>)}
           </div>
         ))}
         <a class="g-pdv" href={empresa.pdvPlus} target="_blank" rel="noopener">PDV+ <Icone nome="seta-fora" /></a>
@@ -168,6 +168,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
   .grupo small { display: block; font-size: 12.5px; color: var(--tinta-3); margin-top: 1px; }
   .m-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: var(--laranja-claro); background: rgb(243 104 18 / .13); border: 1px solid rgb(243 104 18 / .28); }
   .m-ico :global(.ico) { width: 18px; height: 18px; }
+  .m-eduarda, .grupo a:hover .m-eduarda { background: none; border-color: transparent; }
   .grupo a:hover .m-ico { background: var(--laranja); border-color: var(--laranja); color: #fff; }
 
   .chamar { height: 44px; padding: 0 16px; font-size: 15px; background: var(--laranja); color: #fff; border-radius: 10px; }

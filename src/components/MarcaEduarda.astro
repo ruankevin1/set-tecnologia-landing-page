@@ -1,0 +1,15 @@
+---
+// O ícone da Eduarda em movimento: a esfera gira e o satélite dá a volta na órbita.
+// Quem pede menos movimento no sistema vê a imagem parada.
+interface Props { tamanho: number; arquivo: 112 | 192; alt?: string; carregar?: 'eager' | 'lazy' }
+const { tamanho, arquivo, alt = '', carregar = 'lazy' } = Astro.props;
+---
+<picture class="marca-eduarda">
+  <source media="(prefers-reduced-motion: reduce)" srcset="/marcas/eduarda.png" />
+  <img src={`/marcas/eduarda-${arquivo}.webp`} width={tamanho} height={tamanho} alt={alt} loading={carregar} decoding="async" />
+</picture>
+
+<style>
+  .marca-eduarda { display: block; flex: none; }
+  .marca-eduarda img { display: block; }
+</style>

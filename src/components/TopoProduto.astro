@@ -17,6 +17,7 @@ const { rotulo, titulo, texto, selos = [], cidade = '', centro = false, migalhas
   )}
   <div class="envelope dentro">
     <div class="texto">
+      {Astro.slots.has('marca') && <div class="marca entra"><slot name="marca" /></div>}
       <p class="rotulo entra">{rotulo}</p>
       <h1 class="entra" style="--atraso:.06s" set:html={titulo} />
       <p class="lead entra" style="--atraso:.12s">{texto}</p>
@@ -43,6 +44,7 @@ const { rotulo, titulo, texto, selos = [], cidade = '', centro = false, migalhas
   .centro .dentro { grid-template-columns: 1fr; text-align: center; justify-items: center; }
   .centro .lead { margin-inline: auto; }
   .centro .selos { justify-content: center; }
+  .marca { margin: -8px 0 10px -12px; }
   .form { scroll-margin-top: 96px; }
   h1 { margin-top: 18px; font-size: clamp(36px, 4.6vw, 60px); letter-spacing: -0.04em; line-height: 1.03; }
   h1 :global(em) { font-style: normal; background: linear-gradient(90deg, #ff8a3d, #f36812, #ffb547, #ff5a2b, #ff8a3d); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: correr-cor 8s linear infinite; }

@@ -17,6 +17,7 @@ import TelasCelular from '../components/TelasCelular.astro';
 import Impressos from '../components/Impressos.astro';
 import Destaque from '../components/Destaque.astro';
 import ConversaExemplo from '../components/ConversaExemplo.astro';
+import MarcaEduarda from '../components/MarcaEduarda.astro';
 import { empresa } from '../data/empresa';
 import { adquirentes } from '../data/maquininhas';
 
@@ -72,7 +73,7 @@ const recursos = [
 const integracoes = [
   { marca: marca99, nome: '99Food', d: 'Pedidos do aplicativo no quadro do delivery, com cardápio, produtos e adicionais enviados pelo Set.' },
   { marca: marcaIfood, nome: 'iFood', d: 'Pedidos do aplicativo no quadro do delivery, com o cardápio enviado pelo Set.' },
-  { icone: 'whatsapp', cor: '#1f8f4e', nome: 'WhatsApp', d: 'Eduarda, o atendimento com IA da loja: responde cardápio, preços e taxa e manda o pedido direto para o delivery próprio.' },
+  { eduarda: true, nome: 'WhatsApp', d: 'Eduarda, o atendimento com IA da loja: responde cardápio, preços e taxa e manda o pedido direto para o delivery próprio.' },
   { icone: 'tef', cor: '#f36812', nome: 'Smart TEF', d: 'O valor vai do caixa para a maquininha smart e a venda fecha sozinha quando o pagamento é aprovado.' },
   { icone: 'nfce', cor: '#2f7d4f', nome: 'SEFAZ', d: 'NFC-e autorizada direto com a SEFAZ, com contingência quando a internet cai.' },
   { icone: 'cardapio', cor: '#3b6fd8', nome: 'Cardápio online', d: 'Delivery próprio no celular do cliente, com o pedido entrando no caixa.' },
@@ -289,8 +290,8 @@ const faqDados = {
     <ul class="grade-integ">
       {integracoes.map((g, i) => (
         <li class="integ" data-luz data-revelar style={`--atraso:${(i % 4) * 0.06}s`}>
-          <span class="sigla" style={'cor' in g ? `background:${g.cor}` : undefined}>
-            {'marca' in g ? <Image src={g.marca} alt="" widths={[48, 96, 144]} sizes="48px" format="png" /> : <IconeModulo nome={g.icone} />}
+          <span class:list={['sigla', { 'sem-fundo': 'eduarda' in g }]} style={'cor' in g ? `background:${g.cor}` : undefined}>
+            {'eduarda' in g ? <MarcaEduarda tamanho={56} arquivo={112} /> : 'marca' in g ? <Image src={g.marca} alt="" widths={[48, 96, 144]} sizes="48px" format="png" /> : <IconeModulo nome={g.icone} />}
           </span>
           <div><h3>{g.nome}</h3><p>{g.d}</p></div>
         </li>
@@ -557,6 +558,8 @@ const faqDados = {
   .sigla { width: 48px; height: 48px; border-radius: 12px; overflow: hidden; display: grid; place-items: center; color: #fff; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .8); }
   .sigla :global(.ico) { width: 26px; height: 26px; }
   .sigla :global(img) { width: 100%; height: 100%; }
+  .sem-fundo { overflow: visible; box-shadow: none; }
+  .sem-fundo :global(img) { width: 56px; height: 56px; max-width: none; margin: -4px; }
   .integ h3 { font-size: 18px; }
   .integ p { margin-top: 6px; color: var(--tinta-2); font-size: 14.5px; }
   .faixa-adq { margin-top: 28px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); }
