@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+import TopoProduto from '../components/TopoProduto.astro';
+import Vantagens from '../components/Vantagens.astro';
+import GradeCartoes from '../components/GradeCartoes.astro';
+import Destaque from '../components/Destaque.astro';
+import ConversaExemplo from '../components/ConversaExemplo.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Chamada from '../components/Chamada.astro';
+import { empresa } from '../data/empresa';
+
+const migalhas = [{ nome: 'Atendimento com IA no WhatsApp', href: '/atendimento-com-ia-no-whatsapp' }];
+
+const etapas = [
+  { icone: 'whatsapp', t: 'A loja conecta o número', d: 'O próprio número do WhatsApp é conectado pelo sistema Set Tecnologia. O cliente continua falando com o número de sempre.' },
+  { icone: 'cardapio', t: 'A Setia atende', d: 'Responde cardápio, preços e taxa de entrega com os dados do sistema da loja e tira o pedido na conversa.' },
+  { icone: 'delivery', t: 'O pedido entra no delivery', d: 'Com o resumo confirmado pelo cliente, o pedido vai direto para o delivery próprio, sem redigitar.' },
+  { icone: 'impressora', t: 'A cozinha recebe impresso', d: 'Com o aceite automático, o pedido sai impresso no setor certo assim que chega.' },
+] as const;
+
+const perguntas = [
+  { p: 'Preciso deixar um atendente no WhatsApp?', r: 'Não para responder e tirar pedidos: esse atendimento fica com a Setia. A equipe da loja entra quando o cliente pede uma pessoa, ou em reclamação, cancelamento e alteração de pedido já enviado.' },
+  { p: 'O pedido sai impresso sozinho?', r: 'Sim, com o aceite automático ativado no sistema. O pedido confirmado pelo cliente entra no delivery e sai impresso no setor certo da cozinha.' },
+  { p: 'Precisa ter o sistema Set Tecnologia?', r: 'Sim. O número é conectado pelo sistema, e o cardápio, os preços e as taxas vêm do cadastro da loja.' },
+  { p: 'O cliente sabe que está falando com uma IA?', r: 'Sim. A Setia se apresenta como atendente virtual na primeira resposta da conversa.' },
+  { p: 'A Setia lê áudio e foto?', r: 'Não. A Setia lê mensagens de texto. Áudios, fotos e outros arquivos não são lidos.' },
+  { p: 'Quem responde pelos dados dos clientes?', r: 'No atendimento pelo WhatsApp, a loja é a controladora dos dados e a Set Tecnologia é a operadora. Os detalhes estão na Política de privacidade.' },
+];
+
+const servico = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Atendimento com IA no WhatsApp',
+  serviceType: 'Atendimento automático pelo WhatsApp da loja para restaurantes',
+  provider: { '@id': `${empresa.site}/#empresa` },
+  areaServed: { '@type': 'Country', name: 'Brasil' },
+  description: 'A loja conecta o próprio número pelo sistema Set Tecnologia. A Setia, atendimento com IA, responde cardápio, preços e taxa, tira o pedido e envia direto para o delivery próprio, com impressão automática na cozinha.',
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+};
+---
+<Base
+  titulo="Atendimento com IA no WhatsApp para restaurantes | Set Tecnologia"
+  descricao="A Setia atende o WhatsApp da loja sem precisar de atendente: responde cardápio e taxa, tira o pedido e envia para a cozinha, com impressão automática."
+  migalhas={migalhas}
+  mostrarMigalhas={false}
+  dados={[servico, faq]}
+>
+  <TopoProduto
+    migalhas={migalhas}
+    rotulo="Atendimento com IA · WhatsApp da loja"
+    titulo="O WhatsApp da loja vendendo <em>sem precisar de atendente.</em>"
+    texto="A Setia, atendimento com IA da Set Tecnologia, responde cardápio, preços e taxa de entrega, tira o pedido e manda direto para o delivery próprio. Com o aceite automático, o pedido sai impresso na cozinha e a equipe fica livre para produzir e atender."
+    selos={[
+      { icone: 'usuarios', t: 'Sem atendente no WhatsApp' },
+      { icone: 'raio', t: 'Resposta em segundos' },
+      { icone: 'delivery', t: 'Pedido direto no delivery' },
+      { icone: 'impressora', t: 'Impressão automática' },
+    ]}
+  />
+
+  <Vantagens
+    titulo="A equipe na cozinha, <em>a Setia no WhatsApp.</em>"
+    texto="O horário de pico deixa de depender de alguém parado no celular."
+    itens={[
+      { icone: 'usuarios', t: 'Sem atendente no WhatsApp', d: 'A loja não precisa deixar uma pessoa no celular para responder e anotar pedido.' },
+      { icone: 'raio', t: 'Resposta em segundos', d: 'Várias conversas ao mesmo tempo, sem cliente esperando na fila do pico.' },
+      { icone: 'escudo', t: 'Preço e taxa do sistema', d: 'Os valores saem do cadastro da loja, e a Setia não pode alterá-los.' },
+      { icone: 'suporte', t: 'Pessoa quando precisa', d: 'Quando o cliente pede, a conversa passa para a equipe da loja e a Setia para de responder.' },
+    ]}
+  />
+
+  <GradeCartoes rotulo="Como funciona" titulo="Da mensagem à cozinha, <em>sem redigitar.</em>" itens={etapas} />
+
+  <Destaque
+    rotulo="Na conversa"
+    titulo="O pedido completo <em>dentro do WhatsApp.</em>"
+    texto="A Setia informa preço e taxa, monta o pedido e confirma o resumo com o cliente antes de enviar para a loja."
+    pontos={[
+      'O cliente não baixa aplicativo nem troca de tela',
+      'O pedido só segue para a loja depois da confirmação do cliente',
+      'Assuntos do atendimento: cardápio, preços, entrega, pagamento e pedidos',
+    ]}
+    invertido
+  >
+    <ConversaExemplo />
+  </Destaque>
+
+  <section class="empresa envelope" aria-labelledby="empresa-titulo">
+    <div data-revelar>
+      <p class="rotulo">Empresa</p>
+      <h2 id="empresa-titulo" class="titulo-secao">Quem fornece o serviço.</h2>
+    </div>
+    <dl data-revelar style="--atraso:.08s">
+      <div><dt>Nome comercial</dt><dd>{empresa.nome}</dd></div>
+      <div><dt>Razão social</dt><dd>{empresa.razaoSocial}</dd></div>
+      <div><dt>CNPJ</dt><dd>{empresa.cnpj}</dd></div>
+      <div><dt>Área de atendimento</dt><dd>Todo o Rio Grande do Sul. Demais estados a distância.</dd></div>
+      <div><dt>Contato</dt><dd><a href="#contato">Formulário desta página</a></dd></div>
+      <div><dt>Dados pessoais</dt><dd><a href="/privacidade">Política de privacidade</a></dd></div>
+    </dl>
+  </section>
+
+  <Perguntas itens={perguntas} />
+  <Chamada titulo="Coloque a Setia para atender o WhatsApp da loja." texto="Uma conversa de 15 minutos sobre a operação da loja e a ativação do atendimento com IA, sem compromisso." />
+</Base>
+
+<style>
+  .empresa { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 48px; padding-block: clamp(48px, 7vw, 88px) 0; }
+  .empresa h2 { margin-top: 14px; font-size: clamp(30px, 3.6vw, 42px); }
+  dl { margin: 0; display: grid; border-top: 1px solid var(--linha); }
+  dl div { display: grid; grid-template-columns: 190px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--linha); }
+  dt { font-weight: 500; }
+  dd { margin: 0; color: var(--tinta-2); }
+  dd a { color: var(--laranja-claro); }
+  @media (max-width: 860px) { .empresa { grid-template-columns: 1fr; gap: 28px; } }
+  @media (max-width: 600px) { dl div { grid-template-columns: 1fr; gap: 2px; } }
+</style>

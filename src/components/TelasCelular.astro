@@ -9,7 +9,7 @@ const { telas } = Astro.props;
 <ul class="telas-celular">
   {telas.map((t, i) => (
     <li data-revelar style={`--atraso:${i * 0.12}s; --i:${i}`}>
-      <Tela src={t.src} alt={t.alt} tipo="celular" sizes="(max-width: 760px) 72vw, 360px" larguras={[400, 600, 738]} />
+      <Tela src={t.src} alt={t.alt} tipo="celular" sizes="(max-width: 760px) 60vw, 360px" larguras={[400, 600, 738]} />
       {t.modo && <span class:list={['modo', t.modo]}>{t.modo === 'claro' ? 'Modo claro' : 'Modo escuro'}</span>}
       <p>{t.legenda}</p>
     </li>
@@ -33,7 +33,7 @@ const { telas } = Astro.props;
   @media (max-width: 760px) {
     .telas-celular { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--gutter) * -1); padding: 8px var(--gutter) 16px; scrollbar-width: none; }
     .telas-celular::-webkit-scrollbar { display: none; }
-    li { flex: 0 0 72vw; scroll-snap-align: center; }
+    li { flex: 0 0 min(60vw, 240px); scroll-snap-align: center; }
     li:nth-child(even) { margin-top: 0; }
   }
 </style>

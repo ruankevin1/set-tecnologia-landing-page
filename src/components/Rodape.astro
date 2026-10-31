@@ -24,6 +24,7 @@ const ano = new Date().getFullYear();
       <p class="rotulo">Produtos</p>
       <a href="/sistema-para-restaurante">Sistema para restaurante</a>
       <a href="/cardapio-digital-e-delivery">Cardápio digital e delivery</a>
+      <a href="/atendimento-com-ia-no-whatsapp">Atendimento com IA no WhatsApp</a>
       <a href="/smart-tef">Smart TEF</a>
       <a href={empresa.pdvPlus} target="_blank" rel="noopener">PDV+</a>
     </nav>
@@ -36,6 +37,7 @@ const ano = new Date().getFullYear();
   <div class="envelope base">
     <p>© {ano} Set Tecnologia · <a href="/privacidade">Política de privacidade</a></p>
     <p>Atendimento em todo o Rio Grande do Sul. Implantação a distância para o resto do Brasil.</p>
+    <p class="empresa">{empresa.nome} é o nome comercial de {empresa.razaoSocial}, CNPJ {empresa.cnpj}.</p>
   </div>
 </footer>
 
@@ -49,7 +51,9 @@ const ano = new Date().getFullYear();
   nav a { text-decoration: none; color: #c8c3b9; padding-block: 3px; }
   nav a:hover { color: var(--tinta); }
   .falar { margin-top: 22px; height: 46px; font-size: 15px; }
-  .base { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-top: 1px solid #34322e; padding-block: 22px 28px; font-size: 13.5px; color: #8f8a80; }
-  @media (max-width: 900px) { .grade { grid-template-columns: 1fr 1fr 1fr; } .sobre { grid-column: 1 / -1; } }
+  .base { display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; border-top: 1px solid #34322e; padding-block: 22px 28px; font-size: 13.5px; color: #8f8a80; }
+  .empresa { flex-basis: 100%; }
+  /* A folga deixa os dados da empresa acima do botão flutuante do WhatsApp. */
+  @media (max-width: 900px) { .grade { grid-template-columns: 1fr 1fr 1fr; } .sobre { grid-column: 1 / -1; } .base { padding-bottom: 88px; } }
   @media (max-width: 600px) { .grade { grid-template-columns: 1fr 1fr; } .sobre { grid-column: 1 / -1; } }
 </style>

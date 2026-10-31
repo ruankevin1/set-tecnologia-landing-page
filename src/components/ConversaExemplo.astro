@@ -1,0 +1,80 @@
+---
+// Conversa desenhada como o WhatsApp no celular do cliente, com uma pizzaria de demonstração. Não é print:
+// a legenda avisa isso, porque o resto do site mostra telas reais.
+// Só texto, como o atendimento real, em que a Setia se apresenta uma vez e já responde.
+import { Image } from 'astro:assets';
+import SeloVerificado from './SeloVerificado.astro';
+import perfil from '../assets/conversa/pizza-perfil.jpg'; // Wikimedia Commons, Pizza-3007395~2.jpg, CC0
+
+const mensagens = [
+  { de: 'cliente', hora: '20:14', texto: 'Boa noite. Quanto fica a pizza grande de calabresa com entrega no Centro?' },
+  { de: 'ia', hora: '20:14', texto: 'Boa noite. Sou a Setia, atendente virtual da Set Pizzas.\nPizza grande: R$ 62,00\nEntrega: R$ 7,00\nTotal: R$ 69,00' },
+  { de: 'cliente', hora: '20:15', texto: 'Pode fazer. Rua das Flores, 120. Dinheiro na entrega.' },
+  { de: 'ia', hora: '20:15', texto: 'Resumo: 1 pizza grande de calabresa, Rua das Flores, 120, dinheiro. Total: R$ 69,00. Confirma?' },
+  { de: 'cliente', hora: '20:16', texto: 'Confirmo.' },
+  { de: 'ia', hora: '20:16', texto: 'Pedido enviado para a loja.' },
+  { de: 'cliente', hora: '20:17', texto: 'Quero falar com uma pessoa.' },
+  { de: 'ia', hora: '20:17', texto: 'Uma pessoa da loja vai continuar o atendimento.' },
+] as const;
+---
+<figure class="conversa">
+  <div class="aparelho">
+    <div class="barra">
+      <svg class="voltar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+      <Image class="foto" src={perfil} alt="" widths={[64, 96]} sizes="32px" format="webp" quality={85} />
+      <span class="quem">
+        <b>Set Pizzas<SeloVerificado /></b>
+        <small>Setia · atendimento com IA</small>
+      </span>
+    </div>
+    <div class="fundo">
+      <p class="dia" aria-hidden="true">Hoje</p>
+      <ol>
+        {mensagens.map((m) => (
+          <li class={m.de}>
+            <span class="so-leitor">{m.de === 'cliente' ? 'Cliente: ' : 'Setia: '}</span>{m.texto}
+            <span class="hora" aria-hidden="true">{m.hora}{m.de === 'cliente' && <svg viewBox="0 0 18 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m1 6 3 3 6-7M8 8l1 1 6-7" /></svg>}</span>
+          </li>
+        ))}
+      </ol>
+      <div class="digitar" aria-hidden="true">
+        <span class="campo">Mensagem</span>
+        <span class="enviar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1a7 7 0 0 0 6-6.9z" /></svg></span>
+      </div>
+    </div>
+  </div>
+  <figcaption>Exemplo de conversa, com dados de demonstração.</figcaption>
+</figure>
+
+<style>
+  /* Cabe inteira na tela do celular, sem ocupar mais que a seção pede. */
+  .conversa { margin: 0 auto; width: min(300px, 100%); }
+  .aparelho { border: 7px solid #26241f; border-radius: 28px; overflow: hidden; background: #0b141a; color: #e9edef; box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -30px rgb(0 0 0 / .9); }
+
+  /* Cores do WhatsApp no tema escuro: é o que faz a cena ser reconhecida como uma conversa de lá. */
+  .barra { display: flex; align-items: center; gap: 6px; padding: 9px 12px 9px 8px; background: #075e54; color: #fff; line-height: 1.25; }
+  .voltar { width: 19px; height: 19px; flex: none; }
+  .foto { width: 32px; height: 32px; flex: none; border-radius: 50%; object-fit: cover; }
+  .quem { min-width: 0; margin-left: 2px; }
+  .quem b { display: flex; align-items: center; gap: 4px; font-size: 14.5px; font-weight: 600; }
+  .quem small { display: block; font-size: 11.5px; color: rgb(255 255 255 / .8); }
+
+  .fundo { padding: 9px 9px 8px; background-color: #0b141a; background-image: radial-gradient(rgb(134 150 160 / .08) 1px, transparent 1.4px); background-size: 16px 16px; }
+  .dia { width: fit-content; margin: 0 auto 8px; padding: 3px 10px; border-radius: 7px; background: #182229; color: #8696a0; font-size: 11.5px; }
+  ol { list-style: none; display: grid; gap: 5px; font-size: 13px; line-height: 1.32; }
+  li { position: relative; max-width: 88%; padding: 5px 8px 6px; border-radius: 8px; white-space: pre-line; box-shadow: 0 1px 1px rgb(0 0 0 / .3); }
+  li::before { content: ''; position: absolute; top: 0; width: 9px; height: 12px; }
+  .ia { justify-self: start; background: #202c33; border-top-left-radius: 0; }
+  .ia::before { left: -8px; background: #202c33; clip-path: polygon(100% 0, 0 0, 100% 100%); }
+  .cliente { justify-self: end; background: #005c4b; border-top-right-radius: 0; }
+  .cliente::before { right: -8px; background: #005c4b; clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .hora { float: right; display: inline-flex; align-items: center; gap: 3px; margin: 6px 0 -2px 8px; font-size: 10px; line-height: 1; color: rgb(233 237 239 / .62); }
+  .hora svg { width: 14px; height: 9px; color: #53bdeb; }
+
+  .digitar { display: flex; align-items: center; gap: 5px; margin-top: 9px; }
+  .campo { flex: 1; padding: 7px 13px; border-radius: 18px; background: #202c33; color: #8696a0; font-size: 13px; line-height: 1.3; }
+  .enviar { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: #00a884; color: #fff; }
+  .enviar svg { width: 18px; height: 18px; }
+
+  figcaption { margin-top: 14px; text-align: center; font-family: var(--mono); font-size: 12.5px; color: var(--tinta-3); }
+</style>

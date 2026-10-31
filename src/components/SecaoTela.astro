@@ -15,7 +15,7 @@ const { rotulo, titulo, texto, src, alt, tipo = 'janela', selos = [], id } = Ast
     </div>
     <div class="palco" data-inclinar>
       <div class="aura" aria-hidden="true"></div>
-      <Tela src={src} alt={alt} tipo={tipo} rolar sizes="(max-width: 1240px) 100vw, 1200px" larguras={[640, 960, 1440, 1920]} />
+      <Tela src={src} alt={alt} tipo={tipo} sizes="(max-width: 1240px) 100vw, 1200px" larguras={[640, 960, 1440, 1920]} />
     </div>
     {selos.length > 0 && (
       <ul class="selos">{selos.map((s, i) => <li data-revelar style={`--atraso:${i * 0.06}s`}><span aria-hidden="true">✓</span>{s}</li>)}</ul>

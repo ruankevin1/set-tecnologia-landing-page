@@ -1,42 +1,76 @@
 ---
-// A loja inteira numa cena: o caixa no monitor, o celular do garçom e o tablet de mesa à esquerda,
-// o celular com o cardápio do delivery e a maquininha aprovando o pagamento enviado pelo caixa.
+// A loja inteira numa cena: o caixa no centro e tudo ligado a ele por cabos com os dados correndo.
+// Garçom, tablet, Setia, cardápio, 99Food e iFood mandam para o caixa, e o caixa manda para a maquininha.
+import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Tela from './Tela.astro';
 import Maquininha from './Maquininha.astro';
+import ConversaMini from './ConversaMini.astro';
+import marca99 from '../assets/marcas/noventaenove_food.png';
+import marcaIfood from '../assets/marcas/ifood.png';
 interface Props {
   principal: ImageMetadata; altPrincipal: string;
   tablet: ImageMetadata; altTablet: string;
-  celular?: ImageMetadata; altCelular?: string;
-  garcom?: ImageMetadata; altGarcom?: string;
-  maquininha?: boolean;
+  celular: ImageMetadata; altCelular?: string;
+  garcom: ImageMetadata; altGarcom?: string;
   /** Nome da tela da vez trocando embaixo da cena, com a tela correspondente em destaque. */
   vitrine?: boolean;
   prioridade?: boolean;
 }
-const { principal, altPrincipal, tablet, altTablet, celular, altCelular = '', garcom, altGarcom = '', maquininha = true, vitrine = false, prioridade = false } = Astro.props;
+const { principal, altPrincipal, tablet, altTablet, celular, altCelular = '', garcom, altGarcom = '', vitrine = false, prioridade = false } = Astro.props;
 const vez = [
   { nome: 'App do garçom', alvo: 'garcom-pos' }, { nome: 'Caixa e balcão', alvo: 'monitor' }, { nome: 'Tablet de mesa', alvo: 'tablet-pos' },
-  { nome: 'Smart TEF', alvo: 'maq-pos' }, { nome: 'Cardápio online', alvo: 'celular-pos' },
+  { nome: 'Smart TEF', alvo: 'maq-pos' }, { nome: 'Cardápio online', alvo: 'celular-pos' }, { nome: 'Setia no WhatsApp', alvo: 'setia-pos' },
+];
+// Cada cabo começa em quem envia e termina em quem recebe: é o sentido em que o dado corre.
+// As pontas entram por baixo dos aparelhos. Coordenadas no palco de cada tamanho de tela.
+const cabosComputador = [
+  'M140 180 H310', // garçom
+  'M940 88 H870', // 99Food
+  'M940 214 H870', // iFood
+  'M1040 280 H870', // cardápio
+  'M590 470 V320', // tablet
+  'M310 470 H360 Q372 470 372 458 V320', // Setia
+  'M850 320 V358 Q850 370 862 370 H891 Q903 370 903 382 V430', // caixa para a maquininha
+];
+const cabosCelular = [
+  'M58 440 V190', // garçom
+  'M150 440 V190', // Setia
+  'M300.5 440 V190', // cardápio
+  'M27 250 V190', // 99Food
+  'M40 325 H53 V190', // iFood
+  'M180 250 V190', // tablet
+  'M330 190 V240', // caixa para a maquininha
 ];
 ---
 <div class:list={['composicao', { vitrine }]} data-composicao>
   <div class="aura" aria-hidden="true"></div>
-  <div class="monitor"><Tela src={principal} alt={altPrincipal} prioridade={prioridade} sizes="(max-width: 1100px) 82vw, 860px" larguras={[640, 960, 1440, 1520]} /><span class="nome-tela" style="--d:.3s">Caixa e balcão</span></div>
+  <svg class="cabos cabos-computador" viewBox="0 0 1180 700" aria-hidden="true">
+    {cabosComputador.map((d) => <path class="cabo" d={d} />)}
+    {cabosComputador.map((d, i) => <path class="dado" d={d} pathLength="100" style={`--atraso:${i * -0.37}s`} />)}
+  </svg>
+  <svg class="cabos cabos-celular" viewBox="0 0 360 680" aria-hidden="true">
+    {cabosCelular.map((d) => <path class="cabo" d={d} />)}
+    {cabosCelular.map((d, i) => <path class="dado" d={d} pathLength="100" style={`--atraso:${i * -0.37}s`} />)}
+  </svg>
+  <div class="monitor"><Tela src={principal} alt={altPrincipal} prioridade={prioridade} sizes="(max-width: 700px) 100vw, (max-width: 1180px) 60vw, 860px" larguras={[640, 960, 1440, 1520]} /><span class="nome-tela" style="--d:.3s">Caixa e balcão</span></div>
   <!-- O tablet desenha a imagem inteira, sem encolher em mais de metade: o texto da tela continua legível. -->
-  <div class="tablet-pos"><Tela src={tablet} alt={altTablet} tipo="tablet" sizes="(max-width: 1100px) 34vw, 360px" larguras={[360, 480, 720, 960, 1184]} prioridade={prioridade} /><span class="nome-tela" style="--d:.7s">Tablet de mesa</span></div>
-  {celular && <div class="celular-pos"><Tela src={celular} alt={altCelular} tipo="celular" sizes="(max-width: 1100px) 22vw, 230px" larguras={[300, 460, 700]} prioridade={prioridade} /><span class="nome-tela" style="--d:1.1s">Cardápio online</span></div>}
-  {garcom && <div class="garcom-pos"><Tela src={garcom} alt={altGarcom} tipo="celular" sizes="(max-width: 1100px) 22vw, 260px" larguras={[300, 520, 738]} prioridade={prioridade} /><span class="nome-tela" style="--d:.5s">App do garçom</span></div>}
-  {maquininha && <div class="maq-pos"><Maquininha /><span class="nome-tela" style="--d:.9s">Smart TEF</span></div>}
+  <div class="tablet-pos"><Tela src={tablet} alt={altTablet} tipo="tablet" sizes="(max-width: 700px) 66vw, (max-width: 1180px) 48vw, 560px" larguras={[360, 480, 720, 960, 1184]} prioridade={prioridade} /><span class="nome-tela" style="--d:.7s">Tablet de mesa</span></div>
+  <div class="celular-pos"><Tela src={celular} alt={altCelular} tipo="celular" sizes="(max-width: 700px) 32vw, (max-width: 1180px) 26vw, 300px" larguras={[300, 460, 700]} prioridade={prioridade} /><span class="nome-tela" style="--d:1.1s">Cardápio online</span></div>
+  <div class="garcom-pos"><Tela src={garcom} alt={altGarcom} tipo="celular" sizes="(max-width: 700px) 32vw, (max-width: 1180px) 26vw, 300px" larguras={[300, 520, 738]} prioridade={prioridade} /><span class="nome-tela" style="--d:.5s">App do garçom</span></div>
+  <div class="setia-pos"><ConversaMini /><span class="nome-tela" style="--d:1.3s">Setia no WhatsApp</span></div>
+  <div class="maq-pos"><Maquininha /><span class="nome-tela" style="--d:.9s">Smart TEF</span></div>
+  <Image class="app app-99" src={marca99} alt="99Food" widths={[64, 96, 128]} sizes="64px" format="png" />
+  <Image class="app app-ifood" src={marcaIfood} alt="iFood" widths={[64, 96, 128]} sizes="64px" format="png" />
 </div>
 {vitrine && (
   <p class="vez" aria-hidden="true" data-vez={JSON.stringify(vez)}><span class="vez-nome">{vez[0].nome}</span></p>
 )}
 
 <script>
-  // A tela da vez: o nome troca embaixo da cena e a tela correspondente sobe e acende.
-  // O mouse manda: a peça embaixo dele vem para a frente e a troca automática espera;
-  // ao sair da cena, a troca volta a partir da peça que o mouse deixou.
+  // A tela da vez: o nome troca embaixo da cena e o selo da tela correspondente pulsa.
+  // O mouse manda: só a peça embaixo dele vem para a frente, e a troca automática espera;
+  // ao sair da cena, as peças voltam ao lugar e a troca continua a partir da última.
   document.querySelectorAll<HTMLElement>('[data-vez]').forEach((caixa) => {
     const lista = JSON.parse(caixa.dataset.vez!) as { nome: string; alvo: string }[];
     const cena = caixa.previousElementSibling as HTMLElement;
@@ -62,28 +96,45 @@ const vez = [
     };
     cena.classList.add('com-foco'); focar(); girar();
     if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    lista.forEach(({ alvo }, j) => {
-      cena.querySelector<HTMLElement>(`.${alvo}`)?.addEventListener('pointerenter', () => { clearInterval(giro); irPara(j); });
+    const pecas = lista.map(({ alvo }) => cena.querySelector<HTMLElement>(`.${alvo}`)!);
+    let topo = 10;
+    pecas.forEach((peca, j) => peca.addEventListener('pointerenter', () => {
+      clearInterval(giro); irPara(j);
+      pecas.forEach((p) => p.classList.toggle('sob-mouse', p === peca));
+      peca.style.zIndex = String(++topo);
+    }));
+    cena.addEventListener('pointerleave', () => {
+      girar();
+      pecas.forEach((p) => { p.classList.remove('sob-mouse'); p.style.removeProperty('z-index'); });
     });
-    cena.addEventListener('pointerleave', girar);
   });
 </script>
 
 <style>
-  /* Monitor no meio; os dois celulares nas laterais, inteiros; tablet e maquininha na frente, embaixo. */
-  .composicao { position: relative; isolation: isolate; padding: 0 17% 15% 11%; margin-bottom: 26px; }
-  .composicao:has(.garcom-pos) { padding: 2% 21% 17% 21%; }
+  /* Palco de proporção fixa: o caixa no centro e as peças em volta, em %, com espaço para os cabos.
+     As peças ficam paradas: movimento contínuo faz o navegador desenhar a tela como textura e borra letra e foto. */
+  .composicao { position: relative; isolation: isolate; aspect-ratio: 1180 / 700; margin-bottom: 26px; }
   .aura { position: absolute; z-index: -1; inset: 0 5% 10%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .32), transparent); filter: blur(46px); }
-  .tablet-pos { position: absolute; left: 0; bottom: 0; width: 38%; z-index: 2; }
-  .composicao:has(.garcom-pos) .tablet-pos { left: 17%; width: 34%; z-index: 4; }
-  .garcom-pos { position: absolute; left: 0; top: 0; width: 20%; z-index: 3; animation: boiar 8s ease-in-out -4s infinite; }
-  .celular-pos { position: absolute; right: 0; top: 10%; width: 21%; z-index: 3; animation: boiar 7s ease-in-out infinite; }
-  .composicao:has(.garcom-pos) .celular-pos { top: 0; width: 20%; }
-  .maq-pos { position: absolute; right: 19%; bottom: 3%; width: 13%; z-index: 4; animation: boiar 6s ease-in-out -2s infinite; }
-  .composicao:has(.garcom-pos) .maq-pos { right: 22%; width: 11%; bottom: 2%; z-index: 5; }
+  .monitor, .tablet-pos, .garcom-pos, .celular-pos, .maq-pos, .setia-pos, .app { position: absolute; }
+  .monitor { left: 25%; top: 2.9%; width: 50%; z-index: 2; }
+  .garcom-pos { left: 0; top: 2.9%; width: 13.5%; z-index: 3; }
+  .celular-pos { right: 0; top: 2.9%; width: 13.5%; z-index: 3; }
+  .setia-pos { left: 14.5%; top: 50%; width: 13.5%; z-index: 3; }
+  .tablet-pos { left: 35%; top: 64%; width: 30%; z-index: 3; }
+  .maq-pos { left: 71%; top: 57%; width: 11%; z-index: 3; }
+  .app { left: 78.5%; width: 5.4%; height: auto; z-index: 3; filter: drop-shadow(0 10px 14px rgb(0 0 0 / .7)); }
+  .app-99 { top: 8%; }
+  .app-ifood { top: 26%; }
+
+  /* Cabos embaixo dos aparelhos, com um pulso de dado correndo de quem envia para quem recebe. */
+  .cabos { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .cabos-celular { display: none; }
+  .cabos path { fill: none; stroke-linecap: round; }
+  .cabo { stroke: #3a3631; stroke-width: 4; }
+  .dado { stroke: #ff8a3d; stroke-width: 3; stroke-dasharray: 9 91; stroke-dashoffset: 100; filter: drop-shadow(0 0 4px rgb(243 104 18 / .9)); animation: dado-corre 2.6s linear var(--atraso, 0s) infinite; }
+  @keyframes dado-corre { to { stroke-dashoffset: 0; } }
+
   /* Nome de cada tela num selo sobre a borda de baixo; o do monitor fica na borda de cima. */
-  .monitor, .tablet-pos, .garcom-pos, .celular-pos, .maq-pos { position: relative; }
-  .tablet-pos, .garcom-pos, .celular-pos, .maq-pos { position: absolute; }
   .nome-tela {
     position: absolute; left: 50%; bottom: 0; z-index: 6; transform: translate(-50%, 50%);
     white-space: nowrap; padding: 6px 13px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #fff;
@@ -93,35 +144,40 @@ const vez = [
   .monitor .nome-tela { bottom: auto; top: 0; transform: translate(-50%, -50%); animation-name: selo-entra-cima; }
   @keyframes selo-entra { from { opacity: 0; transform: translate(-50%, 90%) scale(.85); } }
   @keyframes selo-entra-cima { from { opacity: 0; transform: translate(-50%, -10%) scale(.85); } }
-  @media (prefers-reduced-motion: reduce) { .nome-tela { animation: none; } }
-  /* Tela da vez em destaque: sobe um pouco e o selo pulsa; as outras ficam um pouco mais apagadas. */
-  .com-foco > .monitor, .com-foco > .tablet-pos, .com-foco > .garcom-pos, .com-foco > .celular-pos, .com-foco > .maq-pos { transition: filter .5s, scale .5s; }
-  .com-foco > :not(.em-foco):not(.aura) { filter: brightness(.72) saturate(.85); }
-  .com-foco > .em-foco { scale: 1.035; z-index: 7 !important; }
+
+  /* A tela da vez só pulsa o selo. Quem cresce é a peça sob o mouse, e ela volta nítida ao parar. */
+  .com-foco > .monitor, .com-foco > .tablet-pos, .com-foco > .garcom-pos, .com-foco > .celular-pos, .com-foco > .maq-pos, .com-foco > .setia-pos { transition: scale .3s; }
+  .com-foco > .sob-mouse { scale: 1.08; }
   .em-foco .nome-tela { animation: pulsar-selo 1.3s ease-in-out infinite; }
   @keyframes pulsar-selo { 50% { box-shadow: 0 0 0 3px rgb(17 17 16 / .9), 0 0 0 9px rgb(243 104 18 / .35), 0 8px 22px -6px rgb(243 104 18 / .9); } }
   .vez { margin-top: 18px; text-align: center; font-size: clamp(26px, 3vw, 38px); font-weight: 600; letter-spacing: -0.03em; }
   .vez-nome { display: inline-block; background: linear-gradient(90deg, #ff8a3d, #f36812, #ffb547); -webkit-background-clip: text; background-clip: text; color: transparent; transition: opacity .3s, transform .3s, filter .3s; }
   .vez-nome.saindo { opacity: 0; transform: translateY(-14px); filter: blur(4px); }
-  /* Sem inclinação de rolagem nas peças da frente: ficam nítidas e paradas, só boiando. */
+  /* Sem inclinação de rolagem nas peças da cena. */
   .composicao :global(.quadro) { animation: none !important; }
-  @keyframes boiar { 50% { transform: translateY(-10px); } }
-  @media (prefers-reduced-motion: reduce) { .celular-pos, .maq-pos, .garcom-pos { animation: none; } .com-foco > * { filter: none !important; scale: none !important; } }
-  /* No celular a cena empilha: o monitor em cima, largo; garçom, maquininha e cardápio embaixo,
-     lado a lado e grandes; o tablet some (as telas dele estão na seção própria). */
+  @media (prefers-reduced-motion: reduce) {
+    .nome-tela { animation: none; }
+    .dado { animation: none; opacity: 0; }
+    .com-foco > * { scale: none !important; }
+  }
+
+  /* No celular: o caixa em cima, largo; tablet no centro, com os apps à esquerda e a maquininha à direita;
+     garçom, Setia e cardápio embaixo. Outro palco, com os cabos próprios. */
   @media (max-width: 700px) {
-    .composicao, .composicao:has(.garcom-pos) { padding: 0; display: grid; grid-template-columns: 1fr .82fr 1fr; gap: 12px; align-items: end; }
-    .garcom-pos :global(.quadro), .celular-pos :global(.quadro) { border-width: 6px; border-radius: 22px; }
+    .composicao { aspect-ratio: 360 / 680; }
+    .cabos-computador { display: none; }
+    .cabos-celular { display: block; }
+    .monitor { left: 0; top: 2%; width: 100%; }
+    .tablet-pos { left: 17%; top: 34.7%; width: 66%; }
+    .maq-pos { left: 84.5%; top: 33%; width: 15.5%; }
+    .garcom-pos { left: 0; top: 62%; width: 31.3%; }
+    .setia-pos { left: 34.35%; top: 62%; width: 31.3%; }
+    .celular-pos { top: 62%; width: 31.3%; }
+    .app { left: 2%; width: 11.5%; }
+    .app-99 { top: 34.6%; }
+    .app-ifood { top: 44.7%; }
+    .garcom-pos :global(.quadro), .celular-pos :global(.quadro), .setia-pos :global(.aparelho) { border-width: 6px; border-radius: 22px; }
     .garcom-pos :global(img), .celular-pos :global(img) { border-radius: 16px; }
-    .monitor { grid-column: 1 / -1; }
-    .tablet-pos { display: none; }
-    .garcom-pos, .celular-pos, .maq-pos,
-    .composicao:has(.garcom-pos) .celular-pos, .composicao:has(.garcom-pos) .maq-pos { position: static; width: auto; animation: none; }
-    .garcom-pos { grid-column: 1; grid-row: 2; }
-    .maq-pos { grid-column: 2; grid-row: 2; padding: 0 10%; }
-    .celular-pos { grid-column: 3; grid-row: 2; }
-    .garcom-pos, .celular-pos, .maq-pos { position: relative !important; }
     .nome-tela { font-size: 11px; padding: 4px 9px; }
-    .composicao, .composicao:has(.garcom-pos) { row-gap: 26px; padding-bottom: 14px; }
   }
 </style>

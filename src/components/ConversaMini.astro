@@ -1,0 +1,44 @@
+---
+// A conversa como celular da cena da loja: mesma proporção do print do garçom, para os três aparelhos
+// ficarem iguais. Em HTML, para a letra ficar nítida; tudo acompanha a largura da peça.
+import { Image } from 'astro:assets';
+import SeloVerificado from './SeloVerificado.astro';
+import perfil from '../assets/conversa/pizza-perfil.jpg';
+
+const mensagens = [
+  { de: 'cliente', texto: 'Quanto fica a pizza grande?' },
+  { de: 'ia', texto: 'Sou a Setia, da Set Pizzas. Pizza grande: R$ 62,00. Entrega: R$ 7,00.' },
+  { de: 'cliente', texto: 'Pode fazer.' },
+  { de: 'ia', texto: 'Total: R$ 69,00. Confirma?' },
+  { de: 'cliente', texto: 'Confirmo.' },
+  { de: 'ia', texto: 'Pedido enviado para a loja.' },
+] as const;
+---
+<div class="mini" role="img" aria-label="Setia atendendo no WhatsApp da Set Pizzas: informa preço e taxa, recebe a confirmação e envia o pedido para a loja">
+  <div class="aparelho" aria-hidden="true">
+    <div class="barra">
+      <Image class="foto" src={perfil} alt="" widths={[64, 96]} sizes="32px" format="webp" quality={85} />
+      <b>Set Pizzas<SeloVerificado /></b>
+    </div>
+    <div class="fundo">
+      <ol>{mensagens.map((m) => <li class={m.de}>{m.texto}</li>)}</ol>
+      <div class="digitar"><span>Mensagem</span><i></i></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .mini { container-type: inline-size; }
+  .aparelho { aspect-ratio: 756 / 1615; display: flex; flex-direction: column; border: 9px solid #26241f; border-radius: 34px; overflow: hidden; background: #0b141a; color: #e9edef; box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -30px rgb(0 0 0 / .9); font-size: 6.4cqw; line-height: 1.3; }
+  .barra { flex: none; display: flex; align-items: center; gap: .5em; padding: .7em .8em; background: #075e54; color: #fff; }
+  .foto { width: 2.2em; height: 2.2em; flex: none; border-radius: 50%; object-fit: cover; }
+  .barra b { min-width: 0; display: flex; align-items: center; gap: .3em; font-size: 1.1em; font-weight: 600; white-space: nowrap; }
+  .fundo { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: .7em; padding: .7em .6em .8em; background-color: #0b141a; background-image: radial-gradient(rgb(134 150 160 / .08) 1px, transparent 1.4px); background-size: 14px 14px; }
+  ol { list-style: none; display: grid; gap: .4em; }
+  li { max-width: 88%; padding: .35em .6em .4em; border-radius: .6em; }
+  .ia { justify-self: start; background: #202c33; border-top-left-radius: 0; }
+  .cliente { justify-self: end; background: #005c4b; border-top-right-radius: 0; }
+  .digitar { flex: none; display: flex; align-items: center; gap: .4em; }
+  .digitar span { flex: 1; padding: .5em .9em; border-radius: 1.2em; background: #202c33; color: #8696a0; }
+  .digitar i { width: 2.3em; height: 2.3em; flex: none; border-radius: 50%; background: #00a884; }
+</style>

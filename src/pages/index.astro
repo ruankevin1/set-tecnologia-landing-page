@@ -15,6 +15,8 @@ import CardapioAoVivo from '../components/CardapioAoVivo.astro';
 import IconeModulo from '../components/IconeModulo.astro';
 import TelasCelular from '../components/TelasCelular.astro';
 import Impressos from '../components/Impressos.astro';
+import Destaque from '../components/Destaque.astro';
+import ConversaExemplo from '../components/ConversaExemplo.astro';
 import { empresa } from '../data/empresa';
 import { adquirentes } from '../data/maquininhas';
 
@@ -35,6 +37,8 @@ import gMesas from '../assets/garcom/mesas.png';
 import gAvisos from '../assets/garcom/avisos.png';
 import gMesasClaro from '../assets/garcom/mesas-claro.png';
 import gTransferirClaro from '../assets/garcom/transferir-claro.png';
+import marca99 from '../assets/marcas/noventaenove_food.png';
+import marcaIfood from '../assets/marcas/ifood.png';
 const telasDoGarcom = [
   { src: gMesasClaro, alt: 'App do garçom no modo claro com as mesas do salão, o valor e as comandas de cada uma, a mesa 1 chamando e as mesas paradas', legenda: 'Mesas, comandas e quem chamou', modo: 'claro' },
   { src: gAvisos, alt: 'App do garçom no modo escuro com os avisos do salão: a mesa 1 chamou o garçom, com o botão Assumir, e as mesas sem pedido há mais tempo', legenda: 'Mesa chamou: o garçom assume o atendimento', modo: 'escuro' },
@@ -50,7 +54,7 @@ const modulos = [
   { id: 'mesa', nome: 'Pedido na mesa', icone: 'comanda', titulo: 'Cada pessoa com a sua comanda', texto: 'O que foi retirado e a observação saem impressos no setor certo da cozinha, sem redigitar.', img: mesaPedido, alt: 'Pedido da mesa 1 lançado na comanda 7, com carpaccio sem alcaparras e observação para a cozinha' },
   { id: 'tablet', nome: 'Tablet de mesa', icone: 'tablet', titulo: 'O cliente pede pela mesa', texto: 'Cardápio com fotos, ponto da carne e chamada do garçom. O pedido entra direto na conta da mesa.', img: tablet, alt: 'Tablet de mesa do Set Tecnologia com o cardápio de pratos com fotos, na mesa 4', tipo: 'tablet' },
   { id: 'conta', nome: 'Conta dividida', icone: 'dividir', titulo: 'Cada um paga o que consumiu', texto: 'Até um terço da calabresa. A conta fecha no centavo, e com Smart TEF o valor vai direto para a maquininha.', img: contaPartes, alt: 'Pagamento da mesa 1 com um chopp e um terço da calabresa marcados, R$ 24,67 a receber' },
-  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online e 99Food: aceito, preparo, pronto, saiu e entregue.', img: delivery, alt: 'Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto' },
+  { id: 'delivery', nome: 'Delivery', icone: 'delivery', titulo: 'Todos os pedidos no mesmo quadro', texto: 'Telefone, WhatsApp, cardápio online, 99Food e iFood: aceito, preparo, pronto, saiu e entregue. A Setia, atendimento com IA no WhatsApp, manda o pedido direto para o delivery próprio.', img: delivery, alt: 'Quadro do Delivery com pedidos do 99Food e do telefone: um novo do 99Food com o prazo para aceitar, outros em Aceito, Preparo e Pronto' },
   { id: 'relatorios', nome: 'Relatórios', icone: 'relatorios', titulo: 'O dia fechado em números', texto: 'Faturamento, vendas por produto e por operador, acerto dos motoboys, repasses do 99Food e o XML do contador.', img: relatorios, alt: 'Tela de Relatórios com o resumo de hoje, relatórios comerciais, de delivery e repasses do 99Food' },
 ] as const;
 
@@ -66,12 +70,14 @@ const recursos = [
 ] as const;
 
 const integracoes = [
-  { sigla: '99', cor: '#ffd200', tinta: '#111', nome: '99Food', d: 'Pedidos do aplicativo no quadro do delivery, com cardápio, produtos e adicionais enviados pelo Set.' },
-  { sigla: 'TEF', cor: '#f36812', tinta: '#fff', nome: 'Smart TEF', d: 'O valor vai do caixa para a maquininha smart e a venda fecha sozinha quando o pagamento é aprovado.' },
-  { sigla: 'NF', cor: '#2f7d4f', tinta: '#fff', nome: 'SEFAZ', d: 'NFC-e autorizada direto com a SEFAZ, com contingência quando a internet cai.' },
-  { sigla: 'WEB', cor: '#3b6fd8', tinta: '#fff', nome: 'Cardápio online', d: 'Loja própria no celular do cliente, com o pedido entrando no caixa.' },
-  { sigla: 'IMP', cor: '#5b5650', tinta: '#fff', nome: 'Impressoras térmicas', d: 'Em rede ou USB, uma por setor, aproveitando as que a loja já tem.' },
-  { sigla: 'ADQ', cor: '#8a5cf6', tinta: '#fff', nome: 'Adquirentes', d: 'Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, Sicredi e praticamente todas as outras pelo Smart TEF.' },
+  { marca: marca99, nome: '99Food', d: 'Pedidos do aplicativo no quadro do delivery, com cardápio, produtos e adicionais enviados pelo Set.' },
+  { marca: marcaIfood, nome: 'iFood', d: 'Pedidos do aplicativo no quadro do delivery, com o cardápio enviado pelo Set.' },
+  { icone: 'whatsapp', cor: '#1f8f4e', nome: 'WhatsApp', d: 'Setia, o atendimento com IA da loja: responde cardápio, preços e taxa e manda o pedido direto para o delivery próprio.' },
+  { icone: 'tef', cor: '#f36812', nome: 'Smart TEF', d: 'O valor vai do caixa para a maquininha smart e a venda fecha sozinha quando o pagamento é aprovado.' },
+  { icone: 'nfce', cor: '#2f7d4f', nome: 'SEFAZ', d: 'NFC-e autorizada direto com a SEFAZ, com contingência quando a internet cai.' },
+  { icone: 'cardapio', cor: '#3b6fd8', nome: 'Cardápio online', d: 'Delivery próprio no celular do cliente, com o pedido entrando no caixa.' },
+  { icone: 'impressora', cor: '#5b5650', nome: 'Impressoras térmicas', d: 'Em rede ou USB, uma por setor, aproveitando as que a loja já tem.' },
+  { icone: 'maquininha', cor: '#8a5cf6', nome: 'Adquirentes', d: 'Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, Sicredi e praticamente todas as outras pelo Smart TEF.' },
 ] as const;
 
 const formasDeConta = [
@@ -82,11 +88,11 @@ const formasDeConta = [
 ];
 
 const antes = ['Comanda de papel e pedido gritado na cozinha', 'Conta da mesa somada na calculadora', 'Valor digitado de novo na maquininha', 'Delivery pelo WhatsApp, anotado à mão', 'Comissão em cada pedido do aplicativo', 'Fechamento de caixa no caderno'];
-const depois = ['Pedido do celular do garçom sai impresso no setor certo', 'Conta dividida por pessoa, item ou partes iguais', 'Smart TEF manda o valor direto para a maquininha', 'Pedidos do site e do 99Food no mesmo quadro', 'Cardápio online próprio, sem comissão', 'Relatório de caixa, vendas e notas no fim do dia'];
+const depois = ['Pedido do celular do garçom sai impresso no setor certo', 'Conta dividida por pessoa, item ou partes iguais', 'Smart TEF manda o valor direto para a maquininha', 'Pedidos do site, do 99Food e do iFood no mesmo quadro', 'Cardápio online próprio, sem comissão', 'Relatório de caixa, vendas e notas no fim do dia'];
 
 const produtos = [
   { n: '01', nome: 'Set Tecnologia', href: '/sistema-para-restaurante', texto: 'Sistema próprio para restaurante, bar e lanchonete: caixa, salão, garçom no celular, tablet de mesa, cozinha, estoque e NFC-e.', para: 'Restaurantes com salão e cozinha' },
-  { n: '02', nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery', texto: 'Cardápio online com endereço próprio da loja, pedido direto no caixa e integração com o 99Food. Sem comissão por pedido.', para: 'Quem entrega ou faz retirada' },
+  { n: '02', nome: 'Cardápio digital e delivery', href: '/cardapio-digital-e-delivery', texto: 'Cardápio online com endereço próprio da loja, sem comissão por pedido. Integração com 99Food e iFood e Setia, o atendimento com IA no WhatsApp, com pedido direto no delivery próprio.', para: 'Quem entrega ou faz retirada' },
   { n: '03', nome: 'Smart TEF', href: '/smart-tef', texto: 'Pagamento na maquininha smart integrado ao caixa, com as principais adquirentes do mercado.', para: 'Caixa com fila' },
   { n: '04', nome: 'PDV+', href: empresa.pdvPlus, texto: 'PDV em planos mensais que roda no celular, no tablet e no PC, com NFC-e. Sem fidelidade.', para: 'MEI e comércio de balcão' },
 ];
@@ -101,11 +107,11 @@ const etapas = [
 
 
 const perguntas = [
-  { p: 'Quanto custa?', r: 'O valor depende do número de caixas, dos dispositivos e dos módulos (delivery próprio, Smart TEF, 99Food). O orçamento sai na primeira conversa, já com a configuração indicada para a operação.' },
+  { p: 'Quanto custa?', r: 'O valor depende do número de caixas, dos dispositivos e dos módulos (delivery próprio, Smart TEF, 99Food, iFood e atendimento com IA). O orçamento sai na primeira conversa, já com a configuração indicada para a operação.' },
   { p: 'Preciso trocar computador e impressoras?', r: 'Na maioria dos casos, não. O caixa roda em computador com Windows, os tablets de mesa são Android e as impressoras térmicas em rede ou USB são aproveitadas. A avaliação dos equipamentos faz parte do diagnóstico.' },
   { p: 'O sistema para quando a internet cai?', r: 'Não. Caixa, tablets e celulares dos garçons conversam pela rede da própria loja. As vendas continuam e as notas emitidas em contingência são transmitidas quando a conexão volta.' },
   { p: 'Funciona com a minha maquininha?', r: 'Pelo Smart TEF, o Set funciona com as maquininhas smart de Rede, Cielo, Getnet, Stone, PagBank, Mercado Pago, SafraPay, Vero, Sipag, Sicredi, Caixa, BIN, PicPay e outras. A lista de modelos está na página do Smart TEF.' },
-  { p: 'Recebe pedidos do 99Food?', r: 'Sim. Os pedidos do 99Food entram no quadro de delivery do caixa junto com os do cardápio online, com aceite, preparo e entrega acompanhados no sistema.' },
+  { p: 'Recebe pedidos do 99Food e do iFood?', r: 'Sim. Os pedidos do 99Food e do iFood entram no quadro de delivery do caixa junto com os do cardápio online, com aceite, preparo e entrega acompanhados no sistema.' },
   { p: 'Emite nota fiscal?', r: 'Sim. A NFC-e é emitida no fechamento da venda, com a configuração fiscal feita na implantação. Os relatórios mostram notas autorizadas, canceladas e pendentes, e o XML sai pronto para o contador.' },
   { p: 'Atendem fora do Rio Grande do Sul?', r: 'Sim. A Set atende todo o Rio Grande do Sul. Fora do estado, a implantação e o treinamento são feitos a distância, com o mesmo suporte por WhatsApp e acesso remoto.' },
 ];
@@ -125,7 +131,7 @@ const faqDados = {
   <TopoProduto
     rotulo="Sistema para restaurante · Todo o Rio Grande do Sul"
     titulo="Sistema para restaurante completo, <em>do salão ao delivery.</em>"
-    texto="Intuitivo e prático: caixa, garçom no celular, tablet de mesa, cozinha, delivery, 99Food, Smart TEF e NFC-e no mesmo sistema. Desenvolvido, implantado e mantido pela Set Tecnologia."
+    texto="Intuitivo e prático: caixa, garçom no celular, tablet de mesa, cozinha, delivery, 99Food, iFood, Smart TEF e NFC-e no mesmo sistema. Desenvolvido, implantado e mantido pela Set Tecnologia."
     selos={[
       { icone: 'garcom', t: 'Garçom no celular' },
       { icone: 'dinheiro', t: 'Delivery sem comissão' },
@@ -144,7 +150,7 @@ const faqDados = {
     itens={[
       { icone: 'check', t: 'Intuitivo', d: 'Produtos com foto, botões grandes e textos claros. O garçom aprende no treinamento da implantação.' },
       { icone: 'raio', t: 'Prático', d: 'Poucos toques do pedido ao fechamento: lança, imprime na cozinha, divide a conta e cobra.' },
-      { icone: 'caixa', t: 'Tudo num lugar', d: 'Caixa, salão, delivery, 99Food, maquininha e nota fiscal no mesmo sistema, sem trocar de tela.' },
+      { icone: 'caixa', t: 'Tudo num lugar', d: 'Caixa, salão, delivery, 99Food, iFood, maquininha e nota fiscal no mesmo sistema, sem trocar de tela.' },
     ]}
   />
 
@@ -174,7 +180,7 @@ const faqDados = {
                 <div class="painel-tela"><TelasCelular telas={telasDoGarcom} /></div>
               ) : (
                 <div class:list={['painel-tela', { estreita: 'tipo' in m }]}>
-                  <Tela src={m.img} alt={m.alt} tipo={'tipo' in m ? m.tipo : 'janela'} rolar prioridade={i === 0} />
+                  <Tela src={m.img} alt={m.alt} tipo={'tipo' in m ? m.tipo : 'janela'} prioridade={i === 0} />
                 </div>
               )}
             </div>
@@ -203,7 +209,7 @@ const faqDados = {
       <div class="paineis">
         {formasDeConta.map((f, i) => (
           <div role="tabpanel" id={`painel-${f.id}`} aria-labelledby={`aba-${f.id}`} hidden={i !== 0}>
-            <Tela src={f.img} alt={f.alt} rolar larguras={[960, 1440]} sizes="(max-width: 1000px) 100vw, 800px" />
+            <Tela src={f.img} alt={f.alt} larguras={[960, 1440]} sizes="(max-width: 1000px) 100vw, 800px" />
           </div>
         ))}
       </div>
@@ -227,7 +233,7 @@ const faqDados = {
         <h2 id="cardapio-titulo" class="titulo-secao">O delivery da loja, <span class="gradiente">sem comissão.</span></h2>
         <p class="lead">Um cardápio que funciona como o feed do Instagram: fotos grandes, categorias em bolinhas como os stories e destaques deslizando. O pedido entra direto no caixa e sai impresso na cozinha. Role o cardápio ao lado: é o sistema funcionando.</p>
         <ul class="selos-cardapio">
-          <li>0% de comissão</li><li>Pedido direto no caixa</li><li>99Food no mesmo quadro</li><li>Sem aplicativo para baixar</li>
+          <li>0% de comissão</li><li>Pedido direto no caixa</li><li>99Food e iFood no mesmo quadro</li><li>Sem aplicativo para baixar</li>
         </ul>
         <div class="acoes">
           <a class="botao botao-principal" href="#contato">Falar com especialista <Icone nome="seta" /></a>
@@ -243,6 +249,18 @@ const faqDados = {
       </div>
     </div>
   </section>
+
+  <!-- Atendimento com IA -->
+  <Destaque
+    rotulo="Atendimento com IA · WhatsApp da loja"
+    titulo="Atendimento com IA <em>no WhatsApp da loja.</em>"
+    texto="A loja conecta o próprio número pelo sistema Set Tecnologia. A IA responde sobre cardápio, preços e taxa de entrega, tira o pedido e passa a conversa para uma pessoa da loja quando o cliente pede."
+    pontos={['Preços e taxas saem do sistema da loja', 'O pedido só segue para a loja depois da confirmação do cliente']}
+    acao={{ texto: 'Ver como funciona', href: '/atendimento-com-ia-no-whatsapp' }}
+    invertido
+  >
+    <ConversaExemplo />
+  </Destaque>
 
   <!-- Recursos -->
   <section class="recursos envelope" aria-labelledby="recursos-titulo">
@@ -266,12 +284,14 @@ const faqDados = {
     <div class="cabeca centro" data-revelar>
       <p class="rotulo">Integrações</p>
       <h2 id="integ-titulo" class="titulo-secao">Conectado ao que a loja já usa.</h2>
-      <p class="lead">Aplicativo de entrega, maquininha, SEFAZ e impressoras ligados ao mesmo caixa.</p>
+      <p class="lead">Aplicativos de entrega, WhatsApp, maquininha, SEFAZ e impressoras ligados ao mesmo caixa.</p>
     </div>
     <ul class="grade-integ">
       {integracoes.map((g, i) => (
-        <li class="integ" data-luz data-revelar style={`--atraso:${(i % 3) * 0.06}s`}>
-          <span class="sigla" style={`background:${g.cor};color:${g.tinta}`}>{g.sigla}</span>
+        <li class="integ" data-luz data-revelar style={`--atraso:${(i % 4) * 0.06}s`}>
+          <span class="sigla" style={'cor' in g ? `background:${g.cor}` : undefined}>
+            {'marca' in g ? <Image src={g.marca} alt="" widths={[48, 96, 144]} sizes="48px" format="png" /> : <IconeModulo nome={g.icone} />}
+          </span>
           <div><h3>{g.nome}</h3><p>{g.d}</p></div>
         </li>
       ))}
@@ -449,7 +469,7 @@ const faqDados = {
   .aura { position: absolute; z-index: -1; inset: 10% 8%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .32), transparent); filter: blur(40px); pointer-events: none; }
 
   /* Topo */
-  .vitrine-topo { max-width: 1060px; margin-inline: auto; }
+  .vitrine-topo { max-width: 1180px; margin-inline: auto; }
 
   /* Sistema */
   .sistema { padding-block: clamp(80px, 11vw, 140px) clamp(40px, 6vw, 80px); }
@@ -532,9 +552,11 @@ const faqDados = {
 
   /* Integrações */
   .integracoes { padding-block: clamp(48px, 7vw, 96px); }
-  .grade-integ { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .grade-integ { list-style: none; margin-top: 44px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
   .integ { display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; padding: 22px; border-radius: 14px; border: 1px solid var(--linha); background: #151413; }
-  .sigla { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font: 700 15px/1 var(--fonte); letter-spacing: -0.02em; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .8); }
+  .sigla { width: 48px; height: 48px; border-radius: 12px; overflow: hidden; display: grid; place-items: center; color: #fff; box-shadow: 0 10px 24px -10px rgb(0 0 0 / .8); }
+  .sigla :global(.ico) { width: 26px; height: 26px; }
+  .sigla :global(img) { width: 100%; height: 100%; }
   .integ h3 { font-size: 18px; }
   .integ p { margin-top: 6px; color: var(--tinta-2); font-size: 14.5px; }
   .faixa-adq { margin-top: 28px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); }

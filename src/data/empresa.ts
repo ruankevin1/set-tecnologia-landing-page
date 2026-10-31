@@ -3,6 +3,8 @@
 
 export const empresa = {
   nome: 'Set Tecnologia',
+  razaoSocial: '53.323.285 Kevin Ruan Bagatini Pires de Lima',
+  cnpj: '53.323.285/0001-68',
   site: 'https://www.settecnologia.app.br',
   whatsapp: '5554992977120',
   telefoneExibicao: '(54) 99297-7120',
