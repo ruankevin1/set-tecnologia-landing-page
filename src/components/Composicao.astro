@@ -34,13 +34,13 @@ const cabosComputador = [
   'M850 320 V358 Q850 370 862 370 H891 Q903 370 903 382 V430', // caixa para a maquininha
 ];
 const cabosCelular = [
-  'M58 440 V190', // garçom
-  'M150 440 V190', // Setia
-  'M300.5 440 V190', // cardápio
-  'M27 250 V190', // 99Food
-  'M40 325 H53 V190', // iFood
-  'M180 250 V190', // tablet
-  'M330 190 V240', // caixa para a maquininha
+  'M56 225 V300', // garçom
+  'M180 225 V300', // Setia
+  'M304 225 V300', // cardápio
+  'M21 545 V455', // 99Food
+  'M63 545 V455', // iFood
+  'M180 525 V455', // tablet
+  'M325 455 V530', // caixa para a maquininha
 ];
 ---
 <div class:list={['composicao', { vitrine }]} data-composicao>
@@ -49,13 +49,13 @@ const cabosCelular = [
     {cabosComputador.map((d) => <path class="cabo" d={d} />)}
     {cabosComputador.map((d, i) => <path class="dado" d={d} pathLength="100" style={`--atraso:${i * -0.37}s`} />)}
   </svg>
-  <svg class="cabos cabos-celular" viewBox="0 0 360 680" aria-hidden="true">
+  <svg class="cabos cabos-celular" viewBox="0 0 360 665" aria-hidden="true">
     {cabosCelular.map((d) => <path class="cabo" d={d} />)}
     {cabosCelular.map((d, i) => <path class="dado" d={d} pathLength="100" style={`--atraso:${i * -0.37}s`} />)}
   </svg>
   <div class="monitor"><Tela src={principal} alt={altPrincipal} prioridade={prioridade} sizes="(max-width: 700px) 100vw, (max-width: 1180px) 60vw, 860px" larguras={[640, 960, 1440, 1520]} /><span class="nome-tela" style="--d:.3s">Caixa e balcão</span></div>
   <!-- O tablet desenha a imagem inteira, sem encolher em mais de metade: o texto da tela continua legível. -->
-  <div class="tablet-pos"><Tela src={tablet} alt={altTablet} tipo="tablet" sizes="(max-width: 700px) 66vw, (max-width: 1180px) 48vw, 560px" larguras={[360, 480, 720, 960, 1184]} prioridade={prioridade} /><span class="nome-tela" style="--d:.7s">Tablet de mesa</span></div>
+  <div class="tablet-pos"><Tela src={tablet} alt={altTablet} tipo="tablet" sizes="(max-width: 700px) 53vw, (max-width: 1180px) 48vw, 560px" larguras={[360, 480, 720, 960, 1184]} prioridade={prioridade} /><span class="nome-tela" style="--d:.7s">Tablet de mesa</span></div>
   <div class="celular-pos"><Tela src={celular} alt={altCelular} tipo="celular" sizes="(max-width: 700px) 32vw, (max-width: 1180px) 26vw, 300px" larguras={[300, 460, 700]} prioridade={prioridade} /><span class="nome-tela" style="--d:1.1s">Cardápio online</span></div>
   <div class="garcom-pos"><Tela src={garcom} alt={altGarcom} tipo="celular" sizes="(max-width: 700px) 32vw, (max-width: 1180px) 26vw, 300px" larguras={[300, 520, 738]} prioridade={prioridade} /><span class="nome-tela" style="--d:.5s">App do garçom</span></div>
   <div class="setia-pos"><ConversaMini /><span class="nome-tela" style="--d:1.3s">Setia no WhatsApp</span></div>
@@ -125,6 +125,8 @@ const cabosCelular = [
   .app { left: 78.5%; width: 5.4%; height: auto; z-index: 3; filter: drop-shadow(0 10px 14px rgb(0 0 0 / .7)); }
   .app-99 { top: 8%; }
   .app-ifood { top: 26%; }
+  /* Os três celulares com a mesma altura: o cardápio, mais curto, completa com o fundo escuro do aparelho. */
+  .garcom-pos :global(.quadro), .celular-pos :global(.quadro) { aspect-ratio: 756 / 1615; }
 
   /* Cabos embaixo dos aparelhos, com um pulso de dado correndo de quem envia para quem recebe. */
   .cabos { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
@@ -161,23 +163,29 @@ const cabosCelular = [
     .com-foco > * { scale: none !important; }
   }
 
-  /* No celular: o caixa em cima, largo; tablet no centro, com os apps à esquerda e a maquininha à direita;
-     garçom, Setia e cardápio embaixo. Outro palco, com os cabos próprios. */
+  /* No celular, três linhas: os celulares em cima, o caixa no meio, e embaixo os apps, o tablet no centro
+     e a maquininha. Cada cabo é curto e reto, sem passar por trás de outra peça. */
   @media (max-width: 700px) {
-    .composicao { aspect-ratio: 360 / 680; }
+    .composicao { aspect-ratio: 360 / 665; }
     .cabos-computador { display: none; }
     .cabos-celular { display: block; }
-    .monitor { left: 0; top: 2%; width: 100%; }
-    .tablet-pos { left: 17%; top: 34.7%; width: 66%; }
-    .maq-pos { left: 84.5%; top: 33%; width: 15.5%; }
-    .garcom-pos { left: 0; top: 62%; width: 31.3%; }
-    .setia-pos { left: 34.35%; top: 62%; width: 31.3%; }
-    .celular-pos { top: 62%; width: 31.3%; }
-    .app { left: 2%; width: 11.5%; }
-    .app-99 { top: 34.6%; }
-    .app-ifood { top: 44.7%; }
+    .cabo { stroke-width: 3; }
+    .dado { stroke-width: 2.5; stroke-dasharray: 20 80; }
+    .garcom-pos { left: 0; top: 0; width: 31.1%; }
+    .setia-pos { left: 34.45%; top: 0; width: 31.1%; }
+    .celular-pos { top: 0; width: 31.1%; }
+    .monitor { left: 0; top: 42.4%; width: 100%; }
+    .monitor .nome-tela { top: auto; bottom: 0; transform: translate(-50%, 50%); animation-name: selo-entra; }
+    .tablet-pos { left: 23.6%; top: 77%; width: 52.8%; }
+    .maq-pos { left: 82.2%; top: 75.9%; width: 16.1%; }
+    .app { top: 79.7%; width: 10%; }
+    .app-99 { left: 1%; top: 79.7%; }
+    .app-ifood { left: 12.5%; top: 79.7%; }
     .garcom-pos :global(.quadro), .celular-pos :global(.quadro), .setia-pos :global(.aparelho) { border-width: 6px; border-radius: 22px; }
     .garcom-pos :global(img), .celular-pos :global(img) { border-radius: 16px; }
+    .tablet-pos :global(.quadro) { border-width: 7px; border-radius: 16px; }
+    .tablet-pos :global(img) { border-radius: 9px; }
     .nome-tela { font-size: 11px; padding: 4px 9px; }
   }
+  @media (max-width: 380px) { .nome-tela { font-size: 9.5px; padding: 3px 7px; } }
 </style>
