@@ -2,9 +2,8 @@
 // Conversa desenhada como o WhatsApp no celular do cliente, com uma pizzaria de demonstração. Não é print:
 // a legenda avisa isso, porque o resto do site mostra telas reais.
 // Só texto, como o atendimento real, em que a Eduarda se apresenta uma vez e já responde.
-import { Image } from 'astro:assets';
+import MarcaEduarda from './MarcaEduarda.astro';
 import SeloVerificado from './SeloVerificado.astro';
-import perfil from '../assets/conversa/pizza-perfil.jpg'; // Wikimedia Commons, Pizza-3007395~2.jpg, CC0
 
 const mensagens = [
   { de: 'cliente', hora: '20:14', texto: 'Boa noite. Quanto fica a pizza grande de calabresa com entrega no Centro?' },
@@ -21,7 +20,7 @@ const mensagens = [
   <div class="aparelho">
     <div class="barra">
       <svg class="voltar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-      <Image class="foto" src={perfil} alt="" widths={[64, 96]} sizes="32px" format="webp" quality={85} />
+      <span class="foto"><MarcaEduarda tamanho={32} arquivo={112} /></span>
       <span class="quem">
         <b>Set Pizzas<SeloVerificado /></b>
         <small>Eduarda · atendimento com IA</small>
@@ -54,7 +53,8 @@ const mensagens = [
   /* Cores do WhatsApp no tema escuro: é o que faz a cena ser reconhecida como uma conversa de lá. */
   .barra { display: flex; align-items: center; gap: 6px; padding: 9px 12px 9px 8px; background: #075e54; color: #fff; line-height: 1.25; }
   .voltar { width: 19px; height: 19px; flex: none; }
-  .foto { width: 32px; height: 32px; flex: none; border-radius: 50%; object-fit: cover; }
+  .foto { width: 32px; height: 32px; flex: none; display: block; padding: 1px; border-radius: 50%; overflow: hidden; background: #141311; box-sizing: border-box; }
+  .foto :global(img) { width: 100%; height: 100%; }
   .quem { min-width: 0; margin-left: 2px; }
   .quem b { display: flex; align-items: center; gap: 4px; font-size: 14.5px; font-weight: 600; }
   .quem small { display: block; font-size: 11.5px; color: rgb(255 255 255 / .8); }
