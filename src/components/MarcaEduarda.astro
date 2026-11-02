@@ -1,15 +1,47 @@
 ---
-// O ícone da Eduarda em movimento: a esfera gira e o satélite dá a volta na órbita.
-// Quem pede menos movimento no sistema vê a imagem parada.
-interface Props { tamanho: number; arquivo: 112 | 192; alt?: string; carregar?: 'eager' | 'lazy' }
-const { tamanho, arquivo, alt = '', carregar = 'lazy' } = Astro.props;
+// O ícone da Eduarda: o raio do Set Tecnologia com uma órbita em volta e o satélite dando a volta nele.
+// Em vetor, nítido em qualquer tamanho. A volta é animação de CSS: duas oscilações defasadas (x e y)
+// desenham a elipse. Quem pede menos movimento no sistema vê o ícone parado.
+interface Props { tamanho: number; alt?: string }
+const { tamanho, alt = '' } = Astro.props;
+const id = `eduarda-${Math.random().toString(36).slice(2, 8)}`;
+// Em ícone pequeno o satélite cresce, para a volta continuar visível.
+const satelite = tamanho < 48 ? 8 : 5.2;
 ---
-<picture class="marca-eduarda">
-  <source media="(prefers-reduced-motion: reduce)" srcset="/marcas/eduarda.png" />
-  <img src={`/marcas/eduarda-${arquivo}.webp`} width={tamanho} height={tamanho} alt={alt} loading={carregar} decoding="async" />
-</picture>
+<svg class="marca-eduarda" width={tamanho} height={tamanho} viewBox="0 0 120 120" role={alt ? 'img' : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : 'true'}>
+  <defs>
+    <linearGradient id={`${id}-raio`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB25E" /><stop offset=".55" stop-color="#F7832C" /><stop offset="1" stop-color="#E9580F" /></linearGradient>
+    <radialGradient id={`${id}-brilho`}><stop offset="0" stop-color="#F36812" stop-opacity=".5" /><stop offset="1" stop-color="#F36812" stop-opacity="0" /></radialGradient>
+    <linearGradient id={`${id}-orbita`} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFB25E" stop-opacity=".2" /><stop offset=".5" stop-color="#FF8A3D" /><stop offset="1" stop-color="#FFB25E" stop-opacity=".2" /></linearGradient>
+  </defs>
+  <circle class="brilho" cx="60" cy="60" r="50" fill={`url(#${id}-brilho)`} />
+  <g transform="rotate(-24 60 60)"><ellipse cx="60" cy="60" rx="54" ry="17" fill="none" stroke={`url(#${id}-orbita)`} stroke-width="3.2" opacity=".5" /></g>
+  <g transform="translate(31.5 18) scale(.5)">
+    <path fill={`url(#${id}-raio)`} d="M117 1 L76 68 L95 110 Q99 118 93 125 L6 169 Q0 171 2 165 L39 103 L20 63 Q15 53 24 47 Z" />
+    <path fill="#D9570A" opacity=".28" d="M20 63 L76 68 L95 110 L39 103 Z" />
+  </g>
+  <g transform="rotate(-24 60 60)">
+    <path d="M6 60 A54 17 0 0 0 114 60" fill="none" stroke={`url(#${id}-orbita)`} stroke-width="3.6" stroke-linecap="round" />
+    <g class="sat-x"><g class="sat-y"><g class="sat-lado">
+      <circle cx="60" cy="60" r={satelite * 1.75} fill="#FF8A3D" opacity=".35" /><circle cx="60" cy="60" r={satelite} fill="#FFF3E6" />
+    </g></g></g>
+  </g>
+</svg>
 
 <style>
-  .marca-eduarda { display: block; flex: none; }
-  .marca-eduarda img { display: block; }
+  .marca-eduarda { display: block; flex: none; overflow: visible; }
+  .brilho { transform-origin: 60px 60px; animation: eduarda-respira 3.2s ease-in-out infinite; }
+  @keyframes eduarda-respira { 50% { opacity: .55; transform: scale(.92); } }
+  /* Volta de 6 s: na metade de baixo (0 a 3 s) o satélite passa na frente do raio; na de cima, atrás e mais apagado. */
+  .sat-x { animation: eduarda-x 3s cubic-bezier(.37, 0, .63, 1) infinite alternate; }
+  .sat-y { animation: eduarda-y 3s cubic-bezier(.37, 0, .63, 1) -1.5s infinite alternate; }
+  .sat-lado { animation: eduarda-lado 6s linear infinite; }
+  @keyframes eduarda-x { from { transform: translateX(-54px); } to { transform: translateX(54px); } }
+  @keyframes eduarda-y { from { transform: translateY(-17px); } to { transform: translateY(17px); } }
+  @keyframes eduarda-lado { 0%, 47% { opacity: 1; } 53%, 97% { opacity: .3; } 100% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .brilho, .sat-x, .sat-y, .sat-lado { animation: none; }
+    .sat-x { transform: translateX(30px); }
+    .sat-y { transform: translateY(14px); }
+  }
 </style>

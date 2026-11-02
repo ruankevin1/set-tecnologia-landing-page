@@ -3,6 +3,7 @@
 // No celular, os mesmos grupos aparecem na gaveta.
 import Marca from './Marca.astro';
 import Icone from './Icone.astro';
+import MarcaEduarda from './MarcaEduarda.astro';
 import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
 import { empresa } from '../data/empresa';
 
@@ -67,7 +68,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
                 <ul>
                   {g.itens.map((i) => (
                     <li><a href={i.href}>
-                      <span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <img src="/marcas/eduarda-pequeno.png" width="32" height="32" alt="" loading="lazy" /> : <IconeModulo nome={i.icone} />}</span>
+                      <span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <MarcaEduarda tamanho={32} /> : <IconeModulo nome={i.icone} />}</span>
                       <span><b>{i.nome}</b><small>{i.texto}</small></span>
                     </a></li>
                   ))}
@@ -90,7 +91,7 @@ const menus: { id: string; rotulo: string; grupos: { titulo: string; itens: Item
         {menus.flatMap((m) => m.grupos).map((g) => (
           <div class="g-grupo">
             <p class="grupo-titulo">{g.titulo}</p>
-            {g.itens.map((i) => <a href={i.href}><span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <img src="/marcas/eduarda-pequeno.png" width="32" height="32" alt="" loading="lazy" /> : <IconeModulo nome={i.icone} />}</span>{i.nome}</a>)}
+            {g.itens.map((i) => <a href={i.href}><span class:list={['m-ico', { 'm-eduarda': i.eduarda }]}>{i.eduarda ? <MarcaEduarda tamanho={32} /> : <IconeModulo nome={i.icone} />}</span>{i.nome}</a>)}
           </div>
         ))}
         <a class="g-pdv" href={empresa.pdvPlus} target="_blank" rel="noopener">PDV+ <Icone nome="seta-fora" /></a>

@@ -1,6 +1,8 @@
 ---
 // Os papéis que o Set imprime, gerados pelos templates reais do sistema com dados de demonstração
 // (src/data/impressos.json). Abas à esquerda; à direita o papel sai da impressora a cada troca.
+// No celular, as abas viram uma fileira de botões curtos, a descrição do papel vai embaixo deles, e o papel
+// troca também por "anterior / próximo" ou deslizando o dedo sobre ele.
 import Papel, { type Impresso } from './Papel.astro';
 import IconeModulo, { type NomeModulo } from './IconeModulo.astro';
 import dados from '../data/impressos.json';
@@ -27,12 +29,18 @@ const impressos = (dados as Impresso[]).filter((i) => sobre[i.id]);
       </button>
     ))}
   </div>
+  <p class="sobre-atual" aria-hidden="true" data-sobre>{sobre[impressos[0].id].texto}</p>
   <div class="mesa">
     {impressos.map((p, i) => (
       <div role="tabpanel" id={`painel-imp-${p.id}`} aria-labelledby={`imp-${p.id}`} hidden={i !== 0}>
         <Papel impresso={p} descricao={`Papel impresso pelo Set: ${sobre[p.id].nome}`} />
       </div>
     ))}
+    <div class="passar">
+      <button type="button" data-passo="-1" aria-label="Papel anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6" /></svg></button>
+      <span data-contador>1 de {impressos.length}</span>
+      <button type="button" data-passo="1" aria-label="Próximo papel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6" /></svg></button>
+    </div>
     <p class="nota">Papéis gerados pelo próprio sistema, com dados de demonstração.</p>
   </div>
 </div>
@@ -40,7 +48,16 @@ const impressos = (dados as Impresso[]).filter((i) => sobre[i.id]);
 <script>
   document.querySelectorAll<HTMLElement>('[data-impressos]').forEach((g) => {
     const abas = [...g.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const lista = g.querySelector<HTMLElement>('.lista')!;
+    const sobre = g.querySelector<HTMLElement>('[data-sobre]')!;
+    const contador = g.querySelector<HTMLElement>('[data-contador]')!;
+    let atual = 0;
     const ativar = (i: number, foco = false) => {
+      atual = i;
+      sobre.textContent = abas[i].querySelector('small')?.textContent ?? '';
+      contador.textContent = `${i + 1} de ${abas.length}`;
+      // A fileira do celular rola até o botão da vez, sem mexer na página.
+      if (lista.scrollWidth > lista.clientWidth) lista.scrollTo({ left: abas[i].offsetLeft - (lista.clientWidth - abas[i].offsetWidth) / 2, behavior: 'smooth' });
       abas.forEach((a, k) => {
         const sim = k === i;
         a.setAttribute('aria-selected', String(sim)); a.tabIndex = sim ? 0 : -1;
@@ -61,6 +78,16 @@ const impressos = (dados as Impresso[]).filter((i) => sobre[i.id]);
         if (!d) return; e.preventDefault(); ativar((i + d + abas.length) % abas.length, true);
       });
     });
+    const passar = (d: number) => ativar((atual + d + abas.length) % abas.length);
+    g.querySelectorAll<HTMLButtonElement>('[data-passo]').forEach((b) => b.addEventListener('click', () => passar(Number(b.dataset.passo))));
+    // Deslizar o dedo sobre o papel troca de papel; rolar a página na vertical continua normal.
+    const mesa = g.querySelector<HTMLElement>('.mesa')!;
+    let x0 = 0, y0 = 0;
+    mesa.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    mesa.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) passar(dx < 0 ? 1 : -1);
+    }, { passive: true });
   });
 </script>
 
@@ -78,10 +105,24 @@ const impressos = (dados as Impresso[]).filter((i) => sobre[i.id]);
   .mesa { position: sticky; top: 100px; padding-top: 6px; }
   .mesa::before { content: ''; position: absolute; z-index: -1; inset: 0 10% 20%; border-radius: 50%; background: radial-gradient(closest-side, rgb(243 104 18 / .22), transparent); filter: blur(50px); }
   .nota { margin-top: 18px; text-align: center; font-size: 13px; color: var(--tinta-3); }
+  .sobre-atual, .passar { display: none; }
+  /* No celular: botões curtos numa fileira que desliza (a borda some aos poucos, mostrando que há mais), a
+     descrição embaixo e, sob o papel, anterior / próximo com o contador. */
   @media (max-width: 900px) {
-    .impressos { grid-template-columns: 1fr; }
-    .lista { grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) 6px; scrollbar-width: none; }
+    .impressos { grid-template-columns: 1fr; gap: 0; }
+    .lista { position: relative; display: flex; gap: 8px; overflow-x: auto; margin-inline: calc(var(--gutter) * -1); padding: 2px var(--gutter) 6px; scrollbar-width: none;
+      -webkit-mask: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - 48px), transparent); mask: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - 48px), transparent); }
     .lista::-webkit-scrollbar { display: none; }
+    .lista button { flex: none; grid-template-columns: 28px auto; gap: 8px; align-items: center; padding: 7px 15px 7px 7px; border-radius: 999px; }
+    .i-ico { width: 28px; height: 28px; border-radius: 50%; }
+    .i-ico :global(.ico) { width: 15px; height: 15px; }
+    .i-txt b { padding: 0; font-size: 14.5px; white-space: nowrap; }
+    [aria-selected='true'] .i-txt small { display: none; }
+    .sobre-atual { display: block; min-height: 3em; margin: 14px 0 22px; text-align: center; font-size: 14.5px; line-height: 1.5; color: var(--tinta-2); }
     .mesa { position: static; }
+    .passar { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 20px; font-family: var(--mono); font-size: 13px; color: var(--tinta-3); }
+    .passar button { all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--tinta); background: #1a1816; border: 1px solid var(--linha-forte); }
+    .passar button:active { background: rgb(243 104 18 / .2); border-color: var(--laranja); }
+    .passar svg { width: 20px; height: 20px; }
   }
 </style>

@@ -3,8 +3,7 @@ import Base from '../layouts/Base.astro';
 import TopoProduto from '../components/TopoProduto.astro';
 import Vantagens from '../components/Vantagens.astro';
 import GradeCartoes from '../components/GradeCartoes.astro';
-import Destaque from '../components/Destaque.astro';
-import ConversaExemplo from '../components/ConversaExemplo.astro';
+import EduardaAoVivo from '../components/EduardaAoVivo.astro';
 import MarcaEduarda from '../components/MarcaEduarda.astro';
 import Perguntas from '../components/Perguntas.astro';
 import Chamada from '../components/Chamada.astro';
@@ -19,12 +18,33 @@ const etapas = [
   { icone: 'impressora', t: 'A cozinha recebe impresso', d: 'Com o aceite automático, o pedido sai impresso no setor certo assim que chega.' },
 ] as const;
 
+// Tudo o que a Eduarda faz, conforme as regras e as ferramentas dela no atendimento.
+const capacidades = [
+  { icone: 'cardapio', t: 'Cardápio e preços', d: 'Mostra o cardápio em lista, por grupo, com os preços do sistema da loja.' },
+  { icone: 'foto', t: 'Foto do produto', d: 'Envia a foto do produto quando o cliente pede, com o nome e o preço na legenda.' },
+  { icone: 'mais', t: 'Sugestão de venda', d: 'A loja escolhe no sistema até 5 produtos, como bebida ou sobremesa. A Eduarda oferece um deles antes do resumo: pedido maior, ticket médio maior.' },
+  { icone: 'pino', t: 'Taxa de entrega', d: 'Calcula a taxa pelo endereço do cliente e avisa quando falta para o pedido mínimo.' },
+  { icone: 'comanda', t: 'Pedido completo', d: 'Pergunta as opções do produto, o que tirar, a observação e o troco, sem pular nada.' },
+  { icone: 'repetir', t: 'Cliente de volta', d: 'Chama o cliente pelo nome, confirma o endereço já usado e oferece repetir o último pedido.' },
+  { icone: 'check', t: 'Resumo e confirmação', d: 'Mostra o resumo com o total e só envia o pedido depois do sim do cliente.' },
+  { icone: 'dinheiro', t: 'Pix online', d: 'O código copia e cola sai do sistema, e o pedido segue para a loja quando o pagamento é confirmado.' },
+  { icone: 'delivery', t: 'Onde está o pedido', d: 'Responde em que etapa o pedido está, com a informação do próprio sistema.' },
+  { icone: 'escudo', t: 'Cancelamento e troca', d: 'Leva o pedido de cancelamento para a loja decidir e troca a forma de pagamento antes do Pix.' },
+  { icone: 'suporte', t: 'Equipe quando precisa', d: 'Passa a conversa para a loja em reclamação, alergia séria, encomenda grande ou quando o cliente pede.' },
+  { icone: 'relogio', t: 'Horário e outros idiomas', d: 'Avisa quando a loja está fechada, informa o horário e responde na língua do cliente.' },
+] as const;
+
 const perguntas = [
+  { p: 'A Eduarda sugere outros produtos?', r: 'Sim, quando a loja liga a sugestão de venda no sistema e escolhe até 5 produtos, em ordem, como bebida, adicionais ou sobremesa. Antes do resumo, a Eduarda oferece o primeiro que está à venda e ainda não está no pedido, uma vez por conversa. Bebida alcoólica não entra na sugestão. O cliente aceita ou recusa, e a sugestão ajuda a aumentar o ticket médio.' },
+  { p: 'A Eduarda lembra do cliente?', r: 'Sim. Com o cadastro do cliente na loja, a Eduarda chama pelo nome, mostra o endereço já usado para o cliente confirmar e, quando ele quer pedir sem dizer o quê, oferece repetir o último pedido.' },
+  { p: 'A Eduarda manda foto dos produtos?', r: 'Sim. Quando o cliente pede para ver um produto, a Eduarda envia a foto cadastrada no sistema, com o nome e o preço na legenda.' },
+  { p: 'Dá para pagar com Pix pela conversa?', r: 'Sim, com o Pix online da loja ativado. O código copia e cola é enviado pelo sistema, e o pedido segue para a cozinha quando o pagamento é confirmado.' },
   { p: 'Preciso deixar um atendente no WhatsApp?', r: 'Não para responder e tirar pedidos: esse atendimento fica com a Eduarda. A equipe da loja entra quando o cliente pede uma pessoa, ou em reclamação, cancelamento e alteração de pedido já enviado.' },
   { p: 'O pedido sai impresso sozinho?', r: 'Sim, com o aceite automático ativado no sistema. O pedido confirmado pelo cliente entra no delivery e sai impresso no setor certo da cozinha.' },
   { p: 'Precisa ter o sistema Set Tecnologia?', r: 'Sim. O número é conectado pelo sistema, e o cardápio, os preços e as taxas vêm do cadastro da loja.' },
   { p: 'O cliente sabe que está falando com uma IA?', r: 'Sim. A Eduarda se apresenta como atendente virtual na primeira resposta da conversa.' },
-  { p: 'A Eduarda lê áudio e foto?', r: 'Não. A Eduarda lê mensagens de texto. Áudios, fotos e outros arquivos não são lidos.' },
+  { p: 'A Eduarda lê áudio e foto?', r: 'Não. A Eduarda lê mensagens de texto. Áudios, fotos e outros arquivos enviados pelo cliente não são lidos.' },
+  { p: 'A Eduarda conversa sobre outros assuntos?', r: 'Não. A Eduarda atende só a loja: cardápio, preços, entrega, pagamento, pedidos e dúvidas sobre a loja. Pedido de vaga, parceria ou fornecedor vai para a equipe.' },
   { p: 'Quem responde pelos dados dos clientes?', r: 'No atendimento pelo WhatsApp, a loja é a controladora dos dados e a Set Tecnologia é a operadora. Os detalhes estão na Política de privacidade.' },
 ];
 
@@ -35,7 +55,7 @@ const servico = {
   serviceType: 'Atendimento automático pelo WhatsApp da loja para restaurantes',
   provider: { '@id': `${empresa.site}/#empresa` },
   areaServed: { '@type': 'Country', name: 'Brasil' },
-  description: 'A loja conecta o próprio número pelo sistema Set Tecnologia. A Eduarda, atendimento com IA, responde cardápio, preços e taxa, tira o pedido e envia direto para o delivery próprio, com impressão automática na cozinha.',
+  description: 'A loja conecta o próprio número pelo sistema Set Tecnologia. A Eduarda, atendimento com IA, responde cardápio, preços e taxa, envia foto dos produtos, sugere mais itens, tira o pedido, cobra no Pix online e envia direto para o delivery próprio, com impressão automática na cozinha.',
 };
 const faq = {
   '@context': 'https://schema.org',
@@ -54,43 +74,46 @@ const faq = {
     migalhas={migalhas}
     rotulo="Atendimento com IA · WhatsApp da loja"
     titulo="O WhatsApp da loja vendendo <em>sem precisar de atendente.</em>"
-    texto="A Eduarda, atendimento com IA da Set Tecnologia, responde cardápio, preços e taxa de entrega, tira o pedido e manda direto para o delivery próprio. Com o aceite automático, o pedido sai impresso na cozinha e a equipe fica livre para produzir e atender."
+    texto="A Eduarda, atendimento com IA da Set Tecnologia, responde cardápio e preços, envia foto dos produtos, sugere mais itens, tira o pedido, cobra no Pix online e manda direto para o delivery próprio. Com o aceite automático, o pedido sai impresso na cozinha e a equipe fica livre para produzir e atender."
     selos={[
       { icone: 'usuarios', t: 'Sem atendente no WhatsApp' },
-      { icone: 'raio', t: 'Resposta em segundos' },
-      { icone: 'delivery', t: 'Pedido direto no delivery' },
+      { icone: 'mais', t: 'Sugere mais itens' },
+      { icone: 'foto', t: 'Foto e Pix na conversa' },
       { icone: 'impressora', t: 'Impressão automática' },
     ]}
   >
-    <MarcaEduarda slot="marca" tamanho={112} arquivo={192} carregar="eager" alt="Ícone da Eduarda, atendente virtual" />
+    <MarcaEduarda slot="marca" tamanho={112} alt="Ícone da Eduarda, atendente virtual" />
   </TopoProduto>
+
+  <section class="ao-vivo-secao envelope" aria-labelledby="ao-vivo-titulo">
+    <div class="cab" data-revelar>
+      <MarcaEduarda tamanho={64} />
+      <p class="rotulo">A Eduarda atendendo</p>
+      <h2 id="ao-vivo-titulo" class="titulo-secao">Do “boa noite” ao pedido <em>impresso na cozinha.</em></h2>
+      <p class="lead">A Eduarda manda a foto do produto, sugere mais um item, monta o pedido e cobra no Pix. Com o pagamento confirmado, o pedido entra no delivery e saem impressos o pedido da cozinha e a via do entregador, com o endereço e o aviso de que já está pago.</p>
+    </div>
+    <EduardaAoVivo />
+    <ul class="pontos">
+      <li><span aria-hidden="true">✓</span>Sugestão de venda com os produtos que a loja escolhe</li>
+      <li><span aria-hidden="true">✓</span>O cliente não baixa aplicativo nem troca de tela</li>
+      <li><span aria-hidden="true">✓</span>O pedido só segue para a loja depois da confirmação do cliente</li>
+    </ul>
+  </section>
 
   <Vantagens
     titulo="A equipe na cozinha, <em>a Eduarda no WhatsApp.</em>"
     texto="O horário de pico deixa de depender de alguém parado no celular."
     itens={[
       { icone: 'usuarios', t: 'Sem atendente no WhatsApp', d: 'A loja não precisa deixar uma pessoa no celular para responder e anotar pedido.' },
+      { icone: 'mais', t: 'Ticket médio maior', d: 'A loja escolhe até 5 produtos, e a Eduarda sugere um deles antes do resumo de cada pedido.' },
       { icone: 'raio', t: 'Resposta em segundos', d: 'Várias conversas ao mesmo tempo, sem cliente esperando na fila do pico.' },
       { icone: 'escudo', t: 'Preço e taxa do sistema', d: 'Os valores saem do cadastro da loja, e a Eduarda não pode alterá-los.' },
-      { icone: 'suporte', t: 'Pessoa quando precisa', d: 'Quando o cliente pede, a conversa passa para a equipe da loja e a Eduarda para de responder.' },
     ]}
   />
 
-  <GradeCartoes rotulo="Como funciona" titulo="Da mensagem à cozinha, <em>sem redigitar.</em>" itens={etapas} />
+  <GradeCartoes rotulo="Tudo o que a Eduarda faz" titulo="Uma atendente que vende, cobra e <em>manda para a cozinha.</em>" itens={capacidades} />
 
-  <Destaque
-    rotulo="Na conversa"
-    titulo="O pedido completo <em>dentro do WhatsApp.</em>"
-    texto="A Eduarda informa preço e taxa, monta o pedido e confirma o resumo com o cliente antes de enviar para a loja."
-    pontos={[
-      'O cliente não baixa aplicativo nem troca de tela',
-      'O pedido só segue para a loja depois da confirmação do cliente',
-      'Assuntos do atendimento: cardápio, preços, entrega, pagamento e pedidos',
-    ]}
-    invertido
-  >
-    <ConversaExemplo />
-  </Destaque>
+  <GradeCartoes rotulo="Como funciona" titulo="Da mensagem à cozinha, <em>sem redigitar.</em>" itens={etapas} />
 
   <section class="empresa envelope" aria-labelledby="empresa-titulo">
     <div data-revelar>
@@ -112,6 +135,15 @@ const faq = {
 </Base>
 
 <style>
+  .ao-vivo-secao { padding-block: clamp(56px, 8vw, 104px) clamp(24px, 4vw, 48px); }
+  .ao-vivo-secao .cab { text-align: center; margin-bottom: 44px; }
+  .ao-vivo-secao .cab :global(.marca-eduarda) { margin: 0 auto 6px; }
+  .ao-vivo-secao .titulo-secao { margin: 14px auto 0; max-width: 22ch; }
+  .ao-vivo-secao .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .ao-vivo-secao .lead { margin: 16px auto 0; }
+  .pontos { list-style: none; margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .pontos li { display: inline-flex; align-items: center; gap: 9px; padding: 9px 15px 9px 9px; border-radius: 999px; font-size: 14.5px; font-weight: 500; background: rgb(255 255 255 / .04); border: 1px solid var(--linha-forte); }
+  .pontos span { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: rgb(243 104 18 / .18); color: var(--laranja-claro); }
   .empresa { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 48px; padding-block: clamp(48px, 7vw, 88px) 0; }
   .empresa h2 { margin-top: 14px; font-size: clamp(30px, 3.6vw, 42px); }
   dl { margin: 0; display: grid; border-top: 1px solid var(--linha); }

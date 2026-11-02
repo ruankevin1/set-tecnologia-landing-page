@@ -1,0 +1,522 @@
+---
+// A Eduarda atendendo de ponta a ponta: o cliente digita e envia, a Eduarda responde, a conversa rola
+// até o pedido pago, o pedido passa pela nuvem da Set e sai na impressora da cozinha. Roda em ciclo enquanto está na tela.
+// Sem script ou com "reduzir movimento", aparece a conversa inteira e o pedido já impresso.
+// O celular reproduz o WhatsApp do iPhone, sem enfeite: o que é da Set fica fora dele.
+// Conversa e pedido com dados de demonstração; os papéis seguem os do Set em bobina de 80 mm.
+import { Image } from 'astro:assets';
+import MarcaEduarda from './MarcaEduarda.astro';
+import SeloVerificado from './SeloVerificado.astro';
+import Papel, { type Impresso } from './Papel.astro';
+import perfil from '../assets/conversa/pizza-perfil.jpg'; // Wikimedia Commons, Pizza-3007395~2.jpg, CC0
+import fotoDaPizza from '../assets/conversa/pizza-foto.jpg'; // a mesma foto, maior, como foto do produto
+import fotoDaImpressora from '../assets/impressora/impressora-termica.png'; // render 3D próprio, sem marca
+
+// Segue o roteiro da Eduarda com uma cliente que volta: sem dizer o quê, ela oferece o último pedido (dados_do_cliente),
+// manda a foto quando a cliente pede, confirma o endereço guardado, oferece antes do resumo a sugestão de venda
+// (produto que a loja escolheu no PC), faz o resumo no modelo dela, envia só depois do "pode enviar" e cobra no Pix online.
+// Mensagens em parágrafos curtos, cada pergunta no seu; emoji simples só na saudação e na confirmação (tom cordial).
+// "etapa" é o que o selo acima do celular mostra quando aquela resposta aparece; "pix" põe no balão o botão
+// Copiar código Pix, como chega no WhatsApp.
+type Mensagem = { de: 'cliente' | 'ia'; hora: string; texto: string; etapa?: string; foto?: boolean; sugestao?: boolean; pix?: boolean };
+const conversa: Mensagem[] = [
+  { de: 'cliente', hora: '20:14', texto: 'Boa noite! Quero fazer um pedido.' },
+  { de: 'ia', hora: '20:14', texto: 'Boa noite, Ana! 😊 Sou a Eduarda, atendente virtual da Set Pizzas.\n\nDa última vez você pediu 1 pizza grande da casa, sem cebola roxa.\n\nQuer repetir?', etapa: 'lembrando o último pedido' },
+  { de: 'cliente', hora: '20:14', texto: 'Tem foto dela?' },
+  { de: 'ia', hora: '20:14', texto: 'Pizza grande da casa · R$ 62,00', foto: true, etapa: 'enviando a foto do produto' },
+  { de: 'ia', hora: '20:14', texto: 'Quer pedir?' },
+  { de: 'cliente', hora: '20:15', texto: 'Quero, igual da última vez.' },
+  { de: 'ia', hora: '20:15', texto: 'A entrega é na Rua das Flores, 120, apto 302, como da última vez?\n\nComo vai pagar: Pix online, dinheiro ou cartão na entrega?', etapa: 'lembrando o endereço' },
+  { de: 'cliente', hora: '20:16', texto: 'Isso. Pix.' },
+  { de: 'ia', hora: '20:16', texto: 'Para acompanhar, temos Refrigerante 2 litros por R$ 14,00. Quer adicionar?', etapa: 'sugerindo um item da loja', sugestao: true },
+  { de: 'cliente', hora: '20:16', texto: 'Quero!' },
+  { de: 'ia', hora: '20:16', texto: '*Seu pedido*\n• 1x Pizza grande da casa, sem cebola roxa: R$ 62,00\n• 1x Refrigerante 2 litros: R$ 14,00\n\nTaxa de entrega: R$ 7,00\nTotal: *R$ 83,00*\n\nEntrega: Rua das Flores, 120, apto 302\nPagamento: Pix online\n\nPosso enviar o pedido?', etapa: 'confirmando o resumo' },
+  { de: 'cliente', hora: '20:17', texto: 'Pode enviar' },
+  { de: 'ia', hora: '20:17', texto: 'Pedido nº 1048 criado. Total: R$ 83,00.\n\nPague no Pix copia e cola abaixo. O pedido só vai para a loja depois do pagamento:\n\n00020126580014br.gov.bcb.pix0136a1b2c3d4-0000-4000-8000-000000001048520400005303986540583.005802BR5910SET PIZZAS6007ERECHIM62070503***6304A1B2', etapa: 'cobrando no Pix online', pix: true },
+  { de: 'cliente', hora: '20:18', texto: 'Paguei' },
+  { de: 'ia', hora: '20:18', texto: 'Pagamento confirmado. ✅\n\nO pedido 1048 foi para a loja. Previsão de entrega: 21:05.', etapa: 'pago no Pix, pedido na cozinha' },
+];
+// O negrito do WhatsApp (*assim*) vira negrito na tela, e o preço não se parte entre o "R$" e o valor.
+const negrito = (texto: string) => texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*([^*\n]+)\*/g, '<b>$1</b>').replace(/R\$ /g, () => 'R$&nbsp;');
+// Como no WhatsApp do iPhone, só o último balão de uma sequência do mesmo lado tem a ponta.
+const ultimo = (i: number) => i === conversa.length - 1 || conversa[i + 1].de !== conversa[i].de;
+const seguida = (i: number) => i > 0 && conversa[i - 1].de === conversa[i].de;
+
+// Os dois papéis do pedido, em bobina de 80 mm (48 colunas), medidos pelas regras do Layout do Set:
+// a guia da cozinha (sem preço nem endereço) e a via do entregador (pago online: não cobrar).
+const colunas = 48;
+const linha = (texto: string, letra = 'normal', alinhamento = 'esquerda', separador = false) => ({ texto, letra, alinhamento, separador });
+const par = (esquerda: string, direita: string, letra = 'normal') => linha(esquerda.padEnd(colunas - direita.length) + direita, letra);
+const secao = (nome: string) => linha(`-- ${nome.toUpperCase()} `.padEnd(colunas, '-'));
+const risco = (forte: boolean) => linha((forte ? '=' : '-').repeat(colunas), 'normal', 'esquerda', true);
+const quadro = (texto: string) => {
+  const traco = `+${'-'.repeat(texto.length + 2)}+`;
+  return [traco, `| ${texto} |`, traco].map((l) => linha(l, 'destaque', 'centro'));
+};
+const pedido: Impresso = {
+  id: 'pedido-whatsapp',
+  titulo: 'Pedido da cozinha',
+  bobina: colunas,
+  linhas: [
+    risco(true), ...quadro('PEDIDO'), linha('DELIVERY 1048 - ENTREGA', 'titulo', 'centro'), risco(true),
+    linha('1x  PIZZA GRANDE DA CASA', 'destaque'),
+    linha('    RETIRAR: Cebola roxa', 'forte'),
+    linha(''),
+    linha('1x  REFRIGERANTE 2 LITROS', 'destaque'),
+    risco(false), linha('Lançado por WhatsApp'), risco(true),
+    linha(''), linha('02/11/2026 20:18', 'normal', 'centro'),
+  ],
+};
+const via: Impresso = {
+  id: 'via-whatsapp',
+  titulo: 'Via do entregador',
+  bobina: colunas,
+  linhas: [
+    risco(true), ...quadro('VIA DO ENTREGADOR'), linha('DELIVERY 1048 - ENTREGA', 'titulo', 'centro'), risco(true),
+    par('PAGO ONLINE', 'NÃO COBRAR', 'destaque'),
+    par('Pix', 'R$ 83,00'),
+    secao('Entregar para'),
+    linha('Ana', 'forte'),
+    linha('Rua das Flores, 120, apto 302'),
+    linha('Centro - Erechim'),
+    secao('Itens'),
+    par('1x Pizza grande da casa', 'R$ 62,00'),
+    linha('RETIRAR: Cebola roxa', 'forte'),
+    par('1x Refrigerante 2 litros', 'R$ 14,00'),
+    risco(false),
+    par('Subtotal', 'R$ 76,00'),
+    par('Taxa de entrega', 'R$ 7,00'),
+    par('TOTAL', 'R$ 83,00', 'destaque'),
+    risco(false),
+    linha('WhatsApp - pedido às 20:17'),
+    linha('Previsão de entrega: 21:05'),
+    risco(true), linha('SEM VALOR FISCAL', 'normal', 'centro'),
+    linha(''), linha('02/11/2026 20:17', 'normal', 'centro'),
+  ],
+};
+// O ícone de copiar do botão do Pix: duas folhas, uma sobre a outra.
+const copiar = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M9 7V4.5A1.5 1.5 0 0 1 10.5 3H15l4 4v9.5a1.5 1.5 0 0 1-1.5 1.5H15" /><path d="M15 3v4h4" /><path d="M5 8.5A1.5 1.5 0 0 1 6.5 7H11l4 4v8.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 5 19.5z" /><path d="M11 7v4h4" /></svg>';
+const tiques = '<svg viewBox="0 0 16 11" fill="currentColor"><path d="M11.07.65a.46.46 0 0 0-.32-.14.43.43 0 0 0-.33.15L4.47 7.6 2.22 5.47a.44.44 0 0 0-.32-.12.46.46 0 0 0-.34.15l-.4.42a.47.47 0 0 0 0 .64l2.94 2.9a.5.5 0 0 0 .37.16.5.5 0 0 0 .37-.18l6.6-7.9a.42.42 0 0 0 .1-.29.45.45 0 0 0-.15-.32zM15.07.65a.46.46 0 0 0-.32-.14.43.43 0 0 0-.33.15L8.47 7.6l-.88-.85-.65.78 1.2 1.18a.5.5 0 0 0 .37.16.5.5 0 0 0 .37-.18l6.6-7.9a.42.42 0 0 0 .1-.29.45.45 0 0 0-.15-.32z" /></svg>';
+// A impressora térmica de 80 mm em 3/4 (sem marca), renderizada em 3D com câmera ortográfica: a boca do papel é uma
+// reta na foto, e o papel que sobe dela é um retângulo inclinado (skewY) com a mesma inclinação.
+// Medidas em pixels da foto: o corpo vai de corpo[0] a corpo[1] na horizontal, e a sombra passa disso.
+// "subida" é quanto o papel pode subir acima da boca; "porta" é onde o cabo entra, por trás do corpo.
+const foto = { largura: 1239, altura: 973, corpo: [138, 1051], subida: 600, papelEsq: [350.56, 206.07], papelDir: [738.47, 262.52], luz: [762.25, 285.92], porta: [420, 600] };
+const corpo = foto.corpo[1] - foto.corpo[0];
+const alto = foto.altura;
+const pct = (v: number) => `${(v * 100).toFixed(3)}%`;
+const medidas = [
+  `--proporcao: ${corpo} / ${alto}`,
+  `--foto-esq: ${pct(-foto.corpo[0] / corpo)}`, `--foto-larg: ${pct(foto.largura / corpo)}`,
+  `--papel-esq: ${pct((foto.papelEsq[0] - foto.corpo[0]) / corpo)}`, `--papel-larg: ${pct((foto.papelDir[0] - foto.papelEsq[0]) / corpo)}`,
+  `--papel-base: ${pct((alto - foto.papelEsq[1]) / alto)}`, `--papel-alto: ${pct(foto.subida / alto)}`,
+  `--inclinacao: ${(Math.atan2(foto.papelDir[1] - foto.papelEsq[1], foto.papelDir[0] - foto.papelEsq[0]) * 180 / Math.PI).toFixed(2)}deg`,
+  `--luz-x: ${pct((foto.luz[0] - foto.corpo[0]) / corpo)}`, `--luz-y: ${pct(foto.luz[1] / alto)}`,
+  `--porta-x: ${pct((foto.porta[0] - foto.corpo[0]) / corpo)}`, `--porta-y: ${pct(foto.porta[1] / alto)}`,
+].join('; ');
+// Os dois papéis, na ordem em que saem.
+const papeis = [{ id: 'cozinha', impresso: pedido }, { id: 'via', impresso: via }];
+---
+<figure class="ao-vivo" data-ao-vivo>
+  <ol class="so-leitor">
+    {conversa.map((m) => <li>{m.de === 'cliente' ? 'Cliente' : 'Eduarda'}: {m.foto ? `foto do produto, ${m.texto}` : m.texto.replaceAll('*', '')}{m.pix && ' (com o botão Copiar código Pix)'}</li>)}
+    <li>O pedido passa pela nuvem da Set e a impressora imprime dois papéis: o pedido da cozinha (1 pizza grande da casa sem cebola roxa e 1 refrigerante 2 litros) e a via do entregador, com o endereço da Ana e o aviso de que o pedido foi pago online e não se cobra na entrega.</li>
+  </ol>
+
+  <svg class="conexao" aria-hidden="true" data-conexao>
+    <path class="cabo" data-trecho="1" /><path class="cabo" data-trecho="2" />
+    <path class="pacote p1" data-trecho="1" pathLength="100" /><path class="pacote p2" data-trecho="2" pathLength="100" />
+  </svg>
+
+  <div class="celular" aria-hidden="true">
+    <p class="quem-atende"><MarcaEduarda tamanho={46} /><span><b>Eduarda</b><small data-etapa-atual>atendente virtual da loja</small></span></p>
+    <div class="aparelho" data-aparelho>
+      <div class="topo">
+        <div class="status">
+          <b>20:14</b>
+          <span class="status-ico">
+            <svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".8" /><rect x="5" y="5.5" width="3" height="6.5" rx=".8" /><rect x="10" y="3" width="3" height="9" rx=".8" /><rect x="15" y="0" width="3" height="12" rx=".8" opacity=".35" /></svg>
+            <svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.3-1.4A10.4 10.4 0 0 0 8 .3 10.4 10.4 0 0 0 .7 3.2L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.8c1.3 0 2.5.5 3.4 1.3l1.3-1.4A6.7 6.7 0 0 0 8 4 6.7 6.7 0 0 0 3.3 5.9l1.3 1.4C5.5 6.5 6.7 6 8 6zm0 3.8L10.1 7.6a3 3 0 0 0-4.2 0z" /></svg>
+            <span class="bateria"><i></i></span>
+          </span>
+        </div>
+        <div class="barra">
+          <span class="pilula voltar"><svg viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8" /></svg>2</span>
+          <Image class="foto" src={perfil} alt="" widths={[76, 114]} sizes="38px" format="webp" quality={85} />
+          <span class="quem">
+            <b>Set Pizzas<SeloVerificado /></b>
+            <small data-status>Toque para mostrar os dados do contato</small>
+          </span>
+          <span class="pilula ligar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M5.5 3.5h3l1.6 4.2-2 1.3a11 11 0 0 0 5 5l1.3-2 4.1 1.6v3a2 2 0 0 1-2.1 2A15.5 15.5 0 0 1 3.5 5.6a2 2 0 0 1 2-2.1z" /></svg><svg class="seta-baixo" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m2 2 4 4 4-4" /></svg></span>
+        </div>
+      </div>
+      <div class="rolagem" data-rolagem>
+        <p class="dia">Hoje</p>
+        <ol>
+          {conversa.map((m, i) => (
+            <li class:list={[m.de, { ponta: ultimo(i), seguida: seguida(i), 'com-foto': m.foto, 'com-pix': m.pix }]} data-msg data-texto={m.texto} data-etapa={m.etapa} data-sugestao={m.sugestao ? '' : undefined}>
+              {m.foto && <Image class="foto-produto" src={fotoDaPizza} alt="" widths={[260, 520]} sizes="250px" format="webp" quality={82} />}
+              <Fragment set:html={negrito(m.texto)} /><span class="hora">{m.hora}{m.de === 'cliente' && <Fragment set:html={tiques} />}</span>
+              {m.pix && <span class="copiar" data-copiar><Fragment set:html={copiar} />Copiar código Pix</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="digitar">
+        <svg class="mais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v16M4 12h16" /></svg>
+        <span class="campo">
+          <span class="entrada"><span class="texto" data-texto-campo></span></span>
+          <svg class="figurinha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M15 3H8a5 5 0 0 0-5 5v8a5 5 0 0 0 5 5h4l9-9V8a5 5 0 0 0-5-5zM12 21v-4a5 5 0 0 1 5-5h4" /></svg>
+        </span>
+        <svg class="camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 7.5h3.2L9 5h6l1.8 2.5H20a1.5 1.5 0 0 1 1.5 1.5v9.5A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5z" /><circle cx="12" cy="13.3" r="3.6" /></svg>
+        <span class="enviar">
+          <svg class="mic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1a7 7 0 0 0 6-6.9z" /></svg>
+          <svg class="seta" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z" /></svg>
+        </span>
+      </div>
+      <span class="inicio" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="nuvem" aria-hidden="true" data-nuvem>
+    <span class="nuvem-ico"><svg viewBox="0 0 48 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M14 29h22a9 9 0 0 0 1.4-17.9A12 12 0 0 0 14.2 8 10.5 10.5 0 0 0 14 29z" /></svg></span>
+    <small>Nuvem da Set</small>
+  </div>
+
+  <div class="cozinha" aria-hidden="true">
+    <p class="aviso" data-aviso><span class="espera">Aguardando pedido</span><span class="chegou"><b>Pedido 1048</b> pago no Pix e aceito</span></p>
+    <div class="bancada">
+      <div class="impressora" style={medidas} data-impressora>
+        <Image class="corpo" src={fotoDaImpressora} alt="" widths={[300, 600]} sizes="290px" format="webp" quality={88} />
+        <span class="luz"></span>
+        {papeis.map((p) => <div class="saida" data-saida={p.id}><Papel impresso={p.impresso} manual subindo /></div>)}
+        <span class="porta" data-porta></span>
+      </div>
+      {papeis.map((p) => <div class:list={['mostrado', `m-${p.id}`]} data-mostrado={p.id} data-nome={p.impresso.titulo}><Papel impresso={p.impresso} solto /></div>)}
+    </div>
+    <p class="impressora-nome">Pedido da cozinha e via do entregador</p>
+  </div>
+
+  <figcaption>Exemplo de atendimento e de pedido, com dados de demonstração.</figcaption>
+</figure>
+
+<script>
+  // Linha do tempo: digitar e enviar, ler, "digitando...", responder; no fim, o pedido vai do celular para a nuvem
+  // da Set e da nuvem para a impressora, e sai impresso. O relógio só anda com a peça visível e a aba aberta.
+  document.querySelectorAll<HTMLElement>('[data-ao-vivo]').forEach((raiz) => {
+    // Os cabos: do celular até a nuvem e da nuvem até a impressora, recalculados a cada mudança de tamanho.
+    // As pontas ficam por baixo do celular, da nuvem e do corpo da impressora: o cabo entra nas peças.
+    const conexao = raiz.querySelector<SVGSVGElement>('[data-conexao]')!;
+    const aparelho = raiz.querySelector<HTMLElement>('[data-aparelho]')!;
+    const nuvem = raiz.querySelector<HTMLElement>('.nuvem-ico')!;
+    const porta = raiz.querySelector<HTMLElement>('[data-porta]')!;
+    const bancada = raiz.querySelector<HTMLElement>('.bancada')!;
+    const ligar = () => {
+      const r = raiz.getBoundingClientRect(), a = aparelho.getBoundingClientRect(), n = nuvem.getBoundingClientRect(), p = porta.getBoundingClientRect();
+      const x = (v: number) => v - r.left, y = (v: number) => v - r.top;
+      const nx = x(n.left + n.width / 2), ny = y(n.top + n.height / 2), ex = x(p.left), ey = y(p.top);
+      const empilhado = n.top > a.bottom;
+      let d1: string, d2: string;
+      if (empilhado) {
+        // Um embaixo do outro: desce do celular para a nuvem e, pela margem, até a impressora.
+        const sx = x(a.left + a.width / 2), sy = y(a.bottom) - 30;
+        const borda = x(bancada.getBoundingClientRect().left) + 8, curva = 24;
+        d1 = `M ${sx} ${sy} C ${sx} ${sy + 60}, ${nx} ${ny - 60}, ${nx} ${ny}`;
+        d2 = `M ${nx} ${ny} H ${borda + curva} Q ${borda} ${ny} ${borda} ${ny + curva} V ${ey - curva} Q ${borda} ${ey} ${borda + curva} ${ey} H ${ex}`;
+      } else {
+        const sx = x(a.right) - 30, sy = y(a.top + a.height * 0.5);
+        d1 = `M ${sx} ${sy} C ${sx + 70} ${sy}, ${nx - 70} ${ny}, ${nx} ${ny}`;
+        d2 = `M ${nx} ${ny} C ${nx + 100} ${ny}, ${ex - 140} ${ey}, ${ex} ${ey}`;
+      }
+      conexao.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`);
+      conexao.setAttribute('width', String(r.width)); conexao.setAttribute('height', String(r.height));
+      conexao.querySelectorAll<SVGPathElement>('path').forEach((c) => c.setAttribute('d', c.dataset.trecho === '1' ? d1 : d2));
+    };
+    new ResizeObserver(ligar).observe(raiz);
+    addEventListener('load', ligar);
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    raiz.classList.add('animando');
+    const msgs = [...raiz.querySelectorAll<HTMLElement>('[data-msg]')];
+    const rolagem = raiz.querySelector<HTMLElement>('[data-rolagem]')!;
+    const campo = raiz.querySelector<HTMLElement>('[data-texto-campo]')!;
+    const status = raiz.querySelector<HTMLElement>('[data-status]')!;
+    const statusPadrao = status.textContent ?? '';
+    const saidas = [...raiz.querySelectorAll<HTMLElement>('[data-saida]')];
+    const mostrados = [...raiz.querySelectorAll<HTMLElement>('[data-mostrado]')];
+    const impressora = raiz.querySelector<HTMLElement>('[data-impressora]')!;
+    const aviso = raiz.querySelector<HTMLElement>('[data-aviso]')!;
+    const etapaAtual = raiz.querySelector<HTMLElement>('[data-etapa-atual]')!;
+    const etapaPadrao = etapaAtual.textContent ?? '';
+    let visivel = false;
+    let iniciado = false;
+    // Quem mexe na peça (rola a conversa, toca) segura o fim dela na tela.
+    let mexeu = 0;
+    ['wheel', 'touchstart', 'pointerdown'].forEach((e) => raiz.addEventListener(e, () => { mexeu = Date.now(); }, { passive: true }));
+
+    const esperar = (ms: number) => new Promise<void>((pronto) => {
+      let falta = ms;
+      const passo = () => {
+        if (visivel && !document.hidden) falta -= 40;
+        if (falta <= 0) pronto(); else setTimeout(passo, 40);
+      };
+      setTimeout(passo, 40);
+    });
+    // Um papel sai da impressora (ela trepida e a luz pisca enquanto ele sobe), é cortado e vem para a frente,
+    // crescendo até o tamanho de ler: começa exatamente sobre o papel da boca, com a mesma inclinação, e desliza.
+    const imprimir = async (i: number) => {
+      const saida = saidas[i], mostrado = mostrados[i];
+      impressora.classList.remove('imprimindo');
+      void impressora.offsetWidth;
+      impressora.classList.add('imprimindo');
+      saida.querySelector('.papel-termico')!.classList.add('saindo');
+      await esperar(2100);
+      const inclinacao = parseFloat(getComputedStyle(impressora).getPropertyValue('--inclinacao'));
+      const dx = impressora.offsetLeft + saida.offsetLeft - mostrado.offsetLeft;
+      const dy = impressora.offsetTop + saida.offsetTop + saida.offsetHeight - (mostrado.offsetTop + mostrado.offsetHeight);
+      mostrado.style.transition = 'none';
+      mostrado.style.transform = `translate(${dx}px, ${dy}px) skewY(${inclinacao}deg) scale(${saida.offsetWidth / mostrado.offsetWidth})`;
+      mostrado.classList.add('visto');
+      saida.classList.add('cortado');
+      void mostrado.offsetWidth;
+      mostrado.style.transition = '';
+      mostrado.style.transform = '';
+      await esperar(900);
+    };
+    const descer = (suave = true) => rolagem.scrollTo({ top: rolagem.scrollHeight, behavior: suave ? 'smooth' : 'auto' });
+    const mostrar = (el: HTMLElement) => { el.classList.add('visto'); descer(); };
+    const zerar = () => {
+      msgs.forEach((m) => m.classList.remove('visto', 'lido'));
+      saidas.forEach((s) => { s.classList.remove('cortado'); s.querySelector('.papel-termico')!.classList.remove('saindo'); });
+      mostrados.forEach((m) => m.classList.remove('visto'));
+      impressora.classList.remove('imprimindo');
+      aviso.classList.remove('visto');
+      raiz.classList.remove('escrevendo', 'sugerindo', 'enviando');
+      campo.textContent = '';
+      status.textContent = statusPadrao;
+      etapaAtual.textContent = etapaPadrao;
+      rolagem.scrollTop = 0;
+    };
+
+    const rodar = async () => {
+      for (;;) {
+        zerar();
+        await esperar(900);
+        for (const m of msgs) {
+          const texto = m.dataset.texto ?? '';
+          if (m.classList.contains('cliente')) {
+            // O cliente digita no campo, que cresce em linhas como no WhatsApp, e envia.
+            raiz.classList.add('escrevendo');
+            for (let i = 1; i <= texto.length; i++) { campo.textContent = texto.slice(0, i); await esperar(texto.length > 40 ? 24 : 34); }
+            await esperar(300);
+            campo.textContent = '';
+            raiz.classList.remove('escrevendo');
+            mostrar(m);
+            await esperar(500);
+          } else {
+            msgs.forEach((x) => x.classList.contains('visto') && x.classList.add('lido'));
+            status.textContent = 'digitando...';
+            await esperar(600 + Math.min(700, texto.length * 4));
+            status.textContent = statusPadrao;
+            if (m.dataset.etapa) etapaAtual.textContent = m.dataset.etapa;
+            raiz.classList.toggle('sugerindo', 'sugestao' in m.dataset);
+            mostrar(m);
+            await esperar(600 + texto.length * 6 + ('sugestao' in m.dataset ? 1400 : 0));
+            // O cliente toca em Copiar código Pix antes de ir pagar.
+            const copiar = m.querySelector<HTMLElement>('[data-copiar]');
+            if (copiar) { copiar.classList.add('tocado'); await esperar(450); copiar.classList.remove('tocado'); await esperar(700); }
+          }
+        }
+        // O pedido pago sobe para a nuvem e desce para a impressora; enquanto passa, o arco da nuvem acelera
+        // (a mesma animação, mais rápida, sem pular de posição).
+        const giro = nuvem.getAnimations({ subtree: true }).find((a) => (a.effect as KeyframeEffect | null)?.pseudoElement === '::before');
+        raiz.classList.add('enviando');
+        giro?.updatePlaybackRate(7);
+        await esperar(1900);
+        giro?.updatePlaybackRate(1);
+        aviso.classList.add('visto');
+        await imprimir(0);
+        await esperar(400);
+        await imprimir(1);
+        // O fim fica na tela para ler a conversa e os papéis; com o mouse em cima ou rolando, espera mais.
+        await esperar(12000);
+        while (raiz.matches(':hover') || Date.now() - mexeu < 6000) await esperar(400);
+      }
+    };
+
+    new IntersectionObserver(([e]) => {
+      visivel = e.isIntersecting;
+      if (visivel && !iniciado) { iniciado = true; rodar(); }
+    }, { threshold: 0.3 }).observe(raiz);
+  });
+</script>
+
+<style>
+  .ao-vivo { position: relative; margin: 0; display: grid; grid-template-columns: 340px 140px 420px; column-gap: 24px; justify-content: center; align-items: center; }
+  .celular { grid-column: 1; position: relative; z-index: 1; }
+  .nuvem { grid-column: 2; position: relative; z-index: 1; display: grid; justify-items: center; gap: 8px; }
+  .cozinha { grid-column: 3; position: relative; z-index: 1; }
+  figcaption { grid-column: 1 / -1; margin-top: 34px; text-align: center; font-family: var(--mono); font-size: 12.5px; color: var(--tinta-3); }
+
+  /* Fora do celular, o que é da Set: o selo da Eduarda com o que ela está fazendo. */
+  .quem-atende { display: flex; align-items: center; gap: 10px; width: fit-content; min-width: 252px; margin: 0 auto 16px; padding: 5px 18px 5px 6px; border-radius: 999px; background: #161514; border: 1px solid rgb(243 104 18 / .35); box-shadow: 0 12px 30px -14px rgb(243 104 18 / .6); line-height: 1.2; transition: border-color .3s, box-shadow .3s; }
+  .quem-atende b { display: block; font-size: 15.5px; font-weight: 600; }
+  .quem-atende small { display: block; font-size: 12.5px; color: var(--tinta-2); transition: color .3s; }
+  .sugerindo .quem-atende { border-color: var(--laranja); box-shadow: 0 0 0 5px rgb(243 104 18 / .14), 0 14px 34px -12px rgb(243 104 18 / .9); }
+  .sugerindo .quem-atende small { color: var(--laranja-claro); font-weight: 600; }
+
+  /* Dentro do celular, o WhatsApp do iPhone: barras claras, balões branco e verde com a ponta curva. */
+  .aparelho { --rabo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 18'%3E%3Cpath d='M16 0V18H1.2C5.5 16.6 8 13.2 8 8.5V0Z'/%3E%3C/svg%3E");
+    position: relative; height: 680px; display: flex; flex-direction: column; border: 10px solid #1d1c1a; border-radius: 48px; overflow: hidden; color: #111b21; font-family: var(--fonte);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / .14), 0 40px 80px -30px rgb(0 0 0 / .95); }
+  .topo { flex: none; background: rgb(247 247 247 / .97); color: #000; }
+  .status { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px 4px 30px; font-size: 14.5px; }
+  .status b { font-weight: 600; letter-spacing: -.01em; }
+  .status-ico { display: flex; align-items: center; gap: 5px; }
+  .status-ico svg { height: 11px; width: auto; }
+  .bateria { position: relative; width: 23px; height: 11px; border-radius: 3.5px; border: 1.2px solid rgb(0 0 0 / .4); padding: 1px; }
+  .bateria::after { content: ''; position: absolute; right: -3.5px; top: 3px; width: 2px; height: 4px; border-radius: 0 1px 1px 0; background: rgb(0 0 0 / .4); }
+  .bateria i { display: block; width: 72%; height: 100%; border-radius: 1.5px; background: #000; }
+  .barra { display: flex; align-items: center; gap: 8px; padding: 6px 10px 9px 8px; line-height: 1.2; }
+  .pilula { flex: none; display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 11px; border-radius: 18px; background: #fff; box-shadow: 0 1px 4px rgb(0 0 0 / .1); font-size: 15px; }
+  .voltar svg { width: 9px; height: 15px; }
+  .ligar svg { width: 19px; height: 19px; }
+  .ligar .seta-baixo { width: 9px; height: 7px; }
+  .foto { width: 38px; height: 38px; flex: none; border-radius: 50%; object-fit: cover; }
+  .quem { flex: 1; min-width: 0; }
+  .quem b { display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+  .quem small { display: block; margin-top: 1px; font-size: 12px; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .rolagem { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 14px 10px; background: radial-gradient(120% 70% at 85% 0%, #1b1d23, #0b0c0f 62%); scrollbar-width: none; }
+  .rolagem::-webkit-scrollbar { display: none; }
+  .dia { width: fit-content; margin: 0 auto 14px; padding: 3px 12px; border-radius: 9px; background: rgb(229 229 234 / .95); color: #3c3c43; font-size: 12px; font-weight: 600; }
+  ol { list-style: none; display: grid; gap: 10px; font-size: 14.5px; line-height: 1.38; letter-spacing: -.003em; }
+  li { position: relative; z-index: 0; max-width: 78%; padding: 7px 11px 8px 12px; border-radius: 18px; white-space: pre-line; overflow-wrap: anywhere; box-shadow: 0 1px 1.5px rgb(0 0 0 / .28); }
+  .seguida { margin-top: -6px; }
+  .ia { justify-self: start; background: #fff; }
+  .cliente { justify-self: end; background: #d9fdd3; }
+  /* A ponta curva do iPhone, só no último balão de cada sequência e atrás do texto. */
+  .ponta::before { content: ''; position: absolute; z-index: -1; bottom: 0; width: 16px; height: 18px; -webkit-mask: var(--rabo) no-repeat 0 0 / 100% 100%; mask: var(--rabo) no-repeat 0 0 / 100% 100%; }
+  .ia.ponta { border-bottom-left-radius: 6px; }
+  .ia.ponta::before { left: -7px; background: #fff; }
+  .cliente.ponta { border-bottom-right-radius: 6px; }
+  .cliente.ponta::before { right: -7px; background: #d9fdd3; transform: scaleX(-1); }
+  li :global(b) { font-weight: 600; }
+  .hora { float: right; position: relative; display: inline-flex; align-items: center; gap: 3px; margin: 9px -3px -4px 12px; font-size: 10.5px; line-height: 1; color: #8a9196; font-variant-numeric: tabular-nums; }
+  .cliente .hora { color: #6d8a6a; }
+  .hora :global(svg) { width: 16px; height: 11px; color: #8a9196; }
+  .lido .hora :global(svg), .ao-vivo:not(.animando) .hora :global(svg) { color: #34b7f1; }
+  /* Foto do produto: a imagem ocupa o balão e a legenda traz o nome e o preço. */
+  .com-foto { width: 236px; padding: 4px 4px 8px; }
+  .foto-produto { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 14px; margin-bottom: 7px; }
+  .com-foto { padding-left: 4px; }
+  .com-foto .hora { margin-right: 6px; }
+  /* O Pix: código no balão e o botão Copiar código Pix embaixo, separado por um fio. */
+  .com-pix { width: 78%; }
+  .copiar { clear: both; display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px -11px -8px -12px; padding: 10px 12px 11px; border-top: 1px solid #e6e6e9; border-radius: 0 0 18px 18px; color: #1b8755; font-size: 15px; white-space: nowrap; transition: background .15s; }
+  .ponta .copiar { border-bottom-left-radius: 6px; }
+  .copiar :global(svg) { width: 21px; height: 21px; flex: none; }
+  .copiar.tocado { background: #ececef; }
+
+  .digitar { flex: none; display: flex; align-items: flex-end; gap: 10px; padding: 8px 12px 6px; background: rgb(247 247 247 / .97); color: #000; }
+  .mais { width: 25px; height: 25px; flex: none; margin-bottom: 6px; }
+  .campo { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 8px; min-height: 36px; padding: 7px 10px 7px 14px; border-radius: 19px; background: #fff; border: 1px solid #e3e3e8; font-size: 15px; line-height: 1.3; }
+  .entrada { flex: 1; min-width: 0; max-height: 6.5em; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; color: #000; }
+  .figurinha { width: 21px; height: 21px; flex: none; margin-bottom: 1px; }
+  .camera { width: 25px; height: 25px; flex: none; margin-bottom: 6px; }
+  .enviar { width: 36px; height: 36px; flex: none; border-radius: 50%; display: grid; place-items: center; background: #25d366; color: #fff; }
+  .enviar svg { grid-area: 1 / 1; width: 19px; height: 19px; }
+  .seta { display: none; }
+  .inicio { flex: none; display: block; height: 22px; background: rgb(247 247 247 / .97); position: relative; }
+  .inicio::after { content: ''; position: absolute; left: 50%; top: 8px; width: 120px; height: 5px; margin-left: -60px; border-radius: 3px; background: #000; }
+
+  /* A nuvem da Set, entre o WhatsApp e a cozinha. */
+  .nuvem-ico { position: relative; width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: radial-gradient(circle at 35% 30%, #2a2622, #12110f 70%); border: 1px solid rgb(243 104 18 / .45); box-shadow: 0 0 0 6px rgb(243 104 18 / .06), 0 18px 40px -18px rgb(243 104 18 / .8); transition: box-shadow .4s, border-color .4s; }
+  .nuvem-ico svg { width: 38px; height: auto; color: #ffd9bd; }
+  .nuvem small { font-family: var(--mono); font-size: 12px; color: var(--tinta-3); }
+  .enviando .nuvem-ico { border-color: var(--laranja); animation: nuvem-recebe 1.9s ease-out both; }
+  /* Um arco laranja gira em volta da nuvem, devagar; quando o pedido passa por ela, o mesmo arco acelera (script). */
+  .nuvem-ico::before { content: ''; position: absolute; inset: -9px; border-radius: 50%; pointer-events: none;
+    background: conic-gradient(from 0deg, transparent 0 62%, rgb(243 104 18 / .25) 75%, #ff8a3d 97%, transparent 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+    animation: nuvem-gira 5s linear infinite; }
+  @keyframes nuvem-gira { to { transform: rotate(1turn); } }
+  @media (prefers-reduced-motion: reduce) { .nuvem-ico::before { animation: none; } }
+  @keyframes nuvem-recebe { 30%, 60% { box-shadow: 0 0 0 10px rgb(243 104 18 / .18), 0 0 46px rgb(243 104 18 / .7); } }
+
+  /* Os cabos, como os da cena da página inicial, escuros e parados: o dado só corre por eles quando o pedido
+     pago é enviado, do celular para a nuvem e da nuvem para a impressora. */
+  .conexao { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; }
+  .conexao path { fill: none; stroke-linecap: round; }
+  .cabo { stroke: #3a3631; stroke-width: 4; }
+  .pacote { stroke: #ffb27a; stroke-width: 6; stroke-dasharray: 14 110; stroke-dashoffset: 10; opacity: 0; filter: drop-shadow(0 0 6px rgb(243 104 18 / .95)); }
+  .enviando .p1 { opacity: 1; animation: pacote .8s cubic-bezier(.4,0,.6,1) both; }
+  .enviando .p2 { opacity: 1; animation: pacote .8s cubic-bezier(.4,0,.6,1) 1s both; }
+  @keyframes pacote { from { stroke-dashoffset: 10; } to { stroke-dashoffset: -100; } }
+
+  /* A cozinha: o aviso do pedido aceito, a impressora em 3/4 e os papéis que saem dela. */
+  .cozinha { display: grid; gap: 10px; justify-items: center; }
+  .aviso { margin: 0; padding: 9px 14px; border-radius: 999px; font-size: 14px; color: var(--tinta-2); background: #161514; border: 1px solid var(--linha-forte); transition: border-color .3s, box-shadow .3s; }
+  .aviso b { color: var(--tinta); font-weight: 600; }
+  .espera { display: none; }
+  /* A bancada: a impressora pequena embaixo e, em cima, os papéis já cortados em tamanho de ler. */
+  .bancada { position: relative; width: min(420px, 100%); aspect-ratio: 420 / 690; }
+  /* A largura da impressora é a do corpo; a foto passa dela com a sombra. As medidas vêm da foto (frontmatter). */
+  .impressora { position: absolute; z-index: 1; left: 25%; bottom: 0; width: 50%; aspect-ratio: var(--proporcao); transform-origin: 50% 100%; }
+  .corpo { position: absolute; z-index: 1; left: var(--foto-esq); bottom: 0; width: var(--foto-larg); max-width: none; height: auto; }
+  /* O papel sobe da boca, no plano dela: a mesma inclinação da boca na foto. */
+  .saida { position: absolute; z-index: 3; left: var(--papel-esq); bottom: var(--papel-base); width: var(--papel-larg); height: var(--papel-alto); transform: skewY(var(--inclinacao)); transform-origin: 0 100%; }
+  .saida.cortado, .ao-vivo:not(.animando) .saida { visibility: hidden; }
+  /* Rente à boca, o papel fica na sombra dela. */
+  .saida:has(.saindo)::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(to top, rgb(0 0 0 / .45), transparent); pointer-events: none; }
+  /* Os papéis na frente: a cozinha à esquerda, a via do entregador maior, por cima. */
+  .mostrado { position: absolute; z-index: 4; transform-origin: 0 100%; transition: transform .9s cubic-bezier(.2, .8, .2, 1); }
+  .mostrado :global(.papel-termico) { box-shadow: 0 26px 40px -18px rgb(0 0 0 / .85); }
+  .m-cozinha { left: -14%; top: 0; width: 52%; }
+  .m-via { z-index: 5; left: 28%; top: 3%; width: 72%; }
+  .animando .mostrado:not(.visto) { visibility: hidden; }
+  /* A luz verde do painel pisca enquanto imprime. */
+  .luz { position: absolute; z-index: 2; left: var(--luz-x); top: var(--luz-y); width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: #8dffbe; box-shadow: 0 0 6px 2px rgb(61 220 132 / .85); opacity: 0; }
+  .imprimindo .luz { animation: luz-pisca .24s steps(1) 8; }
+  @keyframes luz-pisca { 50% { opacity: 1; } }
+  .porta { position: absolute; left: var(--porta-x); top: var(--porta-y); width: 1px; height: 1px; }
+  .impressora-nome { margin: 0; font-family: var(--mono); font-size: 12.5px; color: var(--tinta-3); }
+  .imprimindo .corpo { animation: vibrar-impressora .08s linear 22; }
+  @keyframes vibrar-impressora { 50% { transform: translateY(.8px); } }
+
+  /* Como na cena da página inicial: a peça sob o mouse cresce e vem para a frente, e volta nítida ao parar. */
+  .aparelho, .nuvem-ico, .impressora, .mostrado :global(.papel-termico) { transition: scale .3s, box-shadow .4s, border-color .4s; }
+  @media (hover: hover) and (pointer: fine) {
+    .celular:has(.aparelho:hover), .nuvem:has(.nuvem-ico:hover) { z-index: 3; }
+    .aparelho:hover, .nuvem-ico:hover, .impressora:hover, .mostrado:hover :global(.papel-termico) { scale: 1.08; }
+    .mostrado:hover { z-index: 6; }
+  }
+
+  /* Com movimento: tudo começa escondido e a linha do tempo revela. */
+  .animando [data-msg]:not(.visto) { display: none; }
+  .animando [data-msg].visto { animation: msg-entra .18s ease-out both; }
+  @keyframes msg-entra { from { opacity: 0; transform: translateY(6px) scale(.98); } }
+  .animando .aviso:not(.visto) .chegou { display: none; }
+  .animando .aviso:not(.visto) .espera { display: inline; }
+  .animando .aviso.visto { border-color: rgb(243 104 18 / .6); box-shadow: 0 10px 28px -12px rgb(243 104 18 / .7); }
+  .texto:empty { display: none; }
+  .animando.escrevendo .texto::after { content: ''; display: inline-block; width: 2px; height: 1.15em; margin-left: 1px; vertical-align: -3px; background: #25d366; animation: cursor 1s steps(1) infinite; }
+  @keyframes cursor { 50% { opacity: 0; } }
+  .animando.escrevendo .camera, .animando.escrevendo .mic { display: none; }
+  .animando.escrevendo .seta { display: block; }
+
+  @media (max-width: 920px) {
+    .ao-vivo { grid-template-columns: minmax(0, 420px); row-gap: 40px; }
+    .celular, .nuvem, .cozinha { grid-column: 1; }
+    .celular { width: min(340px, 100%); justify-self: center; }
+    /* No celular, a impressora fica em cima e os papéis vêm para baixo, na frente de quem lê: o espaço que espera
+       os papéis fica no fim da peça, e o cabo chega curto. Em cima, o respiro para o papel subir da boca. */
+    .bancada { aspect-ratio: 380 / 740; }
+    .impressora { top: 13%; bottom: auto; }
+    .m-cozinha { left: 0; top: 44%; width: 50%; }
+    .m-via { left: 34%; top: 45.5%; width: 66%; }
+    .m-via { left: 34%; width: 66%; }
+    .aparelho { height: 600px; }
+  }
+  @media (max-width: 400px) { ol { font-size: 14px; } .aparelho { height: 560px; } .quem-atende { min-width: 0; } .quem small { font-size: 11px; } }
+</style>

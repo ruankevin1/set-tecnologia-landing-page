@@ -15,8 +15,7 @@ import CardapioAoVivo from '../components/CardapioAoVivo.astro';
 import IconeModulo from '../components/IconeModulo.astro';
 import TelasCelular from '../components/TelasCelular.astro';
 import Impressos from '../components/Impressos.astro';
-import Destaque from '../components/Destaque.astro';
-import ConversaExemplo from '../components/ConversaExemplo.astro';
+import EduardaAoVivo from '../components/EduardaAoVivo.astro';
 import MarcaEduarda from '../components/MarcaEduarda.astro';
 import { empresa } from '../data/empresa';
 import { adquirentes } from '../data/maquininhas';
@@ -252,16 +251,16 @@ const faqDados = {
   </section>
 
   <!-- Atendimento com IA -->
-  <Destaque
-    rotulo="Atendimento com IA · WhatsApp da loja"
-    titulo="Atendimento com IA <em>no WhatsApp da loja.</em>"
-    texto="A loja conecta o próprio número pelo sistema Set Tecnologia. A IA responde sobre cardápio, preços e taxa de entrega, tira o pedido e passa a conversa para uma pessoa da loja quando o cliente pede."
-    pontos={['Preços e taxas saem do sistema da loja', 'O pedido só segue para a loja depois da confirmação do cliente']}
-    acao={{ texto: 'Ver como funciona', href: '/atendimento-com-ia-no-whatsapp' }}
-    invertido
-  >
-    <ConversaExemplo />
-  </Destaque>
+  <section class="eduarda-secao envelope" aria-labelledby="eduarda-titulo">
+    <div class="cabeca centro" data-revelar>
+      <MarcaEduarda tamanho={76} />
+      <p class="rotulo">Atendimento com IA · WhatsApp da loja</p>
+      <h2 id="eduarda-titulo" class="titulo-secao">A Eduarda atende, <em>a cozinha recebe impresso.</em></h2>
+      <p class="lead">A Eduarda responde cardápio e preços, envia foto dos produtos, sugere mais itens para aumentar o ticket médio, cobra no Pix e manda o pedido direto para o delivery próprio. Com o aceite automático, ele sai impresso na cozinha, junto com a via do entregador.</p>
+    </div>
+    <EduardaAoVivo />
+    <div class="acoes centro"><a class="botao botao-linha" href="/atendimento-com-ia-no-whatsapp">Conhecer a Eduarda <Icone nome="seta" /></a></div>
+  </section>
 
   <!-- Recursos -->
   <section class="recursos envelope" aria-labelledby="recursos-titulo">
@@ -291,7 +290,7 @@ const faqDados = {
       {integracoes.map((g, i) => (
         <li class="integ" data-luz data-revelar style={`--atraso:${(i % 4) * 0.06}s`}>
           <span class:list={['sigla', { 'sem-fundo': 'eduarda' in g }]} style={'cor' in g ? `background:${g.cor}` : undefined}>
-            {'eduarda' in g ? <MarcaEduarda tamanho={56} arquivo={112} /> : 'marca' in g ? <Image src={g.marca} alt="" widths={[48, 96, 144]} sizes="48px" format="png" /> : <IconeModulo nome={g.icone} />}
+            {'eduarda' in g ? <MarcaEduarda tamanho={56} /> : 'marca' in g ? <Image src={g.marca} alt="" widths={[48, 96, 144]} sizes="48px" format="png" /> : <IconeModulo nome={g.icone} />}
           </span>
           <div><h3>{g.nome}</h3><p>{g.d}</p></div>
         </li>
@@ -308,7 +307,7 @@ const faqDados = {
   <section class="comparar envelope" aria-labelledby="comparar-titulo">
     <div class="cabeca centro" data-revelar>
       <p class="rotulo">A transformação</p>
-      <h2 id="comparar-titulo" class="titulo-secao">Arraste e veja a diferença.</h2>
+      <h2 id="comparar-titulo" class="titulo-secao"><span class="so-arrastar">Arraste e veja</span><span class="so-tocar">Veja</span> a diferença.</h2>
     </div>
     <div class="regua" data-comparar data-luz data-revelar style="--pos: 50%">
       <div class="lado depois">
@@ -322,6 +321,15 @@ const faqDados = {
       <div class="puxador" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6-6 6 6 6M15 6l6 6-6 6"/></svg></span></div>
       <input type="range" min="0" max="100" value="50" aria-label="Comparar sem sistema e com o Set" />
     </div>
+    <!-- No celular não há espaço para os dois lados um sobre o outro: cada "antes" aparece riscado, com o "com o Set" embaixo. -->
+    <ol class="pares">
+      {antes.map((a, k) => (
+        <li data-revelar style={`--atraso:${(k % 3) * 0.05}s`}>
+          <p class="par-antes"><span class="x" aria-hidden="true">×</span><span><span class="so-leitor">Sem sistema: </span>{a}</span></p>
+          <p class="par-depois"><span class="ok" aria-hidden="true">✓</span><span><span class="so-leitor">Com o Set: </span>{depois[k]}</span></p>
+        </li>
+      ))}
+    </ol>
   </section>
 
   <!-- Produtos -->
@@ -355,7 +363,7 @@ const faqDados = {
       </div>
       <ol class="etapas">
         {etapas.map((e, i) => (
-          <li data-luz data-revelar style={`--atraso:${i * 0.08}s`}><span class="n">{i + 1}</span><div><h3>{e.t}</h3><p>{e.d}</p></div></li>
+          <li data-revelar style={`--atraso:${i * 0.08}s`}><span class="n">{i + 1}</span><div><h3>{e.t}</h3><p>{e.d}</p></div></li>
         ))}
       </ol>
     </div>
@@ -559,7 +567,13 @@ const faqDados = {
   .sigla :global(.ico) { width: 26px; height: 26px; }
   .sigla :global(img) { width: 100%; height: 100%; }
   .sem-fundo { overflow: visible; box-shadow: none; }
-  .sem-fundo :global(img) { width: 56px; height: 56px; max-width: none; margin: -4px; }
+  .sem-fundo :global(svg) { margin: -4px; }
+
+  /* Atendimento com IA */
+  .eduarda-secao { padding-block: clamp(72px, 10vw, 120px); }
+  .eduarda-secao .cabeca :global(.marca-eduarda) { margin: 0 auto 6px; }
+  .eduarda-secao .titulo-secao :global(em) { font-style: normal; color: var(--laranja-claro); }
+  .eduarda-secao > :global(.ao-vivo) { margin-top: 44px; }
   .integ h3 { font-size: 18px; }
   .integ p { margin-top: 6px; color: var(--tinta-2); font-size: 14.5px; }
   .faixa-adq { margin-top: 28px; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); mask: linear-gradient(90deg, transparent 0%, transparent 4%, #000 26%, #000 74%, transparent 96%); }
@@ -586,6 +600,7 @@ const faqDados = {
   .puxador span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; border-radius: 50%; background: var(--laranja); display: grid; place-items: center; color: #fff; box-shadow: 0 8px 24px rgb(0 0 0 / .5); }
   .puxador svg { width: 22px; height: 22px; }
   .regua input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+  .pares, .so-tocar { display: none; }
 
   /* Produtos */
   .produtos { padding-block: clamp(72px, 10vw, 120px); }
@@ -609,9 +624,12 @@ const faqDados = {
   .impl-foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .etapas { list-style: none; position: relative; display: grid; gap: 14px; }
   .etapas::before { content: ''; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; background: linear-gradient(var(--laranja), rgb(243 104 18 / .1)); }
-  .etapas li { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; padding: 16px 20px 16px 0; border: 1px solid transparent; border-radius: 14px; overflow: visible !important; }
-  .etapas .n { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; color: #fff; background: #1d1a17; border: 2px solid var(--laranja); box-shadow: 0 0 0 6px var(--papel), 0 0 22px rgb(243 104 18 / .5); }
-  .etapas h3 { font-size: 21px; padding-top: 9px; }
+  .etapas li { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; padding: 16px 20px 16px 0; }
+  .etapas .n { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; color: #fff; background: #1d1a17; border: 2px solid var(--laranja); box-shadow: 0 0 0 6px var(--papel), 0 0 22px rgb(243 104 18 / .5); transition: background .25s, box-shadow .25s; }
+  .etapas h3 { font-size: 21px; padding-top: 9px; transition: color .25s; }
+  /* Numa linha do tempo, quem acende com o mouse é o número do passo, e não um cartão em volta. */
+  .etapas li:hover .n { background: var(--laranja); box-shadow: 0 0 0 6px var(--papel), 0 0 32px rgb(243 104 18 / .85); }
+  .etapas li:hover h3 { color: var(--laranja-claro); }
   .etapas p { margin-top: 6px; color: var(--tinta-2); }
 
   /* Vídeo */
@@ -650,12 +668,14 @@ const faqDados = {
     .trilha-abas { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scrollbar-width: none; }
     .trilha-abas::-webkit-scrollbar { display: none; }
     .trilha-abas button { min-width: 88px; flex: none; }
-    .regua { min-height: 0; display: grid; }
-    .lado { position: static; clip-path: none !important; align-items: flex-start; text-align: left; }
-    .depois li { flex-direction: row; }
-    .lado ul { max-width: none; }
-    .antes { order: -1; }
-    .puxador, .regua input { display: none; }
+    .regua, .so-arrastar { display: none; }
+    .so-tocar { display: inline; }
+    .pares { list-style: none; display: grid; gap: 12px; margin-top: 32px; }
+    .pares li { padding: 16px 18px 18px; border-radius: 14px; border: 1px solid var(--linha); background: radial-gradient(90% 120% at 100% 0%, rgb(243 104 18 / .12), transparent 70%), #151210; }
+    .pares p { display: flex; gap: 12px; align-items: baseline; }
+    .pares .par-antes { color: var(--tinta-3); font-size: 14.5px; }
+    .pares .par-antes > span:last-child { text-decoration: line-through; text-decoration-color: rgb(255 255 255 / .3); }
+    .pares .par-depois { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linha); font-size: 16px; color: var(--tinta); }
     .flutua { display: none; }
   }
   @media (max-width: 600px) {

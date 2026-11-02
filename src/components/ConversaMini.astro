@@ -1,44 +1,65 @@
 ---
-// A conversa como celular da cena da loja: mesma proporção do print do garçom, para os três aparelhos
-// ficarem iguais. Em HTML, para a letra ficar nítida; tudo acompanha a largura da peça.
+// A Eduarda no WhatsApp do iPhone, em miniatura, para a cena da loja: mesma proporção do print do garçom, para os
+// três celulares ficarem iguais. Em HTML, para a letra ficar nítida; tudo acompanha a largura da peça.
+// A conversa segue o formato da Eduarda: parágrafos curtos, e a sugestão de venda numa mensagem só, antes do resumo.
+import { Image } from 'astro:assets';
 import SeloVerificado from './SeloVerificado.astro';
-import MarcaEduarda from './MarcaEduarda.astro';
+import perfil from '../assets/conversa/pizza-perfil.jpg'; // Wikimedia Commons, Pizza-3007395~2.jpg, CC0
 
 const mensagens = [
-  { de: 'cliente', texto: 'Quanto fica a pizza grande?' },
-  { de: 'ia', texto: 'Sou a Eduarda, da Set Pizzas. Pizza grande: R$ 62,00. Entrega: R$ 7,00.' },
-  { de: 'cliente', texto: 'Pode fazer.' },
-  { de: 'ia', texto: 'Total: R$ 69,00. Confirma?' },
-  { de: 'cliente', texto: 'Confirmo.' },
-  { de: 'ia', texto: 'Pedido enviado para a loja.' },
+  { de: 'cliente', texto: 'Boa noite! Quero repetir o último pedido.' },
+  { de: 'ia', texto: 'Boa noite, Ana! 😊\n\n1 pizza grande da casa, sem cebola roxa.\n\nA entrega é na Rua das Flores, 120, como da última vez?' },
+  { de: 'cliente', texto: 'Isso! Pago no Pix.' },
+  { de: 'ia', texto: 'Para acompanhar, temos Refrigerante 2 litros por R$ 14,00. Quer adicionar?' },
+  { de: 'cliente', texto: 'Quero!' },
 ] as const;
+// Como no WhatsApp do iPhone, só o último balão de uma sequência do mesmo lado tem a ponta.
+const ponta = (i: number) => i === mensagens.length - 1 || mensagens[i + 1].de !== mensagens[i].de;
 ---
-<div class="mini" role="img" aria-label="Eduarda atendendo no WhatsApp da Set Pizzas: informa preço e taxa, recebe a confirmação e envia o pedido para a loja">
+<div class="mini" role="img" aria-label="Eduarda atendendo no WhatsApp da Set Pizzas: lembra o último pedido da cliente, confirma o endereço e sugere um refrigerante antes do resumo">
   <div class="aparelho" aria-hidden="true">
-    <div class="barra">
-      <span class="foto"><MarcaEduarda tamanho={32} arquivo={112} /></span>
-      <b>Set Pizzas<SeloVerificado /></b>
+    <div class="topo">
+      <p class="status"><b>20:14</b><span class="bateria"><i></i></span></p>
+      <div class="barra">
+        <svg class="voltar" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8" /></svg>
+        <Image class="foto" src={perfil} alt="" widths={[64, 96]} sizes="32px" format="webp" quality={85} />
+        <span class="quem"><b>Set Pizzas<SeloVerificado /></b><small>Toque para mostrar os dados</small></span>
+      </div>
     </div>
     <div class="fundo">
-      <ol>{mensagens.map((m) => <li class={m.de}>{m.texto}</li>)}</ol>
-      <div class="digitar"><span>Mensagem</span><i></i></div>
+      <span class="dia">Hoje</span>
+      <ol>{mensagens.map((m, i) => <li class:list={[m.de, { ponta: ponta(i) }]}>{m.texto}</li>)}</ol>
     </div>
+    <div class="digitar"><span class="mais">+</span><span class="campo"></span><span class="mic"></span></div>
   </div>
 </div>
 
 <style>
   .mini { container-type: inline-size; }
-  .aparelho { aspect-ratio: 756 / 1615; display: flex; flex-direction: column; border: 9px solid #26241f; border-radius: 34px; overflow: hidden; background: #0b141a; color: #e9edef; box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -30px rgb(0 0 0 / .9); font-size: 6.4cqw; line-height: 1.3; }
-  .barra { flex: none; display: flex; align-items: center; gap: .5em; padding: .7em .8em; background: #075e54; color: #fff; }
-  .foto { width: 2.2em; height: 2.2em; flex: none; display: block; padding: 1px; border-radius: 50%; overflow: hidden; background: #141311; box-sizing: border-box; }
-  .foto :global(img) { width: 100%; height: 100%; }
-  .barra b { min-width: 0; display: flex; align-items: center; gap: .3em; font-size: 1.1em; font-weight: 600; white-space: nowrap; }
-  .fundo { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: .7em; padding: .7em .6em .8em; background-color: #0b141a; background-image: radial-gradient(rgb(134 150 160 / .08) 1px, transparent 1.4px); background-size: 14px 14px; }
-  ol { list-style: none; display: grid; gap: .4em; }
-  li { max-width: 88%; padding: .35em .6em .4em; border-radius: .6em; }
-  .ia { justify-self: start; background: #202c33; border-top-left-radius: 0; }
-  .cliente { justify-self: end; background: #005c4b; border-top-right-radius: 0; }
-  .digitar { flex: none; display: flex; align-items: center; gap: .4em; }
-  .digitar span { flex: 1; padding: .5em .9em; border-radius: 1.2em; background: #202c33; color: #8696a0; }
-  .digitar i { width: 2.3em; height: 2.3em; flex: none; border-radius: 50%; background: #00a884; }
+  .aparelho { aspect-ratio: 756 / 1615; display: flex; flex-direction: column; border: 9px solid #26241f; border-radius: 34px; overflow: hidden; color: #111b21; font-family: var(--fonte); box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 30px 60px -30px rgb(0 0 0 / .9); font-size: 6.2cqw; line-height: 1.3; }
+  /* O topo claro do WhatsApp do iPhone. */
+  .topo { flex: none; background: #f7f7f7; color: #000; }
+  .status { display: flex; justify-content: space-between; align-items: center; margin: 0; padding: .7em 1.4em .1em 1.6em; font-size: .85em; }
+  .status b { font-weight: 600; }
+  .bateria { width: 1.6em; height: .8em; border-radius: .25em; border: 1px solid rgb(0 0 0 / .4); padding: 1px; }
+  .bateria i { display: block; width: 72%; height: 100%; border-radius: 1px; background: #000; }
+  .barra { display: flex; align-items: center; gap: .45em; padding: .35em .7em .55em .5em; }
+  .voltar { width: .6em; height: 1em; flex: none; }
+  .foto { width: 2.1em; height: 2.1em; flex: none; border-radius: 50%; object-fit: cover; }
+  .quem { min-width: 0; line-height: 1.15; }
+  .quem b { display: flex; align-items: center; gap: .25em; font-size: 1.05em; font-weight: 600; white-space: nowrap; }
+  .quem small { display: block; font-size: .72em; color: #8e8e93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* A conversa no fundo escuro, com os balões branco e verde. */
+  .fundo { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: .6em; padding: .6em .55em .7em; background: radial-gradient(120% 70% at 85% 0%, #1b1d23, #0b0c0f 62%); overflow: hidden; }
+  .dia { align-self: center; padding: .15em .7em; border-radius: .6em; background: rgb(229 229 234 / .95); color: #3c3c43; font-size: .75em; font-weight: 600; }
+  ol { list-style: none; margin: 0; display: grid; gap: .4em; }
+  li { max-width: 86%; padding: .4em .65em .45em; border-radius: 1em; white-space: pre-line; box-shadow: 0 1px 1px rgb(0 0 0 / .25); }
+  .ia { justify-self: start; background: #fff; }
+  .cliente { justify-self: end; background: #d9fdd3; }
+  .ia.ponta { border-bottom-left-radius: .3em; }
+  .cliente.ponta { border-bottom-right-radius: .3em; }
+  .digitar { flex: none; display: flex; align-items: center; gap: .5em; padding: .45em .6em .9em; background: #f7f7f7; }
+  .mais { font-size: 1.3em; line-height: 1; }
+  .campo { flex: 1; height: 1.9em; border-radius: 1em; background: #fff; border: 1px solid #e3e3e8; }
+  .mic { width: 1.9em; height: 1.9em; flex: none; border-radius: 50%; background: #25d366; }
 </style>

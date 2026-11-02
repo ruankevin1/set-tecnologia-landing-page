@@ -1,0 +1,235 @@
+<!doctype html>
+<meta charset="utf-8">
+<canvas id="c"></canvas>
+<script>
+// Impressora térmica de balcão renderizada por ray marching (SDF), câmera ortográfica em 3/4, fundo transparente.
+// Unidades em cm. x = largura (direita +), y = altura, z = profundidade (frente +).
+const P = new URLSearchParams(location.search);
+const LARG = +(P.get('w') || 1200), ALT = +(P.get('h') || 1200);
+const AZ = +(P.get('az') || 19) * Math.PI / 180, EL = +(P.get('el') || 25) * Math.PI / 180;
+const ESC = +(P.get('esc') || 0.0185); // cm por pixel
+const AA = +(P.get('aa') || 3);
+
+const W = 13.5, H = 11.5, D = 15.5, ZS = 3.0, FENDA = 4.3, PAPEL = 4.0;
+const c = [Math.sin(AZ) * Math.cos(EL), Math.sin(EL), Math.cos(AZ) * Math.cos(EL)];
+const R = [Math.cos(AZ), 0, -Math.sin(AZ)];
+const U = [-Math.sin(AZ) * Math.sin(EL), Math.cos(EL), -Math.cos(AZ) * Math.sin(EL)];
+const ALVO = [0.4, H * 0.5 + 0.6, 0];
+
+const frag = `
+precision highp float;
+uniform vec2 uRes; uniform float uEsc; uniform vec3 uAlvo, uC, uR, uU;
+const float W = ${W.toFixed(3)}, H = ${H.toFixed(3)}, D = ${D.toFixed(3)};
+const float RF = 2.6, RE = 0.75, ZS = ${ZS.toFixed(3)}, FENDA = ${FENDA.toFixed(3)};
+const float YS = 5.6; // altura da emenda da tampa nas laterais
+const vec3 PAINEL = vec3(5.15, H, 4.15);
+
+float sdRoundBox2(vec2 p, vec2 b, vec4 r) {
+  r.xy = (p.x > 0.0) ? r.xy : r.zw;
+  r.x = (p.y > 0.0) ? r.x : r.y;
+  vec2 q = abs(p) - b + r.x;
+  return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
+}
+float sdBox(vec3 p, vec3 b) { vec3 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0); }
+float sdRBox(vec3 p, vec3 b, float r) { return sdBox(p, b - r) - r; }
+float sdCil(vec3 p, float r, float h) { vec2 d = abs(vec2(length(p.xz), p.y)) - vec2(r, h); return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)); }
+
+float casca(vec3 p) {
+  vec2 q = vec2(p.z, p.y - H * 0.5);
+  float d2 = sdRoundBox2(q, vec2(D * 0.5, H * 0.5) - RE, vec4(RF, RE, 1.9, RE) - RE);
+  vec2 w = vec2(d2, abs(p.x) - (W * 0.5 - RE));
+  return min(max(w.x, w.y), 0.0) + length(max(w, 0.0)) - RE;
+}
+// Tira uma ranhura em volta de uma linha (distância dl), só até "fundo" para dentro da superfície.
+float ranhura(float d, float dl, float meia, float fundo) { return max(d, -max(dl - meia, -d - fundo)); }
+
+vec2 mapa(vec3 p) {
+  float d = casca(p);
+  float base = d;
+  // Emenda da tampa: atravessa o topo em z = ZS e desce pelas laterais até YS, depois corre para trás.
+  float dA = p.y > YS ? abs(p.z - ZS) : length(vec2(p.z - ZS, p.y - YS));
+  float dB = p.z < ZS ? abs(p.y - YS) : length(vec2(p.z - ZS, p.y - YS));
+  d = ranhura(d, min(dA, dB), 0.045, 0.25);
+  // Emenda da base.
+  d = ranhura(d, abs(p.y - 1.05), 0.04, 0.2);
+  // A boca do papel.
+  d = max(d, -sdRBox(p - vec3(0.0, H, ZS), vec3(FENDA, 1.4, 0.2), 0.12));
+  // Painel: rebaixo leve.
+  d = max(d, -sdRBox(p - PAINEL, vec3(0.72, 0.05, 0.62), 0.22));
+  // Chave de liga na lateral direita: rebaixo e a tecla.
+  vec3 pc = p - vec3(W * 0.5, 3.1, -4.2);
+  d = max(d, -sdRBox(pc, vec3(0.28, 0.5, 0.72), 0.12));
+  float id = 1.0;
+  // Barra de corte metálica na frente da boca.
+  if (p.y > H - 0.35 && abs(p.x) < FENDA + 0.15 && p.z > ZS + 0.18 && p.z < ZS + 0.55) id = 3.0;
+  if (sdRBox(p - PAINEL, vec3(0.72, 0.2, 0.62), 0.22) < 0.01) id = 2.0;
+  // Botão de avanço do papel.
+  float bot = sdCil(p - vec3(PAINEL.x + 0.28, H + 0.0, PAINEL.z), 0.3, 0.07) - 0.04;
+  if (bot < d) { d = bot; id = 4.0; }
+  // As luzes.
+  float led1 = length(p - vec3(PAINEL.x - 0.36, H - 0.05, PAINEL.z - 0.28)) - 0.085;
+  float led2 = length(p - vec3(PAINEL.x - 0.36, H - 0.05, PAINEL.z + 0.28)) - 0.085;
+  if (led1 < d + 0.02 && led1 < 0.03) id = 5.0;
+  if (led2 < d + 0.02 && led2 < 0.03) id = 6.0;
+  d = min(d, min(led1, led2));
+  // A tecla da chave.
+  float tecla = sdRBox(pc - vec3(-0.08, 0.0, 0.0), vec3(0.16, 0.4, 0.6), 0.1);
+  if (tecla < d) { d = tecla; id = 7.0; }
+  return vec2(d, id);
+}
+float m(vec3 p) { return mapa(p).x; }
+vec3 normal(vec3 p) {
+  vec2 e = vec2(0.0015, 0.0);
+  return normalize(vec3(m(p + e.xyy) - m(p - e.xyy), m(p + e.yxy) - m(p - e.yxy), m(p + e.yyx) - m(p - e.yyx)));
+}
+float sombra(vec3 ro, vec3 rd, float k) {
+  float res = 1.0, t = 0.03;
+  for (int i = 0; i < 70; i++) {
+    float h = m(ro + rd * t);
+    res = min(res, k * h / t);
+    t += clamp(h, 0.02, 0.7);
+    if (res < 0.002 || t > 40.0) break;
+  }
+  return clamp(res, 0.0, 1.0);
+}
+float oclusao(vec3 p, vec3 n) {
+  float occ = 0.0, s = 1.0;
+  for (int i = 0; i < 6; i++) {
+    float h = 0.015 + 0.16 * float(i);
+    occ += (h - m(p + n * h)) * s; s *= 0.8;
+  }
+  return clamp(1.0 - 1.6 * occ, 0.0, 1.0);
+}
+// Luzes de estúdio com posição (o brilho muda ao longo da superfície).
+const vec3 KEY = vec3(-26.0, 42.0, 30.0);
+const vec3 RIM = vec3(30.0, 22.0, -34.0);
+const vec3 LAR = vec3(-44.0, 10.0, -6.0);   // contraluz laranja do lado da conversa
+const vec3 FILL = vec3(36.0, 14.0, 30.0);
+
+vec3 luz(vec3 p, vec3 n, vec3 v, vec3 lp, vec3 cor, float dif, float esp, float pot, float sh) {
+  vec3 l = normalize(lp - p);
+  vec3 h = normalize(l + v);
+  float nl = clamp(dot(n, l), 0.0, 1.0);
+  float fr = 0.04 + 0.96 * pow(1.0 - clamp(dot(h, v), 0.0, 1.0), 5.0);
+  return cor * sh * (dif * nl + esp * fr * pow(clamp(dot(n, h), 0.0, 1.0), pot) * nl * (pot + 8.0) / 25.0);
+}
+
+vec3 sombrear(vec3 p, vec3 n, vec3 rd, float id) {
+  vec3 v = -rd;
+  vec3 alb = vec3(0.020, 0.020, 0.022); float esp = 0.9, pot = 26.0;
+  if (id == 2.0) { alb = vec3(0.010); esp = 1.6; pot = 90.0; }
+  if (id == 3.0) { alb = vec3(0.09, 0.09, 0.095); esp = 2.4; pot = 60.0; }
+  if (id == 4.0) { alb = vec3(0.045, 0.045, 0.048); esp = 1.0; pot = 30.0; }
+  if (id == 7.0) { alb = vec3(0.016); esp = 1.0; pot = 40.0; }
+  float ao = oclusao(p, n);
+  vec3 lk = normalize(KEY - p);
+  float shK = sombra(p + n * 0.01, lk, 12.0);
+  vec3 col = vec3(0.0);
+  col += alb * 0.55 * (0.35 + 0.65 * (0.5 + 0.5 * n.y)) * ao;                     // ambiente do estúdio
+  col += alb * 2.5 * clamp(dot(n, lk), 0.0, 1.0) * shK;                           // luz principal
+  col += alb * 0.3 * clamp(dot(n, normalize(FILL - p)), 0.0, 1.0);                // preenchimento fraco
+  col += luz(p, n, v, KEY, vec3(1.0, 0.97, 0.92) * 3.0, 0.0, esp * 0.08, pot, shK);
+  col += luz(p, n, v, RIM, vec3(0.9, 0.95, 1.0) * 2.4, 0.0, esp * 0.35, 18.0, 1.0) * ao;
+  col += luz(p, n, v, LAR, vec3(1.0, 0.42, 0.10) * 2.2, 0.0, esp * 0.30, 14.0, 1.0) * ao;
+  // Softbox em cima e à frente: a faixa de brilho na curva da frente.
+  vec3 r = reflect(rd, n);
+  float fre = 0.04 + 0.96 * pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 5.0);
+  float sb = smoothstep(0.78, 0.97, dot(r, normalize(vec3(-0.3, 0.85, 0.42))));
+  col += sb * (0.10 + fre) * 1.1 * (esp / 0.9) * ao;
+  // Reflexo do ambiente nas quinas, mais claro para cima.
+  col += pow(1.0 - clamp(dot(n, v), 0.0, 1.0), 4.0) * mix(0.003, 0.08, smoothstep(-0.1, 0.9, r.y)) * ao * (esp / 0.9);
+  // Estúdio: mais escuro embaixo.
+  col *= mix(0.55, 1.1, smoothstep(-0.5, H + 0.5, p.y));
+  if (id == 5.0) col = vec3(0.25, 1.0, 0.45) * 1.6;
+  if (id == 6.0) col = vec3(0.10, 0.045, 0.01);
+  return col;
+}
+
+vec4 amostra(vec2 px) {
+  vec2 uv = (px - 0.5 * uRes) * uEsc;
+  vec3 ro = uAlvo + uR * uv.x + uU * uv.y + uC * 60.0;
+  vec3 rd = -uC;
+  float t = 0.0; vec2 h = vec2(1.0, 0.0);
+  for (int i = 0; i < 220; i++) {
+    h = mapa(ro + rd * t);
+    if (h.x < 0.0008 || t > 120.0) break;
+    t += h.x * 0.8;
+  }
+  if (h.x < 0.0008) {
+    vec3 p = ro + rd * t;
+    vec3 col = sombrear(p, normal(p), rd, h.y);
+    return vec4(col, 1.0);
+  }
+  // O chão: só a sombra, com fundo transparente.
+  if (rd.y < 0.0) {
+    float tc = -ro.y / rd.y;
+    vec3 g = ro + rd * tc;
+    float dist = m(g);
+    float contato = 0.0, s = 1.0;
+    for (int i = 0; i < 5; i++) { float hh = 0.05 + 0.35 * float(i); contato += (hh - m(g + vec3(0.0, hh, 0.0))) * s; s *= 0.7; }
+    contato = clamp(contato * 0.9, 0.0, 1.0);
+    float sh = sombra(g + vec3(0.0, 0.01, 0.0), normalize(KEY - g), 6.0);
+    float a = 0.9 * contato + 0.4 * (1.0 - sh) * exp(-dist * 0.3) + 0.35 * exp(-dist * 0.9);
+    a *= smoothstep(4.5, 0.8, dist);
+    return vec4(0.0, 0.0, 0.0, clamp(a, 0.0, 0.92));
+  }
+  return vec4(0.0);
+}
+
+vec3 tom(vec3 x) { x *= 1.0; vec3 a = (x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14); return pow(clamp(a, 0.0, 1.0), vec3(1.0 / 2.2)); }
+
+void main() {
+  vec3 acc = vec3(0.0); float aa = 0.0;
+  for (int j = 0; j < ${AA}; j++) for (int i = 0; i < ${AA}; i++) {
+    vec4 s = amostra(gl_FragCoord.xy + (vec2(float(i), float(j)) + 0.5) / ${AA}.0 - 0.5);
+    acc += tom(s.rgb) * s.a; aa += s.a;
+  }
+  aa /= ${AA * AA}.0; acc /= ${AA * AA}.0;
+  // Um grão leve, como plástico fosco fotografado, e sem degraus no degradê.
+  float grao = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
+  gl_FragColor = aa > 0.0 ? vec4(acc / aa + grao * 0.012, aa) : vec4(0.0);
+}`;
+
+const vert = 'attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }';
+window.render = async () => {
+  const cv = document.getElementById('c'); cv.width = LARG; cv.height = ALT;
+  const gl = cv.getContext('webgl', { preserveDrawingBuffer: true, premultipliedAlpha: false, antialias: false, alpha: true });
+  if (!gl) return { erro: 'sem webgl' };
+  const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vert)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, frag)); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return { erro: gl.getProgramInfoLog(pr) };
+  gl.useProgram(pr);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  const u = (n) => gl.getUniformLocation(pr, n);
+  gl.uniform2f(u('uRes'), LARG, ALT); gl.uniform1f(u('uEsc'), ESC);
+  gl.uniform3fv(u('uAlvo'), ALVO); gl.uniform3fv(u('uC'), c); gl.uniform3fv(u('uR'), R); gl.uniform3fv(u('uU'), U);
+  gl.viewport(0, 0, LARG, ALT); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.enable(gl.SCISSOR_TEST);
+  const faixa = 24;
+  for (let y = 0; y < ALT; y += faixa) {
+    gl.scissor(0, y, LARG, faixa); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    const px = new Uint8Array(4); gl.readPixels(0, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    await new Promise((r) => setTimeout(r, 0));
+  }
+  // Recorta no que tem conteúdo.
+  const c2 = document.createElement('canvas'); c2.width = LARG; c2.height = ALT;
+  const x2 = c2.getContext('2d'); x2.drawImage(cv, 0, 0);
+  const dados = x2.getImageData(0, 0, LARG, ALT).data;
+  let x0 = LARG, y0 = ALT, x1 = 0, y1 = 0;
+  for (let y = 0; y < ALT; y++) for (let x = 0; x < LARG; x++) if (dados[(y * LARG + x) * 4 + 3] > 2) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  x0 = Math.max(0, x0 - 2); y0 = Math.max(0, y0 - 2); x1 = Math.min(LARG - 1, x1 + 2); y1 = Math.min(ALT - 1, y1 + 2);
+  const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+  const c3 = document.createElement('canvas'); c3.width = cw; c3.height = ch; c3.getContext('2d').drawImage(c2, x0, y0, cw, ch, 0, 0, cw, ch);
+  // Pontos do desenho em pixels do recorte.
+  const proj = (p) => { const d = [p[0] - ALVO[0], p[1] - ALVO[1], p[2] - ALVO[2]];
+    return [LARG / 2 + (d[0] * R[0] + d[1] * R[1] + d[2] * R[2]) / ESC - x0, ALT / 2 - (d[0] * U[0] + d[1] * U[1] + d[2] * U[2]) / ESC - y0]; };
+  const pontos = {
+    papelEsq: proj([-PAPEL, H, ZS]), papelDir: proj([PAPEL, H, ZS]),
+    led: proj([5.15 - 0.36, H, 4.15 - 0.28]),
+    frenteEsqTopo: proj([-W / 2, H - 2.6, D / 2]), frenteEsqBase: proj([-W / 2, 1.0, D / 2]),
+    lateralEsqMeio: proj([-W / 2, H * 0.55, D / 2 - 2]),
+  };
+  return { png: c3.toDataURL('image/png'), largura: cw, altura: ch, pontos, inclinacao: Math.atan2(pontos.papelDir[1] - pontos.papelEsq[1], pontos.papelDir[0] - pontos.papelEsq[0]) * 180 / Math.PI };
+};
+</script>
