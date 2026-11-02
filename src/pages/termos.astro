@@ -1,0 +1,123 @@
+---
+import Base from '../layouts/Base.astro';
+import { empresa } from '../data/empresa';
+
+/** A data desta versão do texto. Mudou o texto, muda a data. */
+const VERSAO = '2 de novembro de 2026';
+const EMAIL = 'set.tecnologia7@gmail.com';
+
+const migalhas = [{ nome: 'Termos de uso', href: '/termos' }];
+---
+<Base
+  titulo="Termos de uso | Set Tecnologia"
+  descricao="Regras de uso do site da Set Tecnologia: conteúdo, demonstrações, marcas, links para outros serviços e como o sistema é contratado."
+  migalhas={migalhas}
+>
+  <article class="legal envelope">
+    <header>
+      <p class="rotulo">Atualizados em {VERSAO}</p>
+      <h1>Termos de uso</h1>
+      <p class="abertura">
+        Estes termos valem para quem visita o site www.settecnologia.app.br. Ao usar o site, você concorda com eles.
+        {empresa.nome} é o nome comercial de {empresa.razaoSocial}, CNPJ {empresa.cnpj}.
+      </p>
+    </header>
+
+    <section>
+      <h2>O que é este site</h2>
+      <p>
+        O site apresenta os sistemas da Set Tecnologia para restaurantes, bares e comércio e recebe pedidos de contato.
+        Nada é vendido nem contratado pelo site: o sistema é contratado por proposta e contrato, depois de uma conversa
+        com a equipe.
+      </p>
+    </section>
+
+    <section>
+      <h2>Telas, recursos e valores</h2>
+      <p>
+        As telas mostradas são do sistema real, com dados de demonstração. Os recursos disponíveis dependem da versão
+        instalada e do que for contratado. Preço, prazo de implantação, suporte e cancelamento valem como estiverem na
+        proposta e no contrato, e não pelo que aparece no site.
+      </p>
+    </section>
+
+    <section>
+      <h2>Demonstrações</h2>
+      <p>
+        O cardápio online e as conversas de atendimento mostrados no site são demonstrações. Os nomes, telefones e
+        pedidos que aparecem nelas são de exemplo. Não use a demonstração do cardápio para fazer pedidos de verdade.
+      </p>
+    </section>
+
+    <section>
+      <h2>Conteúdo e marcas</h2>
+      <ul>
+        <li>Textos, telas, imagens, a marca Set Tecnologia e o código do site pertencem à Set Tecnologia. Não é permitido copiar ou reproduzir esse conteúdo sem autorização.</li>
+        <li>Os nomes e logos de 99Food, iFood, Smart TEF, WhatsApp e dos clientes pertencem aos seus donos e aparecem só para identificar integrações e quem usa o sistema.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Uso permitido</h2>
+      <p>Ao usar o site, você se compromete a:</p>
+      <ul>
+        <li>enviar no formulário apenas os seus próprios dados, verdadeiros;</li>
+        <li>não enviar o formulário de forma automatizada nem em massa;</li>
+        <li>não tentar acessar áreas que não são públicas nem atrapalhar o funcionamento do site.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Links para outros serviços</h2>
+      <p>
+        Alguns botões levam ao WhatsApp, ao YouTube, ao site do PDV+ e ao cardápio de demonstração em enviarpedido.com.br.
+        Nesses serviços valem as regras e políticas de cada um.
+      </p>
+    </section>
+
+    <section>
+      <h2>Disponibilidade</h2>
+      <p>
+        A Set Tecnologia mantém as informações do site atualizadas, mas o site pode ficar fora do ar por manutenção ou
+        por falha dos serviços de hospedagem. Em caso de dúvida sobre um recurso, confirme com a equipe antes de contratar.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dados pessoais</h2>
+      <p>
+        O tratamento dos dados enviados no formulário está descrito na <a href="/privacidade">política de privacidade</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Leis e foro</h2>
+      <p>
+        Estes termos seguem as leis brasileiras. Fica eleito o foro da comarca da sede da Set Tecnologia, salvo quando a
+        lei garantir a você o foro do seu domicílio.
+      </p>
+    </section>
+
+    <section>
+      <h2>Contato</h2>
+      <p>Dúvidas sobre estes termos: <a href={`mailto:${EMAIL}`}>{EMAIL}</a> ou WhatsApp {empresa.telefoneExibicao}.</p>
+    </section>
+
+    <section>
+      <h2>Mudanças nestes termos</h2>
+      <p>Alterações nestes termos atualizam a data no topo da página.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .legal { max-width: calc(760px + var(--gutter) * 2); padding-block: clamp(32px, 5vw, 56px) clamp(56px, 8vw, 96px); }
+  h1 { margin-top: 16px; font-size: clamp(34px, 5vw, 54px); letter-spacing: -0.035em; }
+  .abertura { margin-top: 20px; font-size: 18px; }
+  section { margin-top: 40px; scroll-margin-top: 96px; }
+  h2 { font-size: clamp(21px, 2.4vw, 25px); letter-spacing: -0.02em; line-height: 1.2; }
+  p, ul { margin-block: 14px 0; line-height: 1.65; color: #d8d4cc; }
+  ul { padding-left: 20px; display: grid; gap: 10px; }
+  strong { color: var(--tinta); font-weight: 600; }
+  a { color: var(--laranja-claro); }
+</style>

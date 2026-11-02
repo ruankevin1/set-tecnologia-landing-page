@@ -4,6 +4,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://www.settecnologia.app.br',
   trailingSlash: 'never',
-  build: { format: 'file' },
+  build: { format: 'file', inlineStylesheets: 'always' },
   integrations: [sitemap()],
 });

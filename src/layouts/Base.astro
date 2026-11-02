@@ -4,6 +4,8 @@ import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
 import Icone from '../components/Icone.astro';
 import { empresa, cidades, linkWhatsApp } from '../data/empresa';
+// A fonte do texto, pedida junto com a página: o título do topo já pinta com ela, sem trocar de letra depois.
+import fonteTexto from '@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url';
 
 interface Props {
   titulo: string;
@@ -62,6 +64,7 @@ if (migalhas?.length) {
     <meta charset="utf-8" />
     <script is:inline>document.documentElement.classList.add('js')</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={fonteTexto} as="font" type="font/woff2" crossorigin />
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonico} />

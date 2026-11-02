@@ -16,6 +16,8 @@
   --laranja: #f36812;
   --laranja-claro: #ff8a3d;
   --laranja-escuro: #d9570a;
+  /* Texto sobre o laranja: escuro, porque branco no laranja fica abaixo do contraste mínimo (3:1 contra 4,5:1). */
+  --sobre-laranja: #1a1310;
   --verde: #2f7d4f;
   --noite: #090807;
 
@@ -70,7 +72,7 @@ ul, ol { margin: 0; padding: 0; }
   transition: background-color .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s;
 }
 .botao svg { width: 19px; height: 19px; flex: none; }
-.botao-principal { background: var(--laranja); color: #fff; }
+.botao-principal { background: var(--laranja); color: var(--sobre-laranja); font-weight: 600; }
 .botao-principal:hover { background: var(--laranja-escuro); }
 .botao-linha { border-color: var(--linha-forte); color: var(--tinta); background: var(--vidro); }
 .botao-linha:hover { border-color: rgb(255 255 255 / .35); }
@@ -89,7 +91,8 @@ ul, ol { margin: 0; padding: 0; }
 /* Entrada imediata (topo da página), sem depender de script */
 @media (prefers-reduced-motion: no-preference) {
   .entra { animation: entrar .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--atraso, 0s); }
-  @keyframes entrar { from { opacity: 0; transform: translateY(24px); } }
+  /* Só desliza, sem sumir: o texto do topo aparece já na primeira pintura, e o Google mede a página pronta mais cedo. */
+  @keyframes entrar { from { transform: translateY(24px); } }
 }
 
 /* Entrada na rolagem: só com JS (classe .js no <html>) e sem "reduzir movimento". */
