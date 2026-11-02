@@ -17,15 +17,15 @@ import fotoDaImpressora from '../assets/impressora/impressora-termica.png'; // r
 // (produto que a loja escolheu no PC), faz o resumo no modelo dela, envia só depois do "pode enviar" e cobra no Pix online.
 // Mensagens em parágrafos curtos, cada pergunta no seu; emoji simples só na saudação e na confirmação (tom cordial).
 // A primeira resposta da conversa leva o link do cardápio (saudação ligada, o padrão): com a cliente já pedindo, o
-// link vai no fim, e o WhatsApp mostra a prévia dele no alto do balão.
+// link vai no fim. A prévia do link fica de fora: na cena, o cartão tomava o celular inteiro.
 // "etapa" é o que o selo acima do celular mostra quando aquela resposta aparece; "pix" põe no balão o botão
-// Copiar código Pix, e "previa" o cartão do link do cardápio, como chegam no WhatsApp.
-type Mensagem = { de: 'cliente' | 'ia'; hora: string; texto: string; etapa?: string; foto?: boolean; sugestao?: boolean; pix?: boolean; previa?: boolean };
+// Copiar código Pix, como chega no WhatsApp.
+type Mensagem = { de: 'cliente' | 'ia'; hora: string; texto: string; etapa?: string; foto?: boolean; sugestao?: boolean; pix?: boolean };
 // O cardápio online da loja de demonstração, no endereço do Set.
 const cardapio = 'https://setpizzas.enviarpedido.com.br';
 const conversa: Mensagem[] = [
   { de: 'cliente', hora: '20:14', texto: 'Boa noite! Quero fazer um pedido.' },
-  { de: 'ia', hora: '20:14', texto: `Boa noite, Ana! 😊 Sou a Eduarda, atendente virtual da Set Pizzas.\n\nDa última vez você pediu 1 pizza grande da casa, sem cebola roxa.\n\nQuer repetir?\n\nSe quiser ver o cardápio completo, com fotos:\n${cardapio}`, etapa: 'lembrando o último pedido', previa: true },
+  { de: 'ia', hora: '20:14', texto: `Boa noite, Ana! 😊 Sou a Eduarda, atendente virtual da Set Pizzas.\n\nDa última vez você pediu 1 pizza grande da casa, sem cebola roxa.\n\nQuer repetir?\n\nSe quiser ver o cardápio completo, com fotos:\n${cardapio}`, etapa: 'lembrando o último pedido' },
   { de: 'cliente', hora: '20:14', texto: 'Tem foto dela?' },
   { de: 'ia', hora: '20:14', texto: 'Pizza grande da casa · R$ 62,00', foto: true, etapa: 'enviando a foto do produto' },
   { de: 'ia', hora: '20:14', texto: 'Quer pedir?' },
@@ -125,7 +125,7 @@ const papeis = [{ id: 'cozinha', impresso: pedido }, { id: 'via', impresso: via 
 ---
 <figure class="ao-vivo" data-ao-vivo>
   <ol class="so-leitor">
-    {conversa.map((m) => <li>{m.de === 'cliente' ? 'Cliente' : 'Eduarda'}: {m.foto ? `foto do produto, ${m.texto}` : m.texto.replaceAll('*', '')}{m.pix && ' (com o botão Copiar código Pix)'}{m.previa && ' (com a prévia do cardápio online da Set Pizzas)'}</li>)}
+    {conversa.map((m) => <li>{m.de === 'cliente' ? 'Cliente' : 'Eduarda'}: {m.foto ? `foto do produto, ${m.texto}` : m.texto.replaceAll('*', '')}{m.pix && ' (com o botão Copiar código Pix)'}</li>)}
     <li>O pedido passa pela nuvem da Set e a impressora imprime dois papéis: o pedido da cozinha (1 pizza grande da casa sem cebola roxa e 1 refrigerante 2 litros) e a via do entregador, com o endereço da Ana e o aviso de que o pedido foi pago online e não se cobra na entrega.</li>
   </ol>
 
@@ -160,9 +160,8 @@ const papeis = [{ id: 'cozinha', impresso: pedido }, { id: 'via', impresso: via 
         <p class="dia">Hoje</p>
         <ol>
           {conversa.map((m, i) => (
-            <li class:list={[m.de, { ponta: ultimo(i), seguida: seguida(i), 'com-foto': m.foto, 'com-pix': m.pix || m.previa }]} data-msg data-texto={m.texto} data-etapa={m.etapa} data-sugestao={m.sugestao ? '' : undefined}>
+            <li class:list={[m.de, { ponta: ultimo(i), seguida: seguida(i), 'com-foto': m.foto, 'com-pix': m.pix }]} data-msg data-texto={m.texto} data-etapa={m.etapa} data-sugestao={m.sugestao ? '' : undefined}>
               {m.foto && <Image class="foto-produto" src={fotoDaPizza} alt="" widths={[260, 520]} sizes="250px" format="webp" quality={82} />}
-              {m.previa && <span class="previa"><span class="previa-img"><i>SP</i><b>Set Pizzas</b><small>Faça seu pedido online em Set Pizzas.</small></span><span class="previa-txt"><b>Set Pizzas · Cardápio</b><small>Faça seu pedido online em Set Pizzas.</small><small class="dominio">setpizzas.enviarpedido.com.br</small></span></span>}
               <Fragment set:html={negrito(m.texto)} /><span class="hora">{m.hora}{m.de === 'cliente' && <Fragment set:html={tiques} />}</span>
               {m.pix && <span class="copiar" data-copiar><Fragment set:html={copiar} />Copiar código Pix</span>}
             </li>
@@ -424,18 +423,8 @@ const papeis = [{ id: 'cozinha', impresso: pedido }, { id: 'via', impresso: via 
   .ponta .copiar { border-bottom-left-radius: 6px; }
   .copiar :global(svg) { width: 21px; height: 21px; flex: none; }
   .copiar.tocado { background: #ececef; }
-  /* A prévia do link do cardápio, no alto do balão: a imagem que o cardápio gera (cor da loja, iniciais, nome e
-     descrição), o título, a descrição e o endereço. */
+  /* O link do cardápio, azul como no app. */
   li :global(.link) { color: #027eb5; }
-  .previa { display: block; margin: -2px -6px 9px -7px; border-radius: 12px; overflow: hidden; background: #f0f2f5; white-space: normal; }
-  .previa-img { container-type: inline-size; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1200 / 630; padding: 6.7%; background: #f36812; color: #fff; }
-  .previa-img i { width: 11.7cqw; height: 11.7cqw; display: grid; place-items: center; border-radius: 2.7cqw; background: #fff; color: #f36812; font-style: normal; font-size: 5.6cqw; font-weight: 700; }
-  .previa-img b { display: block; font-size: 8cqw; font-weight: 700; line-height: 1.05; }
-  .previa-img small { display: block; margin-top: 1.6cqw; font-size: 3.2cqw; opacity: .9; }
-  .previa-txt { display: block; padding: 7px 10px 8px; line-height: 1.3; }
-  .previa-txt b { display: block; font-size: 13.5px; font-weight: 600; }
-  .previa-txt small { display: block; font-size: 12.5px; color: #667781; }
-  .previa-txt .dominio { margin-top: 2px; font-size: 12px; }
 
   .digitar { flex: none; display: flex; align-items: flex-end; gap: 10px; padding: 8px 12px 6px; background: rgb(247 247 247 / .97); color: #000; }
   .mais { width: 25px; height: 25px; flex: none; margin-bottom: 6px; }
